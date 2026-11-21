@@ -8,7 +8,10 @@ import os
 import math
 import requests
 from typing import List, Dict, Any, Optional
-import psycopg2
+try:
+    import psycopg2
+except ImportError:
+    psycopg2 = None
 from dotenv import load_dotenv
 
 from src.storage.remediation_repository import RemediationRepository

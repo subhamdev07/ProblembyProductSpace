@@ -341,22 +341,41 @@ function quickLogin(email, password, role){
   });
   performLogin(email, password, role);
 }
-document.getElementById('guestLink').addEventListener('click', (e) => {
+document.getElementById('guestLink').addEventListener('click', async (e) => {
   e.preventDefault();
+  try {
+    const res = await fetch('/api/auth/guest', { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.user) {
+        localStorage.setItem('bodhai_user', JSON.stringify(data.user));
+        localStorage.setItem('active_student_id', data.user.user_id);
+        localStorage.setItem('bodhai_role', 'student');
+        if (data.token) localStorage.setItem('bodhai_token', data.token);
+        document.cookie = 'bodhai_role=student; path=/; SameSite=Lax';
+        document.cookie = 'bodhai_user_id=' + encodeURIComponent(data.user.user_id) + '; path=/; SameSite=Lax';
+        if (data.token) document.cookie = 'bodhai_token=' + encodeURIComponent(data.token) + '; path=/; SameSite=Lax';
+        window.location.replace('/dashboard');
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn('Guest API failed, using client fallback:', err);
+  }
   const guestUser = {
-    user_id: 'STU-001',
-    name: 'Aarav Sharma',
-    email: 'aarav@bodhai.edu',
+    user_id: 'STU-GUEST',
+    name: 'Guest Student',
+    email: 'guest@bodhai.edu',
     role: 'student',
     grade: 10,
-    avatar: 'AS',
-    school: 'Delhi Public School, R.K. Puram'
+    avatar: 'GS',
+    school: 'BodhAI Open Learning'
   };
   localStorage.setItem('bodhai_user', JSON.stringify(guestUser));
-  localStorage.setItem('active_student_id', 'STU-001');
+  localStorage.setItem('active_student_id', 'STU-GUEST');
   localStorage.setItem('bodhai_role', 'student');
   document.cookie = 'bodhai_role=student; path=/; SameSite=Lax';
-  document.cookie = 'bodhai_user_id=STU-001; path=/; SameSite=Lax';
+  document.cookie = 'bodhai_user_id=STU-GUEST; path=/; SameSite=Lax';
   window.location.replace('/dashboard');
 });
 document.getElementById('forgotBtn').addEventListener('click',()=>{

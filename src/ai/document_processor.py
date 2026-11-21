@@ -9,7 +9,10 @@ import os
 import time
 import logging
 from typing import Optional, List, Dict, Any
-import fitz  # PyMuPDF
+try:
+    import fitz
+except ImportError:
+    fitz = None
 
 from src.core.config import config, BodhanOCRConfig
 from src.core.exceptions import (

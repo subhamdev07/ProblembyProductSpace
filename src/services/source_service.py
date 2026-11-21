@@ -7,7 +7,10 @@ and tracks missing official source material.
 import os
 import hashlib
 from typing import List, Dict, Any, Optional
-import fitz  # PyMuPDF
+try:
+    import fitz
+except ImportError:
+    fitz = None
 from src.models.source import SourceDocument
 from src.models.classification import VerificationStatus
 from src.storage.database import CurriculumRepository

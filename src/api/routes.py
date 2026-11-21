@@ -245,6 +245,107 @@ def login_user(payload: LoginRequest, response: Response):
     return resp
 
 
+@router.post("/auth/guest", response_model=LoginResponse)
+def login_as_guest(response: Response):
+    """Provisions a fresh guest student account (STU-GUEST), clears prior guest attempts, and logs in."""
+    import uuid
+    svcs = get_services()
+    guest_id = "STU-GUEST"
+    guest_name = "Guest Student"
+    guest_email = "guest@bodhai.edu"
+
+    with svcs["db"].get_connection() as conn:
+        conn.execute("DELETE FROM learner_concept_mastery WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM student_misconceptions WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM spaced_repetition_schedules WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM remediation_records WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM assessments WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM student_answers WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM examination_sessions WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM examination_answers WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM examination_results WHERE student_id = ?;", (guest_id,))
+        conn.execute("DELETE FROM student_activity_logs WHERE student_id = ?;", (guest_id,))
+
+        conn.execute(
+            "INSERT INTO students (student_id, name, grade) VALUES (?, ?, ?)"
+            " ON CONFLICT(student_id) DO UPDATE SET name=excluded.name;",
+            (guest_id, guest_name, 10),
+        )
+        conn.execute(
+            """
+            INSERT INTO users (user_id, name, email, role, grade, password_hash, avatar, school)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET
+                name=excluded.name,
+                email=excluded.email,
+                role=excluded.role,
+                grade=excluded.grade,
+                password_hash=excluded.password_hash,
+                avatar=excluded.avatar,
+                school=excluded.school;
+            """,
+            (guest_id, guest_name, guest_email, "student", 10, "password123", "GS", "BodhAI Open Learning"),
+        )
+
+        conn.execute(
+            """
+            INSERT INTO spaced_repetition_schedules (
+                schedule_id, student_id, concept_id, last_reviewed_at, next_review_at,
+                interval_days, ease_factor, review_count, last_result, current_mastery,
+                review_status, created_at, updated_at
+            )
+            SELECT 
+                'REV-GUEST-' || substr(schedule_id, 5),
+                ?,
+                concept_id,
+                last_reviewed_at,
+                next_review_at,
+                interval_days,
+                ease_factor,
+                review_count,
+                last_result,
+                current_mastery,
+                review_status,
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP
+            FROM spaced_repetition_schedules
+            WHERE student_id = 'STU-001';
+            """,
+            (guest_id,),
+        )
+        conn.commit()
+
+    token = f"BODHAI-AUTH-GUEST-{uuid.uuid4().hex[:12]}"
+    user = UserProfile(
+        user_id=guest_id,
+        name=guest_name,
+        email=guest_email,
+        role="student",
+        grade=10,
+        avatar="GS",
+        school="BodhAI Open Learning",
+    )
+
+    response.set_cookie(key="bodhai_role", value="student", path="/")
+    response.set_cookie(key="bodhai_user_id", value=guest_id, path="/")
+    response.set_cookie(key="bodhai_token", value=token, path="/")
+
+    svcs["activity_service"].record_event(
+        student_id=guest_id,
+        event_type="AUTH_GUEST_LOGIN",
+        action_title=f"Guest session started as {guest_name}",
+        details={"role": "student", "is_guest": True},
+        duration_seconds=60,
+    )
+
+    return LoginResponse(
+        success=True,
+        message=f"Welcome, {guest_name}! Starting fresh session.",
+        token=token,
+        user=user,
+    )
+
+
 @router.post("/auth/logout")
 def logout_user_api(response: Response):
     response.delete_cookie("bodhai_role", path="/")
@@ -578,11 +679,46 @@ def complete_remediation(payload: CompleteRemediationRequest):
         raise HTTPException(status_code=500, detail=f"Failed to complete remediation: {str(e)}")
 
 
+def _ensure_guest_revision_schedules(db: Database):
+    with db.get_connection() as conn:
+        count = conn.execute("SELECT COUNT(*) FROM spaced_repetition_schedules WHERE student_id = 'STU-GUEST';").fetchone()[0]
+        if count == 0:
+            conn.execute("INSERT OR IGNORE INTO students (student_id, name, grade) VALUES ('STU-GUEST', 'Guest Student', 10);")
+            conn.execute(
+                """
+                INSERT OR IGNORE INTO spaced_repetition_schedules (
+                    schedule_id, student_id, concept_id, last_reviewed_at, next_review_at,
+                    interval_days, ease_factor, review_count, last_result, current_mastery,
+                    review_status, created_at, updated_at
+                )
+                SELECT 
+                    'REV-GUEST-' || substr(schedule_id, 5),
+                    'STU-GUEST',
+                    concept_id,
+                    last_reviewed_at,
+                    next_review_at,
+                    interval_days,
+                    ease_factor,
+                    review_count,
+                    last_result,
+                    current_mastery,
+                    review_status,
+                    CURRENT_TIMESTAMP,
+                    CURRENT_TIMESTAMP
+                FROM spaced_repetition_schedules
+                WHERE student_id = 'STU-001';
+                """
+            )
+            conn.commit()
+
+
 @router.get("/student/revision-due", response_model=List[SpacedRepetitionItem])
 def get_due_revisions(student_id: str = Query("STU-001")):
     if student_id and str(student_id).upper().startswith("TCH"):
         raise HTTPException(status_code=403, detail="Teachers cannot access student revision schedules.")
     svcs = get_services()
+    if student_id == "STU-GUEST":
+        _ensure_guest_revision_schedules(svcs["db"])
     svcs["spaced_repetition_service"].sync_weak_concepts_to_schedule(student_id)
     return svcs["spaced_repetition_service"].get_due_revisions(student_id)
 
@@ -592,6 +728,8 @@ def get_upcoming_revisions(student_id: str = Query("STU-001")):
     if student_id and str(student_id).upper().startswith("TCH"):
         raise HTTPException(status_code=403, detail="Teachers cannot access student revision schedules.")
     svcs = get_services()
+    if student_id == "STU-GUEST":
+        _ensure_guest_revision_schedules(svcs["db"])
     svcs["spaced_repetition_service"].sync_weak_concepts_to_schedule(student_id)
     return svcs["spaced_repetition_service"].get_upcoming_revisions(student_id)
 

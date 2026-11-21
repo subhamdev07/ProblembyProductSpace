@@ -16,11 +16,25 @@ class Database:
     SQLite Database Manager with Foreign Key enforcement and migration support.
     """
 
-    def __init__(self, db_path: str = "data/curriculum.db"):
-        self.db_path = db_path
-        # Ensure parent directory exists
-        if os.path.dirname(os.path.abspath(db_path)):
-            os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
+    def __init__(self, db_path: Optional[str] = None):
+        if db_path is None or db_path == "data/curriculum.db":
+            if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+                tmp_dir = "/tmp"
+                tmp_db = os.path.join(tmp_dir, "curriculum.db")
+                source_db = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data", "curriculum.db")
+                if not os.path.exists(tmp_db) and os.path.exists(source_db):
+                    import shutil
+                    shutil.copy2(source_db, tmp_db)
+                self.db_path = tmp_db
+            else:
+                self.db_path = "data/curriculum.db"
+        else:
+            self.db_path = db_path
+        if os.path.dirname(os.path.abspath(self.db_path)):
+            try:
+                os.makedirs(os.path.dirname(os.path.abspath(self.db_path)), exist_ok=True)
+            except Exception:
+                pass
         self.init_db()
 
     def get_connection(self) -> sqlite3.Connection:
@@ -34,13 +48,15 @@ class Database:
         with open(schema_path, "r", encoding="utf-8") as f:
             schema_sql = f.read()
 
-        with self.get_connection() as conn:
-            conn.executescript(schema_sql)
-            # Safe migration for existing student_misconceptions table
-            try:
-                conn.execute("ALTER TABLE student_misconceptions ADD COLUMN evidence_text TEXT;")
-            except sqlite3.OperationalError:
-                pass  # column already exists
+        try:
+            with self.get_connection() as conn:
+                conn.executescript(schema_sql)
+                try:
+                    conn.execute("ALTER TABLE student_misconceptions ADD COLUMN evidence_text TEXT;")
+                except sqlite3.OperationalError:
+                    pass
+        except Exception:
+            pass
 
     def reset_db(self):
         """Drops all tables and recreates them cleanly."""
