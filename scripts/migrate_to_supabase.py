@@ -48,6 +48,12 @@ TABLE_ORDER = [
     "spaced_repetition_schedules",
     "remediation_records",
     "curriculum_embeddings",
+    # P5 CBSE Board Examination Simulation
+    "examination_blueprints",
+    "examination_templates",
+    "examination_sessions",
+    "examination_answers",
+    "examination_results",
 ]
 
 

@@ -1,9 +1,3 @@
-"""
-Teacher Dashboard Service
-Cohort analytics, intervention triggers, and student drill-downs.
-Strict access control: requires educator/teacher role authorization.
-"""
-
 from typing import List, Dict, Any, Optional
 
 from src.storage.database import Database
@@ -36,7 +30,6 @@ class TeacherDashboardService:
             self.learner_service = learner_service
 
     def _verify_teacher_role(self, role: Optional[str]):
-        """Role-based boundary check to prevent unauthorized access to cohort analytics."""
         if not role or role.lower() not in ("teacher", "educator", "admin"):
             raise PermissionError("Access Denied: Teacher Dashboard requires verified educator credentials.")
 
@@ -46,22 +39,18 @@ class TeacherDashboardService:
         with self.db.get_connection() as conn:
             cur = conn.cursor()
 
-            # 1. Total Students
-            cur.execute("SELECT COUNT(*) FROM students;")
+            cur.execute("SELECT COUNT(*) FROM students WHERE student_id NOT LIKE 'TCH%';")
             total_students = cur.fetchone()[0]
 
-            # 2. Assessments Completed & Accuracy
             cur.execute("SELECT COUNT(*), AVG(score) FROM assessments WHERE status IN ('SUBMITTED', 'EVALUATED');")
             ass_row = cur.fetchone()
             total_assessments = ass_row[0] or 0
             avg_accuracy = round(float(ass_row[1] or 0.0), 1)
 
-            # 3. Average Concept Mastery
             cur.execute("SELECT AVG(mastery_score) FROM learner_concept_mastery;")
             mast_row = cur.fetchone()
             avg_mastery = round(float(mast_row[0] or 0.0) * 100, 1)
 
-            # 4. Weakest Concepts Cohort-Wide
             cur.execute(
                 """
                 SELECT c.concept_id, c.name, AVG(lcm.mastery_score) as avg_mastery, COUNT(lcm.student_id) as attempts
@@ -79,15 +68,25 @@ class TeacherDashboardService:
                     "concept_id": r["concept_id"],
                     "concept_name": r["name"],
                     "avg_mastery_pct": round(r["avg_mastery"] * 100, 1),
-                    "assessed_students": r["attempts"]
+                    "average_mastery": r["avg_mastery"],
+                    "assessed_students": r["attempts"],
+                    "student_count": r["attempts"],
+                    "chapter_id": "CH-01"
                 }
                 for r in weak_rows
             ]
 
-            # 5. Common Misconceptions
-            common_misconceptions = self.remediation_repo.get_all_misconceptions_summary()
+            raw_misc = self.remediation_repo.get_all_misconceptions_summary()
+            common_misconceptions = []
+            for m in raw_misc:
+                common_misconceptions.append({
+                    "concept_id": m.get("concept_id", ""),
+                    "concept_name": m.get("concept_name", m.get("misconception_tag", "Misconception")),
+                    "description": m.get("misconception_tag", "").replace("_", " ").title(),
+                    "frequency": m.get("affected_students", 1),
+                    "affected_students": m.get("affected_students", 1),
+                })
 
-            # 6. Students Requiring Intervention
             cur.execute(
                 """
                 SELECT s.student_id, s.name, s.grade,
@@ -96,6 +95,7 @@ class TeacherDashboardService:
                 FROM students s
                 LEFT JOIN learner_concept_mastery lcm ON s.student_id = lcm.student_id
                 LEFT JOIN student_misconceptions sm ON s.student_id = sm.student_id AND sm.status IN ('SUSPECTED', 'CONFIRMED')
+                WHERE s.student_id NOT LIKE 'TCH%'
                 GROUP BY s.student_id, s.name, s.grade
                 ORDER BY avg_mastery ASC, misconception_count DESC;
                 """
@@ -114,14 +114,12 @@ class TeacherDashboardService:
                         "urgency": "HIGH" if sr["avg_mastery"] < 0.40 or sr["misconception_count"] >= 2 else "MEDIUM"
                     })
 
-            # 7. Revision Completion Rate
             cur.execute("SELECT COUNT(*) FROM spaced_repetition_schedules;")
             total_revs = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM spaced_repetition_schedules WHERE review_count > 0;")
             done_revs = cur.fetchone()[0]
             completion_rate = round((done_revs / max(1, total_revs)) * 100, 1) if total_revs > 0 else 0.0
 
-            # 8. Chapter Performance
             chapter_perf = [
                 {
                     "chapter_id": "CH-01",
@@ -133,6 +131,45 @@ class TeacherDashboardService:
                 }
             ]
 
+            cur.execute("SELECT student_id, name, grade FROM students WHERE student_id NOT LIKE 'TCH%' ORDER BY student_id ASC;")
+            all_students = cur.fetchall()
+            students_list = []
+            for s in all_students:
+                sid = s["student_id"]
+                sname = s["name"]
+                sgrade = s["grade"]
+
+                cur.execute("SELECT AVG(score) FROM assessments WHERE student_id = ? AND status IN ('SUBMITTED', 'EVALUATED');", (sid,))
+                arow = cur.fetchone()
+                acc_val = float(arow[0] or 0.0) if arow and arow[0] is not None else 0.0
+                acc_ratio = acc_val / 100.0 if acc_val > 1.0 else acc_val
+
+                cur.execute("SELECT AVG(mastery_score) FROM learner_concept_mastery WHERE student_id = ?;", (sid,))
+                mrow = cur.fetchone()
+                mast_val = float(mrow[0] or 0.0) if mrow and mrow[0] is not None else 0.0
+
+                cur.execute("SELECT COUNT(*) FROM student_misconceptions WHERE student_id = ? AND status IN ('SUSPECTED', 'CONFIRMED');", (sid,))
+                mcount = cur.fetchone()[0]
+
+                if mast_val >= 0.70 and mcount == 0:
+                    status_label = "On Track"
+                elif mast_val < 0.40 or mcount > 0:
+                    status_label = "Needs Support"
+                else:
+                    status_label = "Developing"
+
+                students_list.append({
+                    "student_id": sid,
+                    "name": sname,
+                    "grade": sgrade,
+                    "accuracy": acc_ratio,
+                    "accuracy_pct": round(acc_ratio * 100, 1),
+                    "mastery": mast_val,
+                    "mastery_pct": round(mast_val * 100, 1),
+                    "misconceptions_count": mcount,
+                    "status": status_label
+                })
+
             return TeacherDashboardData(
                 total_students=total_students,
                 total_assessments_completed=total_assessments,
@@ -141,6 +178,7 @@ class TeacherDashboardService:
                 weakest_concepts=weakest_concepts,
                 common_misconceptions=common_misconceptions[:5],
                 students_requiring_intervention=intervention_students,
+                students=students_list,
                 revision_completion_rate_pct=completion_rate,
                 chapter_performance=chapter_perf
             )
@@ -153,7 +191,6 @@ class TeacherDashboardService:
         misconceptions = self.remediation_repo.get_student_misconceptions(student_id)
         revisions = self.remediation_repo.get_revision_schedules(student_id)
 
-        # Generate Pedagogical Intervention Notes
         notes = []
         if dash_data.overall_mastery_pct < 50.0:
             notes.append("Learner exhibits overall low mastery (<50%). Recommend starting foundational prerequisite scaffolding.")
@@ -181,21 +218,35 @@ class TeacherDashboardService:
 
         with self.db.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute("SELECT student_id, name, grade, created_at FROM students ORDER BY student_id ASC;")
+            cur.execute("SELECT student_id, name, grade FROM students WHERE student_id NOT LIKE 'TCH%' ORDER BY student_id ASC;")
             rows = cur.fetchall()
 
             results = []
             for r in rows:
                 sid = r["student_id"]
                 dash = self.learner_service.get_student_dashboard(sid)
+                cur.execute("SELECT COUNT(*) FROM student_misconceptions WHERE student_id = ? AND status IN ('SUSPECTED', 'CONFIRMED');", (sid,))
+                mcount = cur.fetchone()[0]
+
+                if dash.overall_mastery_pct >= 70.0 and mcount == 0:
+                    status_label = "On Track"
+                elif dash.overall_mastery_pct < 40.0 or mcount > 0:
+                    status_label = "Needs Support"
+                else:
+                    status_label = "Developing"
+
                 results.append({
                     "student_id": sid,
                     "name": r["name"],
                     "grade": r["grade"],
+                    "accuracy": dash.overall_accuracy_pct / 100.0,
                     "accuracy_pct": dash.overall_accuracy_pct,
+                    "mastery": dash.overall_mastery_pct / 100.0,
                     "mastery_pct": dash.overall_mastery_pct,
                     "assessments_count": dash.total_assessments_taken,
                     "weak_concepts_count": len(dash.weak_concepts),
+                    "misconceptions_count": mcount,
+                    "status": status_label,
                     "needs_intervention": dash.overall_mastery_pct < 60.0 or len(dash.weak_concepts) >= 2
                 })
             return results

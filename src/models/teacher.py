@@ -1,8 +1,3 @@
-"""
-Teacher Dashboard Domain Entities
-Provides cohort-level analytics, intervention alerts, and student drill-downs.
-"""
-
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 
@@ -12,7 +7,6 @@ from src.models.spaced_repetition import SpacedRepetitionItem
 
 
 class TeacherDashboardData(BaseModel):
-    """Aggregate cohort analytics for teachers and educators."""
     total_students: int
     total_assessments_completed: int
     average_accuracy_pct: float
@@ -20,12 +14,12 @@ class TeacherDashboardData(BaseModel):
     weakest_concepts: List[Dict[str, Any]] = Field(default_factory=list)
     common_misconceptions: List[Dict[str, Any]] = Field(default_factory=list)
     students_requiring_intervention: List[Dict[str, Any]] = Field(default_factory=list)
+    students: List[Dict[str, Any]] = Field(default_factory=list)
     revision_completion_rate_pct: float = 0.0
     chapter_performance: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class TeacherStudentDetail(BaseModel):
-    """Deep-dive individual student performance profile for a teacher."""
     student: StudentProfile
     mastery_distribution: Dict[str, int]
     overall_accuracy_pct: float

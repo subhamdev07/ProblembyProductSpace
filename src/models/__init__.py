@@ -63,6 +63,19 @@ from src.models.teacher import (
     TeacherDashboardData,
     TeacherStudentDetail,
 )
+from src.models.examination import (
+    ExaminationStatus,
+    ExamSectionConfig,
+    ExaminationBlueprint,
+    ExaminationQuestionItem,
+    ExaminationSessionState,
+    SaveExamAnswerRequest,
+    SaveExamAnswerResponse,
+    SubmitExamRequest,
+    ExamQuestionReviewItem,
+    ExaminationResultSummary,
+    ExaminationOverviewItem,
+)
 
 __all__ = [
     "MisconceptionStatus",

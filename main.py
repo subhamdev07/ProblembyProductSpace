@@ -1,18 +1,8 @@
-"""
-BodhAI — Adaptive Exam-Prep Tutor with a Learner Model
-Root Application Entry Point
-Curriculum: CBSE Class 10 Science (Subject Code 086) — Session 2026–27
-
-Usage:
-    python main.py
-"""
-
 import os
 import sys
 import uvicorn
 from dotenv import load_dotenv
 
-# Ensure root workspace is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from src.core.config import config
@@ -23,20 +13,15 @@ from src.storage.question_repository import QuestionRepository
 
 
 def initialize_system():
-    """
-    Ensures database schemas, initial demo student, and question bank are initialized.
-    """
     db_path = "data/curriculum.db"
     db = Database(db_path)
     db.init_db()
 
-    # Ensure demo student STU-001 exists
     learner_repo = LearnerRepository(db)
     student = learner_repo.get_or_create_student("STU-001", "Aarav Sharma", 10)
     learner_repo.get_or_create_student("STU-002", "Priya Patel", 10)
     learner_repo.get_or_create_student("STU-003", "Rohan Verma", 10)
 
-    # Ensure Chapter 1 questions are seeded
     q_repo = QuestionRepository(db)
     q_stats = q_repo.get_question_statistics()
     if q_stats.get("total_questions", 0) == 0:
@@ -62,11 +47,6 @@ def main():
         print(f"  [DB] SQLite Database Verified: data/curriculum.db")
         print(f"  [STUDENT] Active Demo Learner: {student.name} ({student.student_id})")
         print(f"  [ASSESSMENT] Question Bank: {q_stats.get('total_questions', 0)} verified questions")
-        print(f"  [DIAGNOSTICS] Concept Graph: 29 concepts tracked across Chapter 1")
-        print(f"  [REMEDIATION] Targeted Learning & Prerequisite Scaffolding: Active")
-        print(f"  [SPACED REPETITION] Adaptive Leitner-Interval Scheduler: Active")
-        print(f"  [TEACHER DASHBOARD] Cohort Analytics & Intervention Alerts: Active")
-        print(f"  [RAG] NCERT pgvector Semantic Retrieval: Active")
     except Exception as e:
         print(f"  [WARNING] Initialization check warning: {e}")
 
@@ -75,7 +55,6 @@ def main():
     print(f"  📖 Interactive API Docs:     http://{host}:{port}/docs")
     print(f"  🩺 Health Check Endpoint:     http://{host}:{port}/api/health")
     print("=" * 70)
-    print("  Press Ctrl+C to stop the server.\n")
 
     try:
         uvicorn.run("src.api.app:app", host=host, port=port, log_level="info")

@@ -66,6 +66,24 @@ class AssessmentRepository:
                 )
             conn.commit()
 
+    def get_student_answered_question_ids(self, student_id: str, only_correct: bool = True) -> set:
+        """
+        Returns a set of question IDs the student has previously answered.
+        Used for deduplication so that mastered questions are never repeated.
+        """
+        with self.db.get_connection() as conn:
+            if only_correct:
+                rows = conn.execute(
+                    "SELECT DISTINCT question_id FROM student_answers WHERE student_id = ? AND is_correct = 1",
+                    (student_id,)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT DISTINCT question_id FROM student_answers WHERE student_id = ?",
+                    (student_id,)
+                ).fetchall()
+            return {r["question_id"] for r in rows}
+
     def get_assessment(self, assessment_id: str) -> Optional[Dict[str, Any]]:
         """
         Fetches an assessment header row.

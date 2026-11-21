@@ -51,6 +51,23 @@ class LearnerRepository:
             conn.commit()
             return StudentProfile(student_id=student_id, name=name, grade=grade)
 
+    def get_student(self, student_id: str) -> Optional[StudentProfile]:
+        """
+        Retrieves existing student profile by ID, or None if not found.
+        """
+        with self.db.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM students WHERE student_id = ?;", (student_id,)
+            ).fetchone()
+            if not row:
+                return None
+            return StudentProfile(
+                student_id=row["student_id"],
+                name=row["name"],
+                grade=row["grade"],
+                created_at=str(row["created_at"]) if row["created_at"] else None,
+            )
+
     def get_concept_mastery(
         self, student_id: str, concept_id: str
     ) -> Optional[ConceptMasteryItem]:

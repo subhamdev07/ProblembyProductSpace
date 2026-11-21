@@ -14,6 +14,7 @@ from src.storage.assessment_repository import AssessmentRepository
 from src.storage.learner_repository import LearnerRepository
 from src.storage.concept_repository import ConceptRepository
 from src.storage.remediation_repository import RemediationRepository
+from src.storage.examination_repository import ExaminationRepository
 
 from src.services.answer_evaluation_service import AnswerEvaluationService
 from src.services.learner_model_service import LearnerModelService
@@ -24,6 +25,9 @@ from src.services.spaced_repetition_service import SpacedRepetitionService
 from src.services.targeted_remediation_service import TargetedRemediationService
 from src.services.rag_service import RAGService
 from src.services.teacher_dashboard_service import TeacherDashboardService
+from src.services.examination_service import ExaminationService
+from src.ai.llm_service import NVIDIANemotronService
+from src.ai.groq_service import GroqService
 
 from src.models.assessment import (
     AssessmentSession,
@@ -51,16 +55,32 @@ from src.models.teacher import (
     TeacherDashboardData,
     TeacherStudentDetail,
 )
+from src.models.examination import (
+    ExaminationStatus,
+    ExaminationBlueprint,
+    ExaminationSessionState,
+    SaveExamAnswerRequest,
+    SaveExamAnswerResponse,
+    SubmitExamRequest,
+    ExaminationResultSummary,
+    ExaminationOverviewItem,
+)
+from src.storage.activity_repository import ActivityRepository
+from src.services.activity_tracker_service import ActivityTrackerService
+from src.services.auth_service import AuthService
+from src.models.auth import LoginRequest, LoginResponse, UserProfile
+from src.models.activity import StudentActivityLog, StudentTelemetrySummary, RecordActivityRequest
 
 router = APIRouter(prefix="/api")
 
-# Lazy-loaded / singleton dependencies
 _db: Optional[Database] = None
 _question_repo: Optional[QuestionRepository] = None
 _assessment_repo: Optional[AssessmentRepository] = None
 _learner_repo: Optional[LearnerRepository] = None
 _concept_repo: Optional[ConceptRepository] = None
 _remediation_repo: Optional[RemediationRepository] = None
+_exam_repo: Optional[ExaminationRepository] = None
+_activity_repo: Optional[ActivityRepository] = None
 
 _evaluation_service: Optional[AnswerEvaluationService] = None
 _learner_service: Optional[LearnerModelService] = None
@@ -71,13 +91,18 @@ _targeted_remediation_service: Optional[TargetedRemediationService] = None
 _rag_service: Optional[RAGService] = None
 _teacher_service: Optional[TeacherDashboardService] = None
 _diagnostic_service: Optional[DiagnosticAssessmentService] = None
+_examination_service: Optional[ExaminationService] = None
+_activity_service: Optional[ActivityTrackerService] = None
+_auth_service: Optional[AuthService] = None
+_llm_service: Optional[NVIDIANemotronService] = None
+_groq_service: Optional[GroqService] = None
 
 
 def get_services(db_path: str = "data/curriculum.db"):
-    global _db, _question_repo, _assessment_repo, _learner_repo, _concept_repo, _remediation_repo
+    global _db, _question_repo, _assessment_repo, _learner_repo, _concept_repo, _remediation_repo, _exam_repo, _activity_repo
     global _evaluation_service, _learner_service, _adaptive_service, _diagnostic_service
     global _misconception_service, _spaced_repetition_service, _targeted_remediation_service
-    global _rag_service, _teacher_service
+    global _rag_service, _teacher_service, _examination_service, _activity_service, _auth_service, _llm_service, _groq_service
 
     if _db is None:
         _db = Database(db_path)
@@ -86,13 +111,15 @@ def get_services(db_path: str = "data/curriculum.db"):
         _learner_repo = LearnerRepository(_db)
         _concept_repo = ConceptRepository(_db)
         _remediation_repo = RemediationRepository(_db)
+        _exam_repo = ExaminationRepository(_db)
+        _activity_repo = ActivityRepository(_db)
 
-        # Ensure demo cohort students exist
         _learner_repo.get_or_create_student("STU-001", "Aarav Sharma", 10)
         _learner_repo.get_or_create_student("STU-002", "Priya Patel", 10)
         _learner_repo.get_or_create_student("STU-003", "Rohan Verma", 10)
 
-        _evaluation_service = AnswerEvaluationService()
+        _llm_service = NVIDIANemotronService()
+        _evaluation_service = AnswerEvaluationService(llm_service=_llm_service)
         _learner_service = LearnerModelService(_learner_repo, _assessment_repo, _concept_repo)
         _adaptive_service = AdaptiveQuestionSelectionService(_question_repo, _learner_repo, _concept_repo)
         _misconception_service = MisconceptionDetectionService(_remediation_repo, _question_repo, _concept_repo)
@@ -118,6 +145,27 @@ def get_services(db_path: str = "data/curriculum.db"):
             _spaced_repetition_service,
         )
 
+        _examination_service = ExaminationService(
+            _db,
+            _exam_repo,
+            _question_repo,
+            _concept_repo,
+            _evaluation_service,
+            _learner_service,
+            _misconception_service,
+            _spaced_repetition_service,
+            _targeted_remediation_service,
+            _learner_repo,
+        )
+
+        _activity_service = ActivityTrackerService(_db, _activity_repo)
+        _auth_service = AuthService(_db, _learner_repo)
+        _groq_service = GroqService()
+
+        _activity_service.seed_initial_demo_activities_if_empty("STU-001", "Aarav Sharma")
+        _activity_service.seed_initial_demo_activities_if_empty("STU-002", "Priya Patel")
+        _activity_service.seed_initial_demo_activities_if_empty("STU-003", "Rohan Verma")
+
     return {
         "db": _db,
         "question_repo": _question_repo,
@@ -125,6 +173,8 @@ def get_services(db_path: str = "data/curriculum.db"):
         "learner_repo": _learner_repo,
         "concept_repo": _concept_repo,
         "remediation_repo": _remediation_repo,
+        "exam_repo": _exam_repo,
+        "activity_repo": _activity_repo,
         "evaluation_service": _evaluation_service,
         "learner_service": _learner_service,
         "adaptive_service": _adaptive_service,
@@ -134,6 +184,11 @@ def get_services(db_path: str = "data/curriculum.db"):
         "rag_service": _rag_service,
         "teacher_service": _teacher_service,
         "diagnostic_service": _diagnostic_service,
+        "examination_service": _examination_service,
+        "activity_service": _activity_service,
+        "auth_service": _auth_service,
+        "llm_service": _llm_service,
+        "groq_service": _groq_service,
     }
 
 
@@ -147,9 +202,6 @@ class FinalizeAssessmentRequest(BaseModel):
     student_id: str = Field(default="STU-001")
 
 
-# ------------------------------------------------------------------------------
-# Health Check
-# ------------------------------------------------------------------------------
 @router.get("/health")
 def health_check():
     svcs = get_services()
@@ -173,9 +225,102 @@ def health_check():
     }
 
 
-# ------------------------------------------------------------------------------
-# Student Dashboard
-# ------------------------------------------------------------------------------
+@router.post("/auth/login", response_model=LoginResponse)
+def login_user(payload: LoginRequest):
+    """
+    Authenticates students and teachers.
+    Generates role-based session and records initial login telemetry.
+    """
+    svcs = get_services()
+    resp = svcs["auth_service"].authenticate(payload)
+    if resp.success and resp.user.user_id:
+        svcs["activity_service"].record_event(
+            student_id=resp.user.user_id,
+            event_type="AUTH_LOGIN",
+            action_title=f"Logged in as {resp.user.name} ({resp.user.role})",
+            details={"email": resp.user.email, "role": resp.user.role, "grade": resp.user.grade},
+            duration_seconds=60,
+        )
+    return resp
+
+
+@router.get("/auth/me")
+def get_current_user_profile(
+    student_id: str = Query("STU-001"), role: str = Query("student")
+):
+    """Returns active user session profile with school and role details."""
+    svcs = get_services()
+    if role.lower() in ("teacher", "educator"):
+        return {
+            "user_id": "TCH-001",
+            "name": "Dr. Sunita Rao",
+            "email": "sunita@bodhai.edu",
+            "role": "teacher",
+            "avatar": "SR",
+            "school": "National Science Teachers Association",
+        }
+    stu = svcs["learner_repo"].get_student(student_id) or svcs["learner_repo"].get_or_create_student(student_id)
+    return {
+        "user_id": stu.student_id,
+        "name": stu.name,
+        "email": f"{stu.name.lower().replace(' ', '.')}@bodhai.edu",
+        "role": "student",
+        "grade": stu.grade or 10,
+        "avatar": "".join([part[0] for part in stu.name.split()[:2]]).upper(),
+        "school": "Delhi Public School, R.K. Puram",
+    }
+
+
+@router.post("/student/activity")
+def record_student_activity(payload: RecordActivityRequest):
+    """Client-side telemetry hook to track every student action."""
+    svcs = get_services()
+    log_id = svcs["activity_service"].record_event(
+        student_id=payload.student_id,
+        event_type=payload.event_type,
+        action_title=payload.action_title,
+        details=payload.details,
+        duration_seconds=payload.duration_seconds or 0,
+    )
+    return {"status": "SUCCESS", "log_id": log_id}
+
+
+@router.get("/student/{student_id}/activity", response_model=List[StudentActivityLog])
+def get_student_activity_timeline(
+    student_id: str = Path(...), limit: int = Query(50, ge=1, le=200)
+):
+    """Returns chronologically ordered student telemetry audit stream."""
+    svcs = get_services()
+    return svcs["activity_service"].get_timeline(student_id=student_id, limit=limit)
+
+
+@router.get("/student/{student_id}/telemetry", response_model=StudentTelemetrySummary)
+def get_student_telemetry_summary(student_id: str = Path(...)):
+    """Computes comprehensive student engagement telemetry metrics."""
+    svcs = get_services()
+    stu = svcs["learner_repo"].get_student(student_id)
+    name = stu.name if stu else "Student"
+    return svcs["activity_service"].get_summary(student_id=student_id, student_name=name)
+
+
+@router.get("/teacher/activity-stream")
+def get_classroom_activity_feed(
+    limit: int = Query(100, ge=1, le=500),
+    role: str = Query("teacher"),
+    x_role: Optional[str] = Header(None, alias="X-Role"),
+):
+    """Live classroom telemetry feed for teacher dashboard."""
+    svcs = get_services()
+    effective_role = x_role or role
+    try:
+        svcs["teacher_service"]._verify_teacher_role(effective_role)
+        return svcs["activity_service"].get_classroom_feed(limit=limit)
+    except PermissionError as pe:
+        raise HTTPException(status_code=403, detail=str(pe))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Activity feed error: {str(e)}")
+
+
 @router.get("/student/dashboard", response_model=StudentDashboardData)
 def get_student_dashboard(student_id: str = Query("STU-001")):
     svcs = get_services()
@@ -185,9 +330,6 @@ def get_student_dashboard(student_id: str = Query("STU-001")):
         raise HTTPException(status_code=500, detail=f"Failed to fetch dashboard: {str(e)}")
 
 
-# ------------------------------------------------------------------------------
-# Assessment Operations
-# ------------------------------------------------------------------------------
 @router.post("/assessments/start", response_model=AssessmentSession)
 def start_assessment(payload: StartAssessmentRequest):
     svcs = get_services()
@@ -230,6 +372,19 @@ def submit_answer(
             submitted_answer=payload.submitted_answer,
             time_spent_seconds=payload.time_spent_seconds,
         )
+        svcs["activity_service"].record_event(
+            student_id=sid,
+            event_type="QUESTION_ATTEMPT",
+            action_title=f"Answered Diagnostic Question ({'Correct' if result.is_correct else 'Incorrect'})",
+            details={
+                "assessment_id": assessment_id,
+                "question_id": payload.question_id,
+                "is_correct": result.is_correct,
+                "marks_awarded": result.marks_awarded,
+                "misconceptions": result.detected_misconceptions,
+            },
+            duration_seconds=payload.time_spent_seconds or 30,
+        )
         return result
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
@@ -244,6 +399,20 @@ def finalize_assessment(assessment_id: str = Path(...), payload: FinalizeAssessm
         summary = svcs["diagnostic_service"].submit_final_assessment(
             assessment_id=assessment_id, student_id=payload.student_id
         )
+        svcs["activity_service"].record_event(
+            student_id=payload.student_id,
+            event_type="DIAGNOSTIC_ASSESSMENT_SUBMIT",
+            action_title=f"Submitted Diagnostic Assessment — Score: {summary.score}/{summary.total_marks} ({summary.percentage}%)",
+            details={
+                "assessment_id": assessment_id,
+                "total_score": summary.score,
+                "max_score": summary.total_marks,
+                "accuracy_percentage": summary.percentage,
+                "concepts_mastered": len(summary.strong_concepts),
+                "weak_concepts": len(summary.weak_concepts),
+            },
+            duration_seconds=240,
+        )
         return summary
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
@@ -251,9 +420,6 @@ def finalize_assessment(assessment_id: str = Path(...), payload: FinalizeAssessm
         raise HTTPException(status_code=500, detail=f"Finalization error: {str(e)}")
 
 
-# ------------------------------------------------------------------------------
-# Learner Concept Mastery & History
-# ------------------------------------------------------------------------------
 @router.get("/student/mastery", response_model=List[ConceptMasteryItem])
 def get_student_mastery(
     student_id: str = Query("STU-001"), chapter_id: Optional[str] = Query("CH-01")
@@ -285,9 +451,6 @@ def get_assessment_history(
     )
 
 
-# ------------------------------------------------------------------------------
-# Adaptive Question Selection
-# ------------------------------------------------------------------------------
 @router.get("/questions/next", response_model=AdaptiveQuestionRecommendation)
 def get_next_question(
     student_id: str = Query("STU-001"),
@@ -307,9 +470,6 @@ def get_next_question(
         raise HTTPException(status_code=500, detail=f"Adaptive selection failed: {str(e)}")
 
 
-# ------------------------------------------------------------------------------
-# P4: Evidence-Based Misconception Detection Endpoints
-# ------------------------------------------------------------------------------
 @router.get("/student/misconceptions", response_model=List[StudentMisconceptionItem])
 def get_student_misconceptions(
     student_id: str = Query("STU-001"), status: Optional[str] = Query(None)
@@ -324,9 +484,6 @@ def get_misconceptions_summary():
     return svcs["misconception_service"].get_misconception_summary_by_cohort()
 
 
-# ------------------------------------------------------------------------------
-# P4: Targeted Remediation Endpoints
-# ------------------------------------------------------------------------------
 @router.get("/student/remediation", response_model=TargetedRemediationPayload)
 def get_remediation_package(
     student_id: str = Query("STU-001"), concept_id: Optional[str] = Query(None)
@@ -344,25 +501,35 @@ def get_remediation_package(
 def complete_remediation(payload: CompleteRemediationRequest):
     svcs = get_services()
     try:
-        return svcs["targeted_remediation_service"].complete_remediation_practice(
+        resp = svcs["targeted_remediation_service"].complete_remediation_practice(
             remediation_id=payload.remediation_id,
             student_id=payload.student_id,
             question_id=payload.question_id,
             student_answer=payload.student_answer,
         )
+        svcs["activity_service"].record_event(
+            student_id=payload.student_id,
+            event_type="REMEDIATION_STEP_COMPLETE",
+            action_title=f"Completed Remediation Practice ({'Mastered' if resp.is_completed else 'Needs Review'})",
+            details={
+                "remediation_id": payload.remediation_id,
+                "concept_id": payload.concept_id,
+                "is_completed": resp.is_completed,
+                "mastery_before": resp.mastery_before,
+                "mastery_after": resp.mastery_after,
+            },
+            duration_seconds=120,
+        )
+        return resp
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to complete remediation: {str(e)}")
 
 
-# ------------------------------------------------------------------------------
-# P4: Spaced Repetition Endpoints
-# ------------------------------------------------------------------------------
 @router.get("/student/revision-due", response_model=List[SpacedRepetitionItem])
 def get_due_revisions(student_id: str = Query("STU-001")):
     svcs = get_services()
-    # Sync any un-scheduled assessed concepts first
     svcs["spaced_repetition_service"].sync_weak_concepts_to_schedule(student_id)
     return svcs["spaced_repetition_service"].get_due_revisions(student_id)
 
@@ -378,19 +545,29 @@ def get_upcoming_revisions(student_id: str = Query("STU-001")):
 def complete_revision(payload: CompleteRevisionRequest):
     svcs = get_services()
     try:
-        return svcs["spaced_repetition_service"].complete_revision(
+        resp = svcs["spaced_repetition_service"].complete_revision(
             student_id=payload.student_id,
             concept_id=payload.concept_id,
             is_correct=payload.is_correct,
             difficulty_rating=payload.difficulty_rating or "NORMAL",
         )
+        svcs["activity_service"].record_event(
+            student_id=payload.student_id,
+            event_type="SPACED_REPETITION_REVIEW",
+            action_title=f"Completed Spaced Repetition Review ({'Correct' if payload.is_correct else 'Incorrect'})",
+            details={
+                "concept_id": payload.concept_id,
+                "is_correct": payload.is_correct,
+                "interval_days": resp.new_interval_days,
+                "ease_factor": resp.new_ease_factor,
+            },
+            duration_seconds=60,
+        )
+        return resp
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to complete revision: {str(e)}")
 
 
-# ------------------------------------------------------------------------------
-# P4: Teacher Dashboard Endpoints
-# ------------------------------------------------------------------------------
 @router.get("/teacher/dashboard", response_model=TeacherDashboardData)
 def get_teacher_dashboard(
     role: str = Query("teacher", description="Role verification: teacher/educator/admin"),
@@ -464,9 +641,6 @@ def get_teacher_concept_performance(
         raise HTTPException(status_code=403, detail=str(pe))
 
 
-# ------------------------------------------------------------------------------
-# P4: NCERT RAG Retrieval Endpoints
-# ------------------------------------------------------------------------------
 @router.get("/rag/search")
 def search_rag_context(
     query: str = Query(..., min_length=2), top_k: int = Query(3, ge=1, le=10)
@@ -482,3 +656,392 @@ def search_rag_context(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"RAG search error: {str(e)}")
+
+
+class DoubtSolverRequest(BaseModel):
+    question: str = Field(..., min_length=2, description="Student's science doubt or question")
+    student_id: Optional[str] = Field("STU-001")
+    chapter_id: Optional[str] = Field("CH-01")
+
+
+class DoubtSolverResponse(BaseModel):
+    question: str
+    answer: str
+    ncert_citations: List[Dict[str, Any]] = Field(default_factory=list)
+    suggested_followups: List[str] = Field(default_factory=list)
+    model: str = "nvidia/nemotron-3.5-lightning-30b-a3b"
+
+
+@router.post("/ai/doubt-solver", response_model=DoubtSolverResponse)
+def solve_student_doubt(payload: DoubtSolverRequest):
+    svcs = get_services()
+    rag_svc = svcs.get("rag_service")
+    llm_svc = svcs.get("llm_service")
+    groq_svc = svcs.get("groq_service")
+    rem_repo = svcs.get("remediation_repo")
+
+    citations = []
+    retrieved_text = ""
+    try:
+        if rag_svc:
+            rag_results = rag_svc.search_ncert_context(query=payload.question, top_k=3)
+            for r in rag_results:
+                citations.append({
+                    "section": r.get("section_heading", "NCERT Class 10 Science"),
+                    "page": r.get("page_number", 1),
+                    "excerpt": r.get("chunk_text", "")[:220] + "..."
+                })
+                retrieved_text += f"\n[Section: {r.get('section_heading')}, Page {r.get('page_number')}]: {r.get('chunk_text')}\n"
+    except Exception:
+        pass
+
+    student_misconceptions = []
+    try:
+        if rem_repo and payload.student_id:
+            active_m = rem_repo.get_student_misconceptions(payload.student_id)
+            for m in active_m:
+                student_misconceptions.append(f"- Concept: {m.concept_name} | Misconception: {m.description}")
+    except Exception:
+        pass
+
+    misconception_info = (
+        "Active Misconceptions / Learning Gaps for this Student:\n" + "\n".join(student_misconceptions)
+        if student_misconceptions
+        else "No critical misconceptions recorded yet for this student."
+    )
+
+    followups = [
+        "Can you explain with a real-life example?",
+        "What chemical equation represents this?",
+        "What are common CBSE board questions on this concept?"
+    ]
+
+    prompt = f"""You are BodhAI, an expert CBSE Class 10 Science AI Tutor.
+The student has asked the following doubt:
+"{payload.question}"
+
+Student Profile & Active Misconceptions:
+{misconception_info}
+
+Ground your explanation STRICTLY in the official NCERT Class 10 Science textbook.
+Verified NCERT Context:
+{retrieved_text if retrieved_text else "NCERT Class 10 Science Curriculum"}
+
+Pedagogical Instructions:
+1. Provide a clear, intuitive, and scientifically accurate answer suitable for a Class 10 student.
+2. If the doubt touches upon any of the student's active misconceptions, address that misconception gently and resolve it.
+3. If chemical reactions or formulas are involved, write them clearly in LaTeX ($...$ or $$...$$).
+4. Highlight common misconceptions or board exam tips related to this concept.
+5. Conclude with an encouraging tone.
+"""
+    answer_text = ""
+    used_model = "Groq Llama-3.3-70B-Versatile"
+
+    if groq_svc and groq_svc.is_configured:
+        try:
+            answer_text = groq_svc.generate(
+                messages=[
+                    {"role": "system", "content": "You are BodhAI, an expert CBSE Class 10 Science tutor. Ground all explanations in NCERT concepts and clarify student misconceptions."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,
+                max_tokens=800,
+            )
+            used_model = groq_svc.model
+        except Exception:
+            pass
+
+    if not answer_text and llm_svc and llm_svc.config.is_configured:
+        try:
+            resp = llm_svc.generate(
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+                max_tokens=700,
+            )
+            answer_text = resp.content.strip()
+            used_model = llm_svc.config.model
+        except Exception:
+            pass
+
+    if not answer_text:
+        if citations:
+            best_chunk = citations[0]["excerpt"]
+            answer_text = (
+                f"**According to NCERT Class 10 Science ({citations[0]['section']}, Page {citations[0]['page']}):**\n\n"
+                f"{best_chunk}\n\n"
+                f"**Key Conceptual Takeaway:** Always refer to the verified chemical equations and principles outlined in your NCERT textbook for authentic Board Examination answers."
+            )
+        else:
+            answer_text = (
+                f"According to NCERT Class 10 Science, scientific concepts must be approached by analyzing foundational principles, "
+                f"balanced chemical equations, and experimental observations. Please refer to Chapter 1 for foundational reaction typologies."
+            )
+
+    return DoubtSolverResponse(
+        question=payload.question,
+        answer=answer_text,
+        ncert_citations=citations,
+        suggested_followups=followups,
+        model=used_model
+    )
+
+
+@router.get("/concept-graph")
+def get_concept_graph(
+    student_id: str = Query("STU-001"),
+    chapter_id: Optional[str] = Query(None),
+):
+    svcs = get_services()
+    concept_repo = svcs["concept_repo"]
+    learner_repo = svcs["learner_repo"]
+    remediation_repo = svcs["remediation_repo"]
+
+    valid_chapter = chapter_id if (isinstance(chapter_id, str) and chapter_id.strip()) else None
+    valid_student_id = student_id if (isinstance(student_id, str) and student_id.strip()) else "STU-001"
+
+    concepts = concept_repo.get_concepts_by_chapter(valid_chapter) if valid_chapter else concept_repo.get_all_concepts()
+    edges = concept_repo.get_all_edges()
+    mastery_items = {item.concept_id: item for item in learner_repo.get_all_concept_mastery(valid_student_id)}
+    active_misconceptions = {m.concept_id for m in remediation_repo.get_student_misconceptions(valid_student_id)}
+
+    concept_ids = {c.concept_id for c in concepts}
+    nodes = []
+    for c in concepts:
+        m = mastery_items.get(c.concept_id)
+        mastery_score = m.mastery_score if m else 0.0
+        status = m.status.value if (m and m.status) else "NOT_ASSESSED"
+        has_misconception = c.concept_id in active_misconceptions
+        diff_val = c.difficulty_level.value if hasattr(c.difficulty_level, "value") else str(c.difficulty_level)
+        nodes.append({
+            "id": c.concept_id,
+            "name": c.name,
+            "canonical_name": c.canonical_name,
+            "chapter_id": c.chapter_id,
+            "difficulty": diff_val,
+            "mastery_score": round(mastery_score, 2),
+            "status": status,
+            "has_misconception": has_misconception,
+            "description": c.description or "",
+        })
+
+    filtered_edges = []
+    for e in edges:
+        if e.source_concept_id in concept_ids and e.target_concept_id in concept_ids:
+            rel_type = e.relationship_type.value if hasattr(e.relationship_type, "value") else str(e.relationship_type)
+            filtered_edges.append({
+                "source": e.source_concept_id,
+                "target": e.target_concept_id,
+                "relationship_type": rel_type,
+            })
+
+    all_all = concept_repo.get_all_concepts()
+    chapters = sorted(list({c.chapter_id for c in all_all}))
+
+    return {
+        "nodes": nodes,
+        "edges": filtered_edges,
+        "chapters": chapters,
+        "student_id": student_id,
+    }
+
+
+class StartExamRequest(BaseModel):
+    student_id: str = "STU-001"
+    blueprint_id: str = "BP-CBSE-X-SCI-2027"
+
+
+@router.get("/examinations/blueprints", response_model=List[ExaminationBlueprint])
+def get_examination_blueprints():
+    """Returns all available official and mock examination blueprints."""
+    svcs = get_services()
+    try:
+        return svcs["examination_service"].get_available_blueprints()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch blueprints: {str(e)}")
+
+
+@router.get("/examinations/blueprints/{blueprint_id}", response_model=ExaminationBlueprint)
+def get_examination_blueprint_details(blueprint_id: str = Path(...)):
+    """Returns detailed structure for a specified blueprint."""
+    svcs = get_services()
+    bp = svcs["examination_service"].get_blueprint_details(blueprint_id)
+    if not bp:
+        raise HTTPException(status_code=404, detail=f"Blueprint {blueprint_id} not found.")
+    return bp
+
+
+@router.post("/examinations/start", response_model=ExaminationSessionState)
+def start_or_resume_examination(req: StartExamRequest):
+    """
+    Starts a new examination session or resumes an in-progress session.
+    Server computes remaining seconds and initializes authoritative timer.
+    """
+    svcs = get_services()
+    try:
+        sess_state = svcs["examination_service"].start_examination(
+            student_id=req.student_id,
+            blueprint_id=req.blueprint_id,
+        )
+        svcs["activity_service"].record_event(
+            student_id=req.student_id,
+            event_type="BOARD_EXAM_START",
+            action_title=f"Started CBSE Board Exam Simulation ({sess_state.paper_title})",
+            details={
+                "session_id": sess_state.session_id,
+                "blueprint_id": req.blueprint_id,
+                "total_marks": sess_state.total_marks,
+                "duration_minutes": sess_state.duration_minutes,
+            },
+            duration_seconds=60,
+        )
+        return sess_state
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to start examination: {str(e)}")
+
+
+@router.get("/examinations/active", response_model=Optional[ExaminationSessionState])
+def get_active_examination(student_id: str = Query("STU-001")):
+    """Checks if the student currently has an active in-progress examination session."""
+    svcs = get_services()
+    try:
+        active_sess = svcs["exam_repo"].get_active_session_for_student(student_id)
+        if not active_sess:
+            return None
+        return svcs["examination_service"].get_session_state(active_sess["session_id"], student_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Active examination check failed: {str(e)}")
+
+
+@router.get("/examinations/{session_id}/state", response_model=ExaminationSessionState)
+def get_examination_session_state(
+    session_id: str = Path(...),
+    student_id: str = Query("STU-001"),
+):
+    """Retrieves authoritative live state and question palette for an examination."""
+    svcs = get_services()
+    try:
+        return svcs["examination_service"].get_session_state(session_id, student_id)
+    except ValueError as ve:
+        raise HTTPException(status_code=404, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get examination state: {str(e)}")
+
+
+@router.post("/examinations/{session_id}/answer", response_model=SaveExamAnswerResponse)
+def save_examination_answer(
+    session_id: str = Path(...),
+    req: SaveExamAnswerRequest = ...,
+    student_id: str = Query("STU-001"),
+):
+    """
+    Persists student response in real-time.
+    Supports browser refresh recovery and marks question state.
+    """
+    svcs = get_services()
+    try:
+        saved = svcs["examination_service"].save_answer(
+            session_id=session_id,
+            student_id=student_id,
+            req=req,
+        )
+        svcs["activity_service"].record_event(
+            student_id=student_id,
+            event_type="BOARD_EXAM_ANSWER_SAVE",
+            action_title=f"Saved Answer for Question #{saved.question_number} (Section {saved.section_name})",
+            details={
+                "session_id": session_id,
+                "question_id": req.question_id,
+                "is_answered": saved.is_answered,
+                "is_marked_for_review": saved.is_marked_for_review,
+            },
+            duration_seconds=req.time_spent_seconds or 20,
+        )
+        return saved
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save answer: {str(e)}")
+
+
+@router.post("/examinations/{session_id}/submit", response_model=ExaminationResultSummary)
+def submit_examination(
+    session_id: str = Path(...),
+    req: SubmitExamRequest = SubmitExamRequest(),
+):
+    """
+    Finalizes examination submission.
+    Evaluates responses across typologies, updates Learner Model masteries,
+    classifies misconceptions, and computes section/unit analytics.
+    """
+    svcs = get_services()
+    try:
+        res_summary = svcs["examination_service"].submit_examination(
+            session_id=session_id,
+            student_id=req.student_id,
+            is_timeout=req.is_timeout,
+        )
+        svcs["activity_service"].record_event(
+            student_id=req.student_id,
+            event_type="BOARD_EXAM_SUBMIT",
+            action_title=f"Submitted CBSE Board Exam Simulation — Score: {res_summary.score_obtained}/{res_summary.total_marks} ({res_summary.percentage}%)",
+            details={
+                "session_id": session_id,
+                "score": res_summary.score_obtained,
+                "percentage": res_summary.percentage,
+                "total_marks": res_summary.total_marks,
+                "is_timeout": req.is_timeout,
+                "weak_concepts_count": len(res_summary.weak_concepts),
+            },
+            duration_seconds=300,
+        )
+        return res_summary
+    except ValueError as ve:
+        raise HTTPException(status_code=404, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Examination submission failed: {str(e)}")
+
+
+@router.get("/examinations/{session_id}/result", response_model=ExaminationResultSummary)
+def get_examination_result(
+    session_id: str = Path(...),
+    student_id: str = Query("STU-001"),
+):
+    """Fetches post-submission comprehensive analytics and pedagogical feedback."""
+    svcs = get_services()
+    try:
+        result = svcs["examination_service"].get_examination_result(session_id, student_id)
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Result for session {session_id} not found.")
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get examination result: {str(e)}")
+
+
+@router.get("/student/examinations", response_model=List[ExaminationOverviewItem])
+def get_student_examination_history(student_id: str = Query("STU-001")):
+    """Returns past and active examination attempts for the student dashboard."""
+    svcs = get_services()
+    try:
+        return svcs["examination_service"].get_student_examination_history(student_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch student exams: {str(e)}")
+
+
+@router.get("/teacher/examinations")
+def get_teacher_examinations_summary(
+    role: str = Query("teacher"),
+    x_role: Optional[str] = Header(None, alias="X-Role"),
+):
+    """Returns cohort-wide examination analytics for Teacher Dashboard."""
+    svcs = get_services()
+    effective_role = x_role or role
+    try:
+        svcs["teacher_service"]._verify_teacher_role(effective_role)
+        return svcs["examination_service"].get_teacher_examinations_summary()
+    except PermissionError as pe:
+        raise HTTPException(status_code=403, detail=str(pe))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Teacher examinations summary error: {str(e)}")
+

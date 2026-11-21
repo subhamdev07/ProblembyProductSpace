@@ -4,20 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BodhAI — Adaptive Exam-Prep Tutor | CBSE Class 10 Science</title>
-  
-  <!-- Tailwind CSS -->
+  <script>
+    (function(){
+      try {
+        var u = JSON.parse(localStorage.getItem('bodhai_user') || '{}');
+        if (!u || !u.user_id) {
+          window.location.replace('/login');
+        } else if (u.role === 'teacher') {
+          window.location.replace('/teacher');
+        }
+      } catch(e) {
+        window.location.replace('/login');
+      }
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Plus Jakarta Sans Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- KaTeX for Mathematical and Chemical Equations -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-
   <script>
     tailwind.config = {
       theme: {
@@ -43,156 +50,115 @@
       }
     }
   </script>
-
-  <style>
-    body {
-      background-color: #FAF8F2;
-      color: #1E1E1E;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #FAF8F2;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #E5E1D3;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #6F6D66;
-    }
-    .view-section {
-      display: none;
-      animation: fadeIn 0.25s ease-in-out;
-    }
-    .view-section.active {
-      display: block;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .option-card {
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .option-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(58, 51, 89, 0.06);
-    }
-    .option-card.selected {
-      border-color: #3A3359;
-      background-color: #FAF8F2;
-      box-shadow: 0 0 0 2px #3A3359;
-    }
-  </style>
+  <link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-cream text-ink min-h-screen flex flex-col md:flex-row antialiased">
-
-  <!-- ============================================================================== -->
-  <!-- SIDEBAR NAVIGATION (Filko Design Language)                                      -->
-  <!-- ============================================================================== -->
-  <aside class="w-full md:w-64 bg-sand border-r border-sandDark flex-shrink-0 flex flex-col justify-between p-6 z-20">
+<body class="bg-cream text-ink min-h-screen md:h-screen md:overflow-hidden flex flex-col md:flex-row antialiased">
+  <aside id="app-sidebar" class="w-full md:w-64 bg-sand border-r border-sandDark flex-shrink-0 flex flex-col justify-between p-4 md:py-4 md:px-3.5 md:h-screen md:sticky md:top-0 md:overflow-y-auto z-20">
     <div>
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3 mb-6 cursor-pointer" onclick="switchView('dashboard')">
-        <div class="w-10 h-10 rounded-xl bg-deepPurple flex items-center justify-center text-brandYellow font-extrabold text-xl shadow-sm">
-          ब
+      <div class="flex items-center justify-between mb-3.5 px-1">
+        <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('dashboard')">
+          <div class="w-9 h-9 rounded-xl bg-deepPurple flex items-center justify-center text-brandYellow font-extrabold text-lg shadow-sm">
+            ब
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight text-deepPurple leading-none">BodhAI</h1>
+            <span class="text-[10px] font-semibold text-muted tracking-wider uppercase">CBSE 10 Science</span>
+          </div>
         </div>
-        <div>
-          <h1 class="text-xl font-bold tracking-tight text-deepPurple leading-none">BodhAI</h1>
-          <span class="text-xs font-semibold text-muted tracking-wider uppercase">CBSE 10 Science</span>
-        </div>
+        <button onclick="toggleSidebar()" title="Close Sidebar" class="sidebar-toggle-btn p-1.5 rounded-xl text-muted hover:text-deepPurple hover:bg-sandDark transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+        </button>
       </div>
-
-      <!-- Navigation Links -->
-      <nav class="space-y-1.5 text-xs font-semibold uppercase text-muted tracking-wider px-1 mb-2">Student Portal</nav>
-      <nav class="space-y-1.5 mb-6">
-        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors bg-deepPurple text-cream shadow-sm">
+      <nav class="space-y-1 text-[11px] font-bold uppercase text-muted tracking-wider px-1 mb-1.5">Student Portal</nav>
+      <nav class="space-y-1 mb-3">
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors bg-deepPurple text-cream shadow-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           Dashboard
         </button>
-
-        <button onclick="startDiagnosticTest()" id="nav-assessment" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
+        <button onclick="startDiagnosticTest()" id="nav-assessment" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           Diagnostic Test
         </button>
-
-        <button onclick="switchView('mastery')" id="nav-mastery" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
+        <button onclick="loadExaminationHub()" id="nav-examination-hub" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
+          <svg class="w-4 h-4 text-brandYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          Board Exam Sim
+          <span class="ml-auto bg-brandYellow text-deepPurple font-extrabold text-[9px] px-1.5 py-0.5 rounded-md">80M</span>
+        </button>
+        <button onclick="switchView('mastery')" id="nav-mastery" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
           Concept Mastery
         </button>
-
-        <button onclick="loadAdaptiveQuestion()" id="nav-adaptive" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
+        <button onclick="loadConceptGraphView()" id="nav-concept-graph" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
+          <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2"/></svg>
+          Concept Graph
+          <span class="ml-auto bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded-md font-bold">DAG</span>
+        </button>
+        <button onclick="loadAdaptiveQuestion()" id="nav-adaptive" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           Adaptive Practice
         </button>
-
-        <button onclick="loadRemediationView()" id="nav-remediation" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
+        <button onclick="loadRemediationView()" id="nav-remediation" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
           Targeted Learning
         </button>
-
-        <button onclick="loadRevisionView()" id="nav-revision" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
+        <button onclick="loadRevisionView()" id="nav-revision" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           Revision Center
         </button>
-
-        <button onclick="loadMisconceptionsView()" id="nav-misconceptions" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
+        <button onclick="loadMisconceptionsView()" id="nav-misconceptions" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
           Misconceptions
         </button>
-      </nav>
-
-      <!-- Teacher Portal Section -->
-      <nav class="space-y-1.5 text-xs font-semibold uppercase text-muted tracking-wider px-1 mb-2">Educator Portal</nav>
-      <nav class="space-y-1.5">
-        <button onclick="loadTeacherDashboard()" id="nav-teacher" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors text-muted hover:text-ink hover:bg-sandDark">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          Teacher Dashboard
+        <button onclick="switchView('doubt-solver')" id="nav-doubt-solver" class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-semibold text-xs transition-colors text-muted hover:text-ink hover:bg-sandDark">
+          <svg class="w-4 h-4 text-brandYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+          AI Doubt Solver
+          <span class="ml-auto bg-deepPurple text-cream text-[9px] px-1.5 py-0.5 rounded-md font-bold">NCERT AI</span>
         </button>
       </nav>
     </div>
-
-    <!-- Active Profile & Role Switcher -->
-    <div class="pt-6 border-t border-sandDark space-y-3">
+    <div class="pt-3 border-t border-sandDark space-y-2">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3 overflow-hidden">
-          <div class="w-9 h-9 rounded-full bg-brandYellow flex items-center justify-center font-bold text-deepPurple shadow-sm text-sm" id="role-avatar">
+        <div class="flex items-center gap-2.5 overflow-hidden">
+          <div class="w-8 h-8 rounded-full bg-brandYellow flex items-center justify-center font-bold text-deepPurple shadow-sm text-xs shrink-0" id="role-avatar">
             AS
           </div>
           <div class="overflow-hidden">
-            <p class="text-sm font-semibold text-deepPurple truncate" id="sidebar-user-name">Aarav Sharma</p>
-            <p class="text-xs text-muted" id="sidebar-user-role">Student (Grade 10)</p>
+            <p class="text-xs font-bold text-deepPurple truncate" id="sidebar-user-name">Aarav Sharma</p>
+            <p class="text-[10px] text-muted truncate" id="sidebar-user-role">Student (Grade 10)</p>
           </div>
         </div>
+        <button onclick="logoutUser()" title="Log Out" class="text-errorRed hover:text-red-800 p-1.5 rounded-lg hover:bg-red-50 transition-colors shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </button>
       </div>
-      <button onclick="toggleRole()" class="w-full text-xs font-semibold py-1.5 px-3 rounded-lg bg-sandDark hover:bg-white text-deepPurple transition-all flex items-center justify-center gap-1.5">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-        <span id="role-toggle-text">Switch to Teacher View</span>
+      <button onclick="logoutUser()" class="w-full text-[11px] font-bold py-1.5 px-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-800 transition-all flex items-center justify-center gap-1.5 text-center">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+        <span>Log Out</span>
       </button>
     </div>
   </aside>
-
-  <!-- ============================================================================== -->
-  <!-- MAIN CONTENT CONTAINER                                                         -->
-  <!-- ============================================================================== -->
-  <main class="flex-1 flex flex-col p-6 md:p-10 max-w-7xl mx-auto w-full overflow-y-auto">
-
-    <!-- Top Alert / Notification Toast -->
+  <button id="sidebar-open-tab" onclick="toggleSidebar()" title="Open Sidebar" class="fixed left-0 top-5 z-40 bg-deepPurple text-brandYellow p-2.5 rounded-r-2xl shadow-xl hover:bg-deepPurpleHover cursor-pointer hidden items-center justify-center transition-all">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+  </button>
+  <main class="flex-1 flex flex-col p-6 md:p-8 max-w-7xl mx-auto w-full md:h-screen overflow-y-auto">
+    <header class="flex items-center justify-between gap-4 mb-5 pb-3 border-b border-sandDark/60 shrink-0">
+      <div class="flex items-center gap-2 text-xs font-semibold text-muted">
+        <span>BodhAI</span>
+        <span>/</span>
+        <span id="breadcrumb-current-view" class="text-deepPurple font-bold">Dashboard</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="inline-flex items-center gap-2 bg-sand px-3 py-1 rounded-xl border border-sandDark text-[11px] font-semibold text-deepPurple">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          <span>Session: 2026–27</span>
+        </div>
+      </div>
+    </header>
     <div id="toast" class="hidden fixed top-6 right-6 z-50 bg-deepPurple text-cream px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium transition-all">
       <span id="toast-icon">✓</span>
       <span id="toast-msg">Notification message</span>
     </div>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 1: STUDENT DASHBOARD                                                    -->
-    <!-- ============================================================================ -->
     <section id="view-dashboard" class="view-section active space-y-8">
-      
-      <!-- Welcome Hero Banner -->
       <div class="bg-gradient-to-r from-deepPurple to-[#4E4573] rounded-3xl p-8 text-cream shadow-md relative overflow-hidden">
         <div class="relative z-10 max-w-2xl">
           <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-brandYellow mb-4">
@@ -203,9 +169,13 @@
             Master CBSE Class 10 Science with adaptive diagnostics grounded in the NCERT curriculum and our Concept Graph Engine.
           </p>
           <div class="flex flex-wrap gap-3">
-            <button onclick="startDiagnosticTest()" class="bg-brandYellow hover:bg-brandYellowDark text-deepPurple font-bold px-5 py-2.5 rounded-xl shadow transition-all flex items-center gap-2 text-sm">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              Start Diagnostic Test
+            <button onclick="loadExaminationHub()" class="bg-brandYellow hover:bg-brandYellowDark text-deepPurple font-bold px-5 py-2.5 rounded-xl shadow transition-all flex items-center gap-2 text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+              Board Exam Simulation (80M)
+            </button>
+            <button onclick="startDiagnosticTest()" class="bg-white/10 hover:bg-white/20 text-cream font-semibold px-5 py-2.5 rounded-xl backdrop-blur-md transition-all text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-brandYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Diagnostic Test
             </button>
             <button onclick="loadRemediationView()" class="bg-white/10 hover:bg-white/20 text-cream font-semibold px-5 py-2.5 rounded-xl backdrop-blur-md transition-all text-sm flex items-center gap-2">
               <svg class="w-4 h-4 text-brandYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
@@ -218,8 +188,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Quick KPI Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-sand p-6 rounded-2xl border border-sandDark shadow-sm">
           <span class="text-xs font-bold text-muted uppercase tracking-wider block mb-1">Overall Mastery</span>
@@ -231,7 +199,6 @@
             <div id="kpi-mastery-bar" class="bg-brandYellow h-full rounded-full" style="width: 0%"></div>
           </div>
         </div>
-
         <div class="bg-sand p-6 rounded-2xl border border-sandDark shadow-sm">
           <span class="text-xs font-bold text-muted uppercase tracking-wider block mb-1">Assessments Taken</span>
           <div class="flex items-baseline gap-2">
@@ -240,7 +207,6 @@
           </div>
           <span class="text-xs text-muted block mt-3">Chapter 1 Diagnostics</span>
         </div>
-
         <div class="bg-sand p-6 rounded-2xl border border-sandDark shadow-sm">
           <span class="text-xs font-bold text-muted uppercase tracking-wider block mb-1">Overall Accuracy</span>
           <div class="flex items-baseline gap-2">
@@ -249,7 +215,6 @@
           </div>
           <span class="text-xs text-muted block mt-3">Multi-format items</span>
         </div>
-
         <div class="bg-sand p-6 rounded-2xl border border-sandDark shadow-sm">
           <span class="text-xs font-bold text-muted uppercase tracking-wider block mb-1">Active Misconceptions</span>
           <div class="flex items-baseline gap-2">
@@ -259,10 +224,7 @@
           <button onclick="loadMisconceptionsView()" class="text-xs font-bold text-deepPurple hover:underline block mt-3">Inspect evidence &rarr;</button>
         </div>
       </div>
-
-      <!-- Strengths & Weaknesses Two-Column Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Weak Concepts (Requiring Scaffolding) -->
         <div class="bg-sand p-6 rounded-3xl border border-sandDark shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-deepPurple text-lg flex items-center gap-2">
@@ -275,8 +237,6 @@
             <p class="text-sm text-muted py-4 text-center">No weak concepts detected. Great start!</p>
           </div>
         </div>
-
-        <!-- Strong Concepts -->
         <div class="bg-sand p-6 rounded-3xl border border-sandDark shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-deepPurple text-lg flex items-center gap-2">
@@ -290,36 +250,68 @@
           </div>
         </div>
       </div>
-
-      <!-- Recent Assessments Timeline -->
       <div class="bg-sand p-6 rounded-3xl border border-sandDark shadow-sm space-y-4">
         <h3 class="font-bold text-deepPurple text-lg">Recent Diagnostic History</h3>
         <div id="recent-assessments-list" class="space-y-2">
           <p class="text-xs text-muted text-center py-4">No assessments taken yet.</p>
         </div>
       </div>
+      <div class="bg-sand p-6 md:p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sandDark pb-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 bg-deepPurple/10 text-deepPurple px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider mb-1">
+              <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Telemetry Active
+            </div>
+            <h3 class="font-extrabold text-deepPurple text-xl">Student Activity & Telemetry Audit Trail</h3>
+            <p class="text-xs text-muted">Complete chronological record of all your diagnostic sessions, practice attempts, board exams, and concept revisions.</p>
+          </div>
+          <button onclick="loadStudentActivityTimeline()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-sandDark text-deepPurple font-bold text-xs border border-sandDark shadow-sm transition-all flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Refresh Telemetry
+          </button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="p-3.5 rounded-2xl bg-white border border-sandDark shadow-2xs">
+            <span class="text-[11px] text-muted block font-semibold uppercase">Total Tracked Actions</span>
+            <span class="text-2xl font-black text-deepPurple" id="tel-total-actions">0</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-white border border-sandDark shadow-2xs">
+            <span class="text-[11px] text-muted block font-semibold uppercase">Active Study Time</span>
+            <span class="text-2xl font-black text-brandYellowDark" id="tel-study-time">0m</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-white border border-sandDark shadow-2xs">
+            <span class="text-[11px] text-muted block font-semibold uppercase">Board Exams & Tests</span>
+            <span class="text-2xl font-black text-deepPurple" id="tel-exams-count">0</span>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-white border border-sandDark shadow-2xs">
+            <span class="text-[11px] text-muted block font-semibold uppercase">Remediations Done</span>
+            <span class="text-2xl font-black text-green-700" id="tel-remed-count">0</span>
+          </div>
+        </div>
+        <div class="space-y-3" id="student-activity-timeline">
+          <p class="text-xs text-muted text-center py-4">Loading student activity audit trail...</p>
+        </div>
+      </div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 2: DIAGNOSTIC TEST RUNNER                                               -->
-    <!-- ============================================================================ -->
     <section id="view-assessment" class="view-section space-y-6">
       <div class="flex items-center justify-between border-b border-sandDark pb-4">
         <div>
           <span class="text-xs font-bold text-muted uppercase tracking-wider block">Diagnostic Assessment</span>
-          <h2 class="text-2xl font-extrabold text-deepPurple">Question <span id="q-current-num">1</span> of <span id="q-total-num">5</span></h2>
+          <h2 class="text-2xl font-extrabold text-deepPurple">Question <span id="q-current-num">1</span> of <span id="q-total-num">10</span></h2>
         </div>
         <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 bg-sandDark/90 px-3.5 py-1.5 rounded-xl border border-sandDark text-deepPurple font-mono font-bold text-sm shadow-sm" id="diag-timer-box" title="Diagnostic Assessment Timer">
+            <svg class="w-4 h-4 text-red-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke-width="2"/></svg>
+            <span id="diag-timer-display">15:00</span>
+          </div>
           <span class="px-3 py-1 rounded-full text-xs font-bold bg-brandYellow/30 text-deepPurple border border-brandYellow" id="badge-qtype">MCQ</span>
           <span class="px-3 py-1 rounded-full text-xs font-bold bg-sandDark text-deepPurple" id="badge-difficulty">MEDIUM</span>
           <span class="px-3 py-1 rounded-full text-xs font-bold bg-sandDark text-deepPurple" id="badge-marks">Marks: 1</span>
         </div>
       </div>
-
       <div class="w-full bg-sandDark h-2 rounded-full overflow-hidden">
         <div id="test-progress-bar" class="bg-deepPurple h-full transition-all duration-300" style="width: 20%"></div>
       </div>
-
       <div class="bg-sand p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
         <div class="flex items-center justify-between text-xs font-mono text-muted">
           <span>Question ID: <span id="q-id-display">Q-CH01-001</span></span>
@@ -344,7 +336,6 @@
           <textarea id="student-text-input" rows="3" class="w-full p-4 rounded-2xl border-2 border-sandDark bg-sandLight text-deepPurple focus:outline-none focus:border-deepPurple font-medium text-sm" placeholder="Enter key scientific points or numerical value with units..."></textarea>
         </div>
       </div>
-
       <div class="flex items-center justify-between pt-2">
         <button onclick="navigateQuestion(-1)" id="btn-prev-q" class="px-6 py-3 rounded-xl border border-sandDark font-semibold text-sm hover:bg-sandDark transition-all disabled:opacity-40" disabled>
           &larr; Previous
@@ -359,10 +350,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 3: ASSESSMENT RESULTS REVIEW                                            -->
-    <!-- ============================================================================ -->
     <section id="results-view" class="view-section space-y-8">
       <div class="bg-sand p-8 rounded-3xl border border-sandDark shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
@@ -395,10 +382,6 @@
         </button>
       </div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 4: CONCEPT MASTERY PROFILE                                              -->
-    <!-- ============================================================================ -->
     <section id="view-mastery" class="view-section space-y-6">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-sandDark pb-4">
         <div>
@@ -414,10 +397,6 @@
       </div>
       <div id="full-mastery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 5: ADAPTIVE QUESTION PRACTICE                                           -->
-    <!-- ============================================================================ -->
     <section id="view-adaptive" class="view-section space-y-6">
       <div class="bg-gradient-to-r from-sand to-sandDark p-6 rounded-3xl border border-sandDark flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
@@ -431,7 +410,6 @@
           Skip Question
         </button>
       </div>
-
       <div class="bg-sand p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
         <div class="flex items-center justify-between text-xs font-bold text-muted uppercase">
           <span id="adapt-qtype">MCQ</span>
@@ -443,17 +421,12 @@
         <div id="adapt-options-container" class="space-y-3"></div>
         <div id="adapt-feedback-box" class="hidden p-5 rounded-2xl border text-sm leading-relaxed space-y-2"></div>
       </div>
-
       <div class="flex justify-end gap-4">
         <button onclick="submitAdaptiveAnswer()" id="btn-submit-adapt" class="bg-deepPurple hover:bg-[#4E4573] text-cream font-bold px-8 py-3 rounded-xl shadow transition-all text-sm">
           Submit Adaptive Answer
         </button>
       </div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 6: TARGETED REMEDIATION (NEW IN P4)                                     -->
-    <!-- ============================================================================ -->
     <section id="view-remediation" class="view-section space-y-6">
       <div class="flex items-center justify-between border-b border-sandDark pb-4">
         <div>
@@ -462,8 +435,6 @@
         </div>
         <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300" id="rem-mastery-badge">Mastery: 25%</span>
       </div>
-
-      <!-- Prerequisite Gap Warning Banner -->
       <div id="rem-prereq-banner" class="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-start gap-4">
         <div class="p-2 bg-amber-100 rounded-xl text-amber-800">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -474,8 +445,6 @@
           <p class="text-sm text-ink mt-2" id="rem-gap-summary">Before attempting higher-order questions, reinforce the foundational exchange of ions.</p>
         </div>
       </div>
-
-      <!-- NCERT Grounding Card -->
       <div class="bg-sand p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-deepPurple uppercase tracking-wider bg-white px-3 py-1 rounded-full border border-sandDark" id="rem-ncert-ref">
@@ -483,14 +452,12 @@
           </span>
           <span class="text-xs font-mono text-muted">Authoritative Source</span>
         </div>
-
         <div>
           <h3 class="text-lg font-bold text-deepPurple mb-2">Scientific Principle Explanation</h3>
           <p class="text-sm text-ink leading-relaxed" id="rem-explanation">
             Explanation loading...
           </p>
         </div>
-
         <div class="bg-sandLight p-5 rounded-2xl border border-sandDark space-y-2">
           <span class="text-xs font-bold text-deepPurple uppercase tracking-wider block">Laboratory Activity / Example:</span>
           <p class="text-sm text-muted leading-relaxed" id="rem-example">
@@ -498,8 +465,6 @@
           </p>
         </div>
       </div>
-
-      <!-- Targeted Practice Question Card -->
       <div id="rem-practice-card" class="bg-sand p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-muted uppercase">Targeted Check Question</span>
@@ -511,17 +476,12 @@
         <div id="rem-options-container" class="space-y-3"></div>
         <div id="rem-feedback-box" class="hidden p-5 rounded-2xl border text-sm space-y-2"></div>
       </div>
-
       <div class="flex justify-end gap-4">
         <button onclick="submitRemediationPractice()" id="btn-submit-rem" class="bg-brandYellow hover:bg-brandYellowDark text-deepPurple font-extrabold px-8 py-3 rounded-xl shadow transition-all text-sm">
           Submit Practice Check
         </button>
       </div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 7: REVISION CENTER (NEW IN P4)                                          -->
-    <!-- ============================================================================ -->
     <section id="view-revision" class="view-section space-y-6">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-sandDark pb-4">
         <div>
@@ -533,8 +493,6 @@
           <button onclick="filterRevisions('UPCOMING')" class="rev-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-sand text-muted">Upcoming</button>
         </div>
       </div>
-
-      <!-- Summary KPI Row -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-sand p-5 rounded-2xl border border-sandDark text-center">
           <span class="text-xs font-bold text-muted uppercase block">Due Today</span>
@@ -549,1152 +507,457 @@
           <span class="text-base font-bold text-deepPurple block mt-2">1d &rarr; 3d &rarr; 7d &rarr; 14d</span>
         </div>
       </div>
-
-      <!-- Revision Schedules List -->
       <div id="revision-items-list" class="space-y-4"></div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 8: MISCONCEPTION REVIEW (NEW IN P4)                                      -->
-    <!-- ============================================================================ -->
     <section id="view-misconceptions" class="view-section space-y-6">
       <div class="border-b border-sandDark pb-4">
         <span class="text-xs font-bold text-muted uppercase tracking-wider block">Evidence-Based Diagnostics</span>
         <h2 class="text-2xl font-extrabold text-deepPurple">Learner Misconception Review</h2>
         <p class="text-xs text-muted mt-1">Identifies deep-rooted scientific misunderstandings from corroborated error evidence.</p>
       </div>
-
-      <!-- Misconception Ledger -->
       <div id="misconception-items-list" class="space-y-4"></div>
     </section>
-
-    <!-- ============================================================================ -->
-    <!-- VIEW 9: TEACHER DASHBOARD (NEW IN P4)                                        -->
-    <!-- ============================================================================ -->
-    <section id="view-teacher" class="view-section space-y-8">
-      <div class="bg-deepPurple text-cream p-8 rounded-3xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <section id="view-concept-graph" class="view-section space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-sandDark pb-4">
         <div>
-          <div class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-xs font-bold text-brandYellow mb-2">
-            <span>🎓 Educator Command Center</span>
-          </div>
-          <h2 class="text-3xl font-extrabold tracking-tight">Class 10 Science Cohort Performance</h2>
-          <p class="text-sand text-sm mt-1">Dr. Sunita Rao • Academic Session 2026–27</p>
+          <span class="text-xs font-bold text-muted uppercase tracking-wider block">Pedagogical Knowledge Graph</span>
+          <h2 class="text-2xl font-extrabold text-deepPurple">Concept Dependency DAG</h2>
+          <p class="text-xs text-muted mt-1">Interactive directed acyclic graph mapping NCERT curriculum prerequisites, dependencies, and real-time mastery states.</p>
         </div>
-        <div class="flex gap-4 text-center">
-          <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
-            <span class="text-xs text-sand block font-medium">Students</span>
-            <span class="text-2xl font-bold text-cream" id="t-kpi-students">3</span>
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-bold text-muted">Filter Chapter:</label>
+          <select id="graph-chapter-filter" onchange="filterConceptGraph(this.value)" class="bg-sand border border-sandDark text-deepPurple text-xs font-bold rounded-xl px-3 py-2 outline-none">
+            <option value="">All Chapters</option>
+            <option value="CH-01">CH-01: Chemical Reactions</option>
+            <option value="CH-02">CH-02: Acids, Bases & Salts</option>
+            <option value="CH-03">CH-03: Metals & Non-metals</option>
+            <option value="CH-06">CH-06: Life Processes</option>
+            <option value="CH-10">CH-10: Light Reflection & Refraction</option>
+            <option value="CH-12">CH-12: Electricity</option>
+          </select>
+          <button onclick="loadConceptGraphView()" class="px-3 py-2 rounded-xl bg-deepPurple text-cream font-bold text-xs hover:bg-[#4E4573]">Refresh</button>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 text-xs font-medium bg-sand p-3 rounded-2xl border border-sandDark">
+        <span class="font-bold text-deepPurple">Legend:</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Mastered (&ge;80%)</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Developing (40-79%)</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Misconception / Weak (&lt;40%)</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-400 inline-block"></span> Unassessed</span>
+        <span class="flex items-center gap-1.5 text-muted"><span class="text-base">&rarr;</span> Prerequisite &rarr; Dependent</span>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-sand rounded-3xl border border-sandDark p-4 shadow-sm min-h-[500px] flex flex-col">
+          <div id="concept-graph-container" class="w-full flex-1 min-h-[460px] overflow-auto relative rounded-2xl bg-white/70 border border-sandDark/50 p-4">
+            <svg id="concept-graph-svg" class="w-full h-full min-w-[700px] min-h-[440px]"></svg>
           </div>
-          <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
-            <span class="text-xs text-sand block font-medium">Avg Accuracy</span>
-            <span class="text-2xl font-bold text-brandYellow" id="t-kpi-accuracy">0%</span>
+        </div>
+        <div class="bg-sand rounded-3xl border border-sandDark p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-sandDark">
+              <span class="text-xs font-bold text-muted uppercase tracking-wider">Concept Inspector</span>
+              <span id="cg-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">Select Node</span>
+            </div>
+            <div id="cg-node-details" class="py-4 space-y-3">
+              <p class="text-xs text-muted">Click any concept node in the DAG to inspect prerequisites, mastery metrics, and pedagogical descriptions.</p>
+            </div>
           </div>
-          <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
-            <span class="text-xs text-sand block font-medium">Interventions</span>
-            <span class="text-2xl font-bold text-errorRed" id="t-kpi-interventions">0</span>
+          <div id="cg-actions" class="pt-4 border-t border-sandDark hidden space-y-2">
+            <button id="btn-cg-ask-doubt" class="w-full py-2.5 px-4 rounded-xl bg-deepPurple text-cream font-bold text-xs hover:bg-[#4E4573] flex items-center justify-center gap-2">
+              <span>Ask BodhAI Doubt</span>
+            </button>
+            <button id="btn-cg-remediate" class="w-full py-2.5 px-4 rounded-xl bg-brandYellow text-deepPurple font-bold text-xs hover:bg-brandYellowDark flex items-center justify-center gap-2">
+              <span>Practice Concept</span>
+            </button>
           </div>
         </div>
       </div>
-
-      <!-- Teacher Detailed Analytics Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Weakest Concepts Cohort-Wide -->
-        <div class="bg-sand p-6 rounded-3xl border border-sandDark space-y-4">
-          <h3 class="font-bold text-deepPurple text-lg">Weakest Concepts Across Cohort</h3>
-          <div id="t-weakest-concepts-list" class="space-y-3"></div>
+    </section>
+    <section id="view-doubt-solver" class="view-section space-y-6">
+      <div class="border-b border-sandDark pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-deepPurple/10 text-deepPurple px-3 py-1 rounded-full text-xs font-bold mb-1">
+            <span>✨ Powered by Groq AI</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-deepPurple">NCERT AI Doubt Solver</h2>
+          <p class="text-xs text-muted mt-1">Directly grounded in CBSE Class 10 Science curriculum with active misconception awareness.</p>
         </div>
-
-        <!-- Common Misconceptions -->
-        <div class="bg-sand p-6 rounded-3xl border border-sandDark space-y-4">
-          <h3 class="font-bold text-deepPurple text-lg">Common Cohort Misconceptions</h3>
-          <div id="t-common-misc-list" class="space-y-3"></div>
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 bg-sandDark rounded-xl text-xs font-bold text-deepPurple" id="doubt-solver-model-tag">Groq Llama-3.3-70B</span>
         </div>
       </div>
-
-      <!-- Student Cohort Roster Table -->
-      <div class="bg-sand p-6 rounded-3xl border border-sandDark space-y-4">
-        <h3 class="font-bold text-deepPurple text-lg">Enrolled Students Roster</h3>
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-muted block">Common doubts & misconceptions:</span>
+        <div class="flex flex-wrap gap-2" id="doubt-quick-chips">
+          <button onclick="quickAskDoubt('Why is respiration considered an exothermic reaction?')" class="text-xs bg-sand hover:bg-sandDark text-deepPurple border border-sandDark px-3 py-1.5 rounded-full font-medium transition-all">🔥 Why is respiration exothermic?</button>
+          <button onclick="quickAskDoubt('Explain the difference between displacement and double displacement reactions with examples.')" class="text-xs bg-sand hover:bg-sandDark text-deepPurple border border-sandDark px-3 py-1.5 rounded-full font-medium transition-all">⚗️ Displacement vs Double displacement</button>
+          <button onclick="quickAskDoubt('Why does distilled water not conduct electricity whereas rainwater does?')" class="text-xs bg-sand hover:bg-sandDark text-deepPurple border border-sandDark px-3 py-1.5 rounded-full font-medium transition-all">⚡ Rainwater electrical conductivity</button>
+          <button onclick="quickAskDoubt('Why does a ray of light bend towards the normal when traveling from air into glass?')" class="text-xs bg-sand hover:bg-sandDark text-deepPurple border border-sandDark px-3 py-1.5 rounded-full font-medium transition-all">🔍 Refraction towards normal</button>
+        </div>
+      </div>
+      <div id="doubt-chat-feed" class="bg-sand rounded-3xl border border-sandDark p-6 min-h-[400px] max-h-[550px] overflow-y-auto space-y-4">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-brandYellow flex items-center justify-center font-bold text-deepPurple shadow-sm text-sm shrink-0">ब</div>
+          <div class="bg-white p-4 rounded-2xl rounded-tl-none border border-sandDark shadow-sm max-w-2xl">
+            <p class="text-xs font-bold text-deepPurple mb-1">BodhAI Science Tutor</p>
+            <p class="text-sm text-ink leading-relaxed">Namaste! Ask me any doubt from your CBSE Class 10 Science curriculum. I have access to your active misconceptions and the full NCERT textbook to provide crystal clear scientific explanations.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-sand p-4 rounded-2xl border border-sandDark flex items-end gap-3 shadow-sm">
+        <textarea id="doubt-input-box" rows="2" class="flex-1 bg-white border border-sandDark rounded-xl p-3 text-sm text-deepPurple outline-none focus:border-deepPurple resize-none" placeholder="Type your CBSE Class 10 Science question or doubt here... (e.g. Why is rust an oxidation reaction?)"></textarea>
+        <button onclick="sendDoubt()" id="btn-send-doubt" class="px-5 py-3 rounded-xl bg-deepPurple text-cream font-bold text-sm hover:bg-[#4E4573] transition-all flex items-center gap-2 shrink-0">
+          <svg class="w-4 h-4 text-brandYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span>Ask BodhAI</span>
+        </button>
+      </div>
+    </section>
+    <section id="view-examination-hub" class="view-section space-y-8">
+      <div id="exam-active-banner" class="hidden bg-gradient-to-r from-deepPurple via-[#4A4170] to-deepPurple text-cream p-6 rounded-3xl border-2 border-brandYellow shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 bg-brandYellow text-deepPurple font-extrabold text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span> Live Session In Progress
+          </div>
+          <h3 class="text-xl font-extrabold" id="active-banner-title">CBSE Annual Board Examination Simulation 2026–27</h3>
+          <p class="text-xs text-sand">Server countdown is active. Your answers are auto-saved in real time.</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <span class="text-xs text-sand block">Remaining Time</span>
+            <span class="text-2xl font-mono font-black text-brandYellow" id="active-banner-timer">03:00:00</span>
+          </div>
+          <button onclick="resumeActiveExamination()" class="px-6 py-3 rounded-xl bg-brandYellow hover:bg-brandYellowDark text-deepPurple font-extrabold text-sm shadow-md transition-all flex items-center gap-2">
+            Resume Exam &rarr;
+          </button>
+        </div>
+      </div>
+      <div class="bg-sand p-8 rounded-3xl border border-sandDark flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="inline-flex items-center gap-2 bg-deepPurple text-cream px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+            <span>Official Pattern • Subject Code 086</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-deepPurple">CBSE Class 10 Science Board Examination Simulation</h2>
+          <p class="text-sm text-muted leading-relaxed">
+            Standardized summative examination engine mirroring the official CBSE 2026–27 blueprint: 80 marks, 3 hours (180 mins), and 39 multi-typology questions across Sections A to E.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center">
+          <div class="p-4 rounded-2xl bg-cream border border-sandDark">
+            <span class="block text-2xl font-extrabold text-deepPurple">80</span>
+            <span class="text-xs font-semibold text-muted uppercase">Theory Marks</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-cream border border-sandDark">
+            <span class="block text-2xl font-extrabold text-deepPurple">180m</span>
+            <span class="text-xs font-semibold text-muted uppercase">Duration (3h)</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-cream border border-sandDark col-span-2 sm:col-span-1">
+            <span class="block text-2xl font-extrabold text-deepPurple">39</span>
+            <span class="text-xs font-semibold text-muted uppercase">Questions (A–E)</span>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold text-deepPurple">Available Board Papers & Diagnostic Mocks</h3>
+          <span class="text-xs font-semibold text-muted uppercase">Academic Session 2026–27</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="available-blueprints-grid">
+        </div>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-sandDark shadow-sm space-y-4">
+        <h3 class="text-lg font-bold text-deepPurple">Official Question Paper Typology & Mark Distribution</h3>
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
+          <table class="w-full text-left text-xs">
             <thead>
-              <tr class="border-b border-sandDark text-xs font-bold text-muted uppercase">
-                <th class="py-3 px-4">Student ID</th>
-                <th class="py-3 px-4">Name</th>
-                <th class="py-3 px-4">Accuracy</th>
-                <th class="py-3 px-4">Mastery</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4 text-right">Action</th>
+              <tr class="border-b border-sandDark font-bold text-muted uppercase">
+                <th class="py-3 px-3">Section</th>
+                <th class="py-3 px-3">Question Range</th>
+                <th class="py-3 px-3">Typology</th>
+                <th class="py-3 px-3 text-center">Questions</th>
+                <th class="py-3 px-3 text-center">Marks / Q</th>
+                <th class="py-3 px-3 text-right">Total Marks</th>
               </tr>
             </thead>
-            <tbody id="t-students-table-body" class="divide-y divide-sandDark"></tbody>
+            <tbody class="divide-y divide-sandLight text-ink font-medium">
+              <tr>
+                <td class="py-3 px-3 font-bold text-deepPurple">Section A</td>
+                <td class="py-3 px-3 font-mono text-muted">Q1 – Q20</td>
+                <td class="py-3 px-3">Multiple Choice Questions (16) & Assertion-Reason (4)</td>
+                <td class="py-3 px-3 text-center font-bold">20</td>
+                <td class="py-3 px-3 text-center">1</td>
+                <td class="py-3 px-3 text-right font-extrabold text-deepPurple">20 Marks</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-bold text-deepPurple">Section B</td>
+                <td class="py-3 px-3 font-mono text-muted">Q21 – Q26</td>
+                <td class="py-3 px-3">Very Short Answer (VSA) (30–50 words)</td>
+                <td class="py-3 px-3 text-center font-bold">6</td>
+                <td class="py-3 px-3 text-center">2</td>
+                <td class="py-3 px-3 text-right font-extrabold text-deepPurple">12 Marks</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-bold text-deepPurple">Section C</td>
+                <td class="py-3 px-3 font-mono text-muted">Q27 – Q33</td>
+                <td class="py-3 px-3">Short Answer (SA) (50–80 words) & Numericals</td>
+                <td class="py-3 px-3 text-center font-bold">7</td>
+                <td class="py-3 px-3 text-center">3</td>
+                <td class="py-3 px-3 text-right font-extrabold text-deepPurple">21 Marks</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-bold text-deepPurple">Section D</td>
+                <td class="py-3 px-3 font-mono text-muted">Q34 – Q36</td>
+                <td class="py-3 px-3">Long Answer (LA) (80–120 words) with derivations</td>
+                <td class="py-3 px-3 text-center font-bold">3</td>
+                <td class="py-3 px-3 text-center">5</td>
+                <td class="py-3 px-3 text-right font-extrabold text-deepPurple">15 Marks</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-bold text-deepPurple">Section E</td>
+                <td class="py-3 px-3 font-mono text-muted">Q37 – Q39</td>
+                <td class="py-3 px-3">Case-Based / Data-Integrated Assessments with sub-parts</td>
+                <td class="py-3 px-3 text-center font-bold">3</td>
+                <td class="py-3 px-3 text-center">4</td>
+                <td class="py-3 px-3 text-right font-extrabold text-deepPurple">12 Marks</td>
+              </tr>
+              <tr class="bg-sand font-bold text-deepPurple">
+                <td colspan="3" class="py-3 px-3 uppercase tracking-wider">Total Summative Board Theory Paper</td>
+                <td class="py-3 px-3 text-center font-black">39</td>
+                <td class="py-3 px-3 text-center">—</td>
+                <td class="py-3 px-3 text-right font-black text-sm">80 Marks</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
-
-      <!-- Student Drill-Down Drawer / Panel -->
-      <div id="t-drilldown-panel" class="hidden bg-white p-8 rounded-3xl border-2 border-deepPurple shadow-xl space-y-6">
-        <div class="flex items-center justify-between border-b border-sandDark pb-4">
-          <div>
-            <span class="text-xs font-bold text-muted uppercase">Student Drill-Down</span>
-            <h3 class="text-2xl font-bold text-deepPurple" id="t-drill-name">Aarav Sharma</h3>
-          </div>
-          <button onclick="closeDrilldown()" class="px-4 py-2 rounded-xl bg-sandDark font-bold text-xs text-deepPurple hover:bg-sand">
-            Close &times;
-          </button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-4">
-            <h4 class="font-bold text-deepPurple text-base">Teacher Intervention Notes</h4>
-            <div id="t-drill-notes" class="space-y-2"></div>
-          </div>
-          <div class="space-y-4">
-            <h4 class="font-bold text-deepPurple text-base">Active Misconceptions</h4>
-            <div id="t-drill-misconceptions" class="space-y-2"></div>
-          </div>
+      <div class="bg-white p-6 rounded-3xl border border-sandDark shadow-sm space-y-4">
+        <h3 class="text-lg font-bold text-deepPurple">Your Examination Attempt History</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-sandDark font-bold text-muted uppercase">
+                <th class="py-3 px-3">Paper</th>
+                <th class="py-3 px-3">Session ID</th>
+                <th class="py-3 px-3">Date</th>
+                <th class="py-3 px-3 text-center">Score</th>
+                <th class="py-3 px-3 text-center">Percentage</th>
+                <th class="py-3 px-3 text-center">Status</th>
+                <th class="py-3 px-3 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="past-exams-table-body" class="divide-y divide-sandLight">
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
-
-  </main>
-
-  <!-- ============================================================================== -->
-  <!-- JAVASCRIPT APPLICATION LOGIC                                                   -->
-  <!-- ============================================================================== -->
-  <script>
-    let currentStudentId = 'STU-001';
-    let currentRole = 'student'; // 'student' or 'teacher'
-    let currentAssessment = null;
-    let currentQuestionIndex = 0;
-    let selectedAnswers = {};
-    let allMasteryItems = [];
-    let currentAdaptiveRec = null;
-    let currentRemediation = null;
-
-    // ------------------------------------------------------------------------------
-    // View Navigation & Role Toggle
-    // ------------------------------------------------------------------------------
-    function switchView(viewName) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => {
-        b.classList.remove('bg-deepPurple', 'text-cream', 'shadow-sm');
-        b.classList.add('text-muted');
-      });
-
-      const targetView = document.getElementById(`view-${viewName}`);
-      const targetNav = document.getElementById(`nav-${viewName}`);
-
-      if (targetView) targetView.classList.add('active');
-      if (targetNav) {
-        targetNav.classList.remove('text-muted');
-        targetNav.classList.add('bg-deepPurple', 'text-cream', 'shadow-sm');
-      }
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // Trigger view data loaders
-      if (viewName === 'dashboard') loadDashboard();
-      if (viewName === 'mastery') loadMasteryView();
-    }
-
-    function toggleRole() {
-      if (currentRole === 'student') {
-        currentRole = 'teacher';
-        document.getElementById('sidebar-user-name').innerText = 'Dr. Sunita Rao';
-        document.getElementById('sidebar-user-role').innerText = 'Senior Science Educator';
-        document.getElementById('role-avatar').innerText = 'SR';
-        document.getElementById('role-toggle-text').innerText = 'Switch to Student View';
-        loadTeacherDashboard();
-      } else {
-        currentRole = 'student';
-        document.getElementById('sidebar-user-name').innerText = 'Aarav Sharma';
-        document.getElementById('sidebar-user-role').innerText = 'Student (Grade 10)';
-        document.getElementById('role-avatar').innerText = 'AS';
-        document.getElementById('role-toggle-text').innerText = 'Switch to Teacher View';
-        switchView('dashboard');
-      }
-    }
-
-    function showToast(message, isSuccess = true) {
-      const toast = document.getElementById('toast');
-      const icon = document.getElementById('toast-icon');
-      const msg = document.getElementById('toast-msg');
-
-      icon.innerText = isSuccess ? '✓' : '⚠️';
-      msg.innerText = message;
-      toast.classList.remove('hidden');
-
-      setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 3500);
-    }
-
-    // ------------------------------------------------------------------------------
-    // 1. Dashboard Loading
-    // ------------------------------------------------------------------------------
-    async function loadDashboard() {
-      try {
-        const res = await fetch(`/api/student/dashboard?student_id=${currentStudentId}`);
-        if (!res.ok) throw new Error('Failed to load dashboard data');
-        const data = await res.json();
-
-        document.getElementById('dash-welcome-name').innerText = data.student.name.split(' ')[0];
-        document.getElementById('sidebar-user-name').innerText = data.student.name;
-        document.getElementById('kpi-mastery-score').innerText = `${Math.round(data.overall_mastery_pct)}%`;
-        document.getElementById('kpi-mastery-bar').style.width = `${Math.round(data.overall_mastery_pct)}%`;
-        document.getElementById('kpi-assessments-count').innerText = data.total_assessments_taken;
-        document.getElementById('kpi-accuracy-rate').innerText = `${Math.round(data.overall_accuracy_pct)}%`;
-
-        // Load Misconceptions Count
-        const miscRes = await fetch(`/api/student/misconceptions?student_id=${currentStudentId}`);
-        if (miscRes.ok) {
-          const miscs = await miscRes.json();
-          const activeCount = miscs.filter(m => m.status !== 'RESOLVED').length;
-          document.getElementById('kpi-misconceptions-count').innerText = activeCount;
-        }
-
-        // Render Weak Concepts
-        const weakList = document.getElementById('weak-concepts-list');
-        weakList.innerHTML = '';
-        document.getElementById('weak-concepts-count').innerText = `${data.weak_concepts.length} concepts`;
-        if (data.weak_concepts.length > 0) {
-          data.weak_concepts.slice(0, 3).forEach(c => {
-            const row = document.createElement('div');
-            row.className = 'p-3 rounded-2xl bg-sandLight border border-sandDark flex items-center justify-between text-sm';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${c.concept_name}</span>
-                <span class="text-xs text-muted">Mastery: ${Math.round(c.mastery_score * 100)}%</span>
-              </div>
-              <button onclick="loadRemediationForConcept('${c.concept_id}')" class="text-xs font-bold text-deepPurple px-3 py-1.5 rounded-lg bg-sandDark hover:bg-brandYellow transition-colors">
-                Remediate &rarr;
+    <section id="view-examination-workspace" class="view-section space-y-6">
+      <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md p-4 rounded-2xl border-2 border-deepPurple shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-deepPurple text-brandYellow font-extrabold flex items-center justify-center text-sm shadow-sm">
+            086
+          </div>
+          <div>
+            <h3 class="font-extrabold text-deepPurple text-sm leading-tight" id="workspace-paper-title">CBSE Board Exam Simulation</h3>
+            <span class="text-[11px] font-mono text-muted" id="workspace-paper-code">SET-1 • 80 Marks</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-sand px-4 py-2 rounded-xl border border-sandDark">
+          <svg class="w-5 h-5 text-deepPurple animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-muted block">Time Remaining</span>
+            <span class="text-xl font-mono font-black text-deepPurple tracking-wider" id="exam-timer-display">03:00:00</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="confirmSubmitExam()" class="px-5 py-2 rounded-xl bg-deepPurple hover:bg-black text-cream font-bold text-xs shadow-sm transition-all flex items-center gap-2">
+            <svg class="w-4 h-4 text-brandYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Submit Paper
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 overflow-x-auto pb-1" id="exam-section-tabs">
+        <button onclick="switchExamSection('Section A')" class="exam-sec-tab px-4 py-2 rounded-xl font-bold text-xs bg-deepPurple text-cream transition-all whitespace-nowrap" data-sec="Section A">
+          Section A (Q1–Q20 • 1m)
+        </button>
+        <button onclick="switchExamSection('Section B')" class="exam-sec-tab px-4 py-2 rounded-xl font-bold text-xs bg-sand text-muted hover:bg-sandDark transition-all whitespace-nowrap" data-sec="Section B">
+          Section B (Q21–Q26 • 2m)
+        </button>
+        <button onclick="switchExamSection('Section C')" class="exam-sec-tab px-4 py-2 rounded-xl font-bold text-xs bg-sand text-muted hover:bg-sandDark transition-all whitespace-nowrap" data-sec="Section C">
+          Section C (Q27–Q33 • 3m)
+        </button>
+        <button onclick="switchExamSection('Section D')" class="exam-sec-tab px-4 py-2 rounded-xl font-bold text-xs bg-sand text-muted hover:bg-sandDark transition-all whitespace-nowrap" data-sec="Section D">
+          Section D (Q34–Q36 • 5m)
+        </button>
+        <button onclick="switchExamSection('Section E')" class="exam-sec-tab px-4 py-2 rounded-xl font-bold text-xs bg-sand text-muted hover:bg-sandDark transition-all whitespace-nowrap" data-sec="Section E">
+          Section E (Q37–Q39 • 4m)
+        </button>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-8 bg-white p-6 md:p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sandDark pb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-sandDark font-extrabold text-deepPurple flex items-center justify-center text-sm" id="exam-q-num">1</span>
+              <span class="text-xs font-bold text-deepPurple px-2.5 py-1 rounded-lg bg-sand" id="exam-q-section">Section A</span>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-sandLight text-muted" id="exam-q-chapter">Chapter 1</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900" id="exam-q-marks">1 Mark</span>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-purple-100 text-purple-900" id="exam-q-type">MCQ</span>
+            </div>
+          </div>
+          <div id="exam-case-passage-box" class="hidden p-5 rounded-2xl bg-sandLight border border-sandDark space-y-2">
+            <span class="text-[11px] font-extrabold text-deepPurple uppercase tracking-wider block">Read the following passage and answer the sub-questions:</span>
+            <p class="text-xs text-muted leading-relaxed" id="exam-case-passage-text"></p>
+          </div>
+          <div id="exam-ar-box" class="hidden space-y-3">
+            <div class="p-4 rounded-xl bg-sandLight border border-sandDark text-xs space-y-1">
+              <span class="font-extrabold text-deepPurple block uppercase">Assertion (A):</span>
+              <p class="text-ink" id="exam-ar-assertion"></p>
+            </div>
+            <div class="p-4 rounded-xl bg-sandLight border border-sandDark text-xs space-y-1">
+              <span class="font-extrabold text-deepPurple block uppercase">Reason (R):</span>
+              <p class="text-ink" id="exam-ar-reason"></p>
+            </div>
+          </div>
+          <div class="text-base font-semibold text-deepPurple leading-relaxed py-2" id="exam-q-text">
+            Loading question text...
+          </div>
+          <div class="space-y-3 pt-2" id="exam-input-container">
+          </div>
+          <div class="pt-6 border-t border-sandDark flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <button onclick="navigateExamQuestion(-1)" id="btn-exam-prev" class="px-4 py-2 rounded-xl bg-sand hover:bg-sandDark text-deepPurple font-bold text-xs transition-all">
+                &larr; Previous
               </button>
-            `;
-            weakList.appendChild(row);
-          });
-        } else {
-          weakList.innerHTML = '<p class="text-xs text-muted text-center py-4">No weak concepts detected!</p>';
-        }
-
-        // Render Strong Concepts
-        const strongList = document.getElementById('strong-concepts-list');
-        strongList.innerHTML = '';
-        document.getElementById('strong-concepts-count').innerText = `${data.strong_concepts.length} concepts`;
-        if (data.strong_concepts.length > 0) {
-          data.strong_concepts.slice(0, 3).forEach(c => {
-            const row = document.createElement('div');
-            row.className = 'p-3 rounded-2xl bg-sandLight border border-sandDark flex items-center justify-between text-sm';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${c.concept_name}</span>
-                <span class="text-xs text-successGreen font-semibold">Mastery: ${Math.round(c.mastery_score * 100)}%</span>
-              </div>
-              <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-800">STRONG</span>
-            `;
-            strongList.appendChild(row);
-          });
-        } else {
-          strongList.innerHTML = '<p class="text-xs text-muted text-center py-4">Complete diagnostics to verify strengths.</p>';
-        }
-
-        // Render Recent Assessments
-        const recentList = document.getElementById('recent-assessments-list');
-        recentList.innerHTML = '';
-        if (data.recent_assessments.length > 0) {
-          data.recent_assessments.slice(0, 4).forEach(asm => {
-            const row = document.createElement('div');
-            const pct = asm.total_marks > 0 ? Math.round((asm.score / asm.total_marks) * 100) : 0;
-            row.className = 'p-3 rounded-2xl bg-sandLight border border-sandDark flex items-center justify-between text-sm';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${asm.assessment_type}</span>
-                <span class="text-xs text-muted">${new Date(asm.started_at).toLocaleDateString()}</span>
-              </div>
-              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${pct >= 70 ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
-                ${asm.score} / ${asm.total_marks} (${pct}%)
-              </span>
-            `;
-            recentList.appendChild(row);
-          });
-        } else {
-          recentList.innerHTML = '<p class="text-xs text-muted text-center py-4">No assessments completed yet.</p>';
-        }
-
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // ------------------------------------------------------------------------------
-    // 2. Diagnostic Assessment Flow
-    // ------------------------------------------------------------------------------
-    async function startDiagnosticTest() {
-      try {
-        switchView('assessment');
-        document.getElementById('q-text-content').innerText = 'Initializing diagnostic session...';
-        
-        const res = await fetch('/api/assessments/start', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            student_id: currentStudentId,
-            chapter_id: 'CH-01',
-            question_count: 5
-          })
-        });
-
-        if (!res.ok) throw new Error('Failed to start test');
-        currentAssessment = await res.json();
-        currentQuestionIndex = 0;
-        selectedAnswers = {};
-        
-        renderCurrentQuestion();
-        showToast('Diagnostic assessment initialized with 5 balanced questions.');
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function renderCurrentQuestion() {
-      if (!currentAssessment || !currentAssessment.questions.length) return;
-
-      const q = currentAssessment.questions[currentQuestionIndex];
-      const total = currentAssessment.questions.length;
-
-      document.getElementById('q-current-num').innerText = currentQuestionIndex + 1;
-      document.getElementById('q-total-num').innerText = total;
-      document.getElementById('test-progress-bar').style.width = `${((currentQuestionIndex + 1) / total) * 100}%`;
-
-      document.getElementById('badge-qtype').innerText = q.question_type;
-      document.getElementById('badge-difficulty').innerText = q.difficulty;
-      document.getElementById('badge-marks').innerText = `Marks: ${q.marks}`;
-      document.getElementById('q-id-display').innerText = q.question_id;
-
-      // Question Text Stem
-      document.getElementById('q-text-content').innerText = q.question_text;
-
-      // Assertion Reason panel
-      const arContainer = document.getElementById('ar-container');
-      if (q.question_type === 'ASSERTION_REASON' && (q.assertion || q.reason)) {
-        arContainer.classList.remove('hidden');
-        document.getElementById('ar-assertion-text').innerText = q.assertion || '';
-        document.getElementById('ar-reason-text').innerText = q.reason || '';
-      } else {
-        arContainer.classList.add('hidden');
-      }
-
-      // Render Options
-      const optsContainer = document.getElementById('options-container');
-      const textContainer = document.getElementById('text-input-container');
-
-      optsContainer.innerHTML = '';
-
-      if (q.options && Object.keys(q.options).length > 0) {
-        optsContainer.classList.remove('hidden');
-        textContainer.classList.add('hidden');
-
-        const currentSelection = selectedAnswers[q.question_id]?.selected_option;
-
-        for (const [optKey, optText] of Object.entries(q.options)) {
-          const card = document.createElement('div');
-          const isSelected = (currentSelection === optKey);
-          card.className = `option-card p-4 rounded-2xl border-2 cursor-pointer flex items-center gap-4 ${isSelected ? 'selected' : 'border-sandDark bg-sandLight'}`;
-          card.onclick = () => selectOption(q.question_id, optKey);
-          card.innerHTML = `
-            <div class="w-8 h-8 rounded-xl font-bold flex items-center justify-center text-sm ${isSelected ? 'bg-deepPurple text-cream' : 'bg-sandDark text-muted'}">
-              ${optKey}
+              <button onclick="clearCurrentExamAnswer()" class="px-3 py-2 rounded-xl text-muted hover:text-red-700 font-semibold text-xs transition-colors">
+                Clear Selection
+              </button>
             </div>
-            <div class="text-sm font-medium text-deepPurple flex-1">
-              ${optText}
+            <div class="flex items-center gap-2">
+              <button onclick="saveAndMarkForReview()" class="px-4 py-2 rounded-xl bg-sandDark hover:bg-[#DDD7C5] text-deepPurple font-bold text-xs transition-all flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-brandPurple"></span> Mark for Review & Next
+              </button>
+              <button onclick="saveAndNextExamQuestion()" class="px-6 py-2 rounded-xl bg-brandYellow hover:bg-brandYellowDark text-deepPurple font-extrabold text-xs shadow-sm transition-all">
+                Save & Next &rarr;
+              </button>
             </div>
-          `;
-          optsContainer.appendChild(card);
-        }
-      } else {
-        optsContainer.classList.add('hidden');
-        textContainer.classList.remove('hidden');
-        const existingText = selectedAnswers[q.question_id]?.text_answer || '';
-        document.getElementById('student-text-input').value = existingText;
-      }
-
-      document.getElementById('btn-prev-q').disabled = (currentQuestionIndex === 0);
-
-      if (window.renderMathInElement) {
-        renderMathInElement(document.getElementById('view-assessment'), {
-          delimiters: [
-            { left: '$$', right: '$$', display: true },
-            { left: '$', right: '$', display: false }
-          ]
-        });
-      }
-    }
-
-    function selectOption(questionId, optionKey) {
-      selectedAnswers[questionId] = { selected_option: optionKey };
-      renderCurrentQuestion();
-    }
-
-    async function saveCurrentAnswer() {
-      if (!currentAssessment) return;
-      const q = currentAssessment.questions[currentQuestionIndex];
-      
-      if (document.getElementById('text-input-container').classList.contains('hidden') === false) {
-        const textVal = document.getElementById('student-text-input').value.trim();
-        if (textVal) {
-          selectedAnswers[q.question_id] = { text_answer: textVal, numerical_value: parseFloat(textVal) || null };
-        }
-      }
-
-      const ansPayload = selectedAnswers[q.question_id];
-      if (ansPayload) {
-        try {
-          await fetch(`/api/assessments/${currentAssessment.assessment_id}/answers`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              student_id: currentStudentId,
-              question_id: q.question_id,
-              submitted_answer: ansPayload,
-              time_spent_seconds: 30
-            })
-          });
-        } catch (e) {
-          console.warn('Auto-save error:', e);
-        }
-      }
-    }
-
-    async function navigateQuestion(direction) {
-      await saveCurrentAnswer();
-      currentQuestionIndex += direction;
-      renderCurrentQuestion();
-    }
-
-    async function saveAndNext() {
-      await saveCurrentAnswer();
-      if (currentQuestionIndex < currentAssessment.questions.length - 1) {
-        currentQuestionIndex++;
-        renderCurrentQuestion();
-      } else {
-        showSubmitConfirmModal();
-      }
-    }
-
-    async function showSubmitConfirmModal() {
-      await saveCurrentAnswer();
-      if (confirm('Are you ready to submit your diagnostic assessment and view your evaluated results?')) {
-        finalizeAssessment();
-      }
-    }
-
-    async function finalizeAssessment() {
-      try {
-        await saveCurrentAnswer();
-        const res = await fetch(`/api/assessments/${currentAssessment.assessment_id}/submit`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ student_id: currentStudentId })
-        });
-
-        if (!res.ok) throw new Error('Failed to finalize assessment');
-        const summary = await res.json();
-        renderAssessmentResult(summary);
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function renderAssessmentResult(summary) {
-      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.getElementById('results-view').classList.add('active');
-
-      document.getElementById('res-score-display').innerText = `${summary.score} / ${summary.total_marks}`;
-      document.getElementById('res-pct-display').innerText = `${summary.percentage}%`;
-
-      const reviewsList = document.getElementById('question-reviews-list');
-      reviewsList.innerHTML = '';
-
-      summary.question_reviews.forEach((rev, idx) => {
-        const card = document.createElement('div');
-        card.className = `p-6 rounded-2xl border-2 space-y-4 ${rev.is_correct ? 'bg-green-50/50 border-green-200' : 'bg-red-50/50 border-red-200'}`;
-
-        const subChoice = rev.submitted_answer?.selected_option || rev.submitted_answer?.text_answer || 'None';
-        const correctChoice = rev.correct_answer || 'N/A';
-
-        card.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider ${rev.is_correct ? 'text-green-800' : 'text-red-800'}">
-              Question ${idx + 1} • ${rev.is_correct ? 'CORRECT (+ ' + rev.marks_awarded + ' marks)' : 'INCORRECT (0 marks)'}
+          </div>
+        </div>
+        <div class="lg:col-span-4 bg-white p-6 rounded-3xl border border-sandDark shadow-sm space-y-6 sticky top-24">
+          <div class="flex items-center justify-between border-b border-sandDark pb-3">
+            <h4 class="font-bold text-deepPurple text-sm">Question Palette (39)</h4>
+            <span class="text-xs text-muted" id="palette-status-count">0 / 39 Answered</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[11px] font-semibold text-muted">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded-md bg-successGreen text-white flex items-center justify-center text-[9px] font-bold">✓</span>
+              <span>Answered</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded-md bg-sandDark text-muted flex items-center justify-center text-[9px]"></span>
+              <span>Not Answered</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded-md bg-brandPurple text-cream flex items-center justify-center text-[9px] font-bold">★</span>
+              <span>Review</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded-md bg-brandYellow text-deepPurple flex items-center justify-center text-[9px] font-bold">●</span>
+              <span>Ans + Review</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-5 gap-2 max-h-72 overflow-y-auto p-1" id="exam-palette-grid">
+          </div>
+          <div class="pt-3 border-t border-sandDark space-y-2">
+            <span class="text-[11px] font-bold uppercase text-muted block">Direct Section Jump</span>
+            <div class="grid grid-cols-5 gap-1 text-[11px] font-bold">
+              <button onclick="jumpToExamQuestion(0)" class="p-1.5 rounded-lg bg-sand text-deepPurple hover:bg-sandDark">Sec A</button>
+              <button onclick="jumpToExamQuestion(20)" class="p-1.5 rounded-lg bg-sand text-deepPurple hover:bg-sandDark">Sec B</button>
+              <button onclick="jumpToExamQuestion(26)" class="p-1.5 rounded-lg bg-sand text-deepPurple hover:bg-sandDark">Sec C</button>
+              <button onclick="jumpToExamQuestion(33)" class="p-1.5 rounded-lg bg-sand text-deepPurple hover:bg-sandDark">Sec D</button>
+              <button onclick="jumpToExamQuestion(36)" class="p-1.5 rounded-lg bg-sand text-deepPurple hover:bg-sandDark">Sec E</button>
+            </div>
+          </div>
+          <button onclick="confirmSubmitExam()" class="w-full py-3 rounded-xl bg-deepPurple hover:bg-black text-brandYellow font-extrabold text-sm shadow transition-all flex items-center justify-center gap-2">
+            Finish & Submit Examination
+          </button>
+        </div>
+      </div>
+    </section>
+    <section id="view-examination-result" class="view-section space-y-8">
+      <div class="bg-gradient-to-r from-deepPurple via-[#4A4170] to-deepPurple text-cream p-8 md:p-10 rounded-3xl shadow-xl space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="bg-white/10 px-3 py-1 rounded-full text-xs font-semibold text-brandYellow inline-block mb-2">
+              Official Evaluation Report • CBSE 2026–27
             </span>
-            <span class="text-xs font-mono text-muted">${rev.question_id}</span>
+            <h2 class="text-3xl font-extrabold text-cream" id="result-paper-title">CBSE Board Exam Simulation</h2>
+            <p class="text-xs text-sand" id="result-meta-info">Candidate: Aarav Sharma • Session: 2026-27</p>
           </div>
-
-          <p class="font-semibold text-deepPurple text-base">${rev.question_text}</p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div class="p-3 rounded-xl bg-white/70 border border-sandDark">
-              <span class="text-xs text-muted block font-semibold">Your Answer:</span>
-              <span class="font-bold ${rev.is_correct ? 'text-green-800' : 'text-red-800'}">${subChoice}</span>
-            </div>
-            <div class="p-3 rounded-xl bg-white/70 border border-sandDark">
-              <span class="text-xs text-muted block font-semibold">Correct Answer:</span>
-              <span class="font-bold text-deepPurple">${correctChoice}</span>
-            </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-sand uppercase tracking-wider block">Overall Marks</span>
+            <div class="text-5xl font-black text-brandYellow tracking-tight" id="result-score-display">0 / 80</div>
+            <span class="text-sm font-bold text-cream block" id="result-pct-display">0.0%</span>
           </div>
-
-          <div class="bg-white p-4 rounded-xl border border-sandDark text-sm space-y-1">
-            <span class="text-xs font-bold text-deepPurple uppercase tracking-wider block">NCERT Step-by-Step Explanation:</span>
-            <p class="text-muted leading-relaxed">${rev.explanation}</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/10 text-center">
+          <div class="p-3 rounded-xl bg-white/5">
+            <span class="text-[11px] text-sand block font-medium">Performance Grade</span>
+            <span class="text-lg font-extrabold text-brandYellow" id="result-grade-display">A1 (Distinction)</span>
           </div>
-        `;
-        reviewsList.appendChild(card);
-      });
-
-      if (window.renderMathInElement) {
-        renderMathInElement(reviewsList, {
-          delimiters: [
-            { left: '$$', right: '$$', display: true },
-            { left: '$', right: '$', display: false }
-          ]
-        });
-      }
-
-      showToast('Assessment evaluated and learner mastery updated!');
-    }
-
-    // ------------------------------------------------------------------------------
-    // 3. Concept Mastery View
-    // ------------------------------------------------------------------------------
-    async function loadMasteryView() {
-      try {
-        const res = await fetch(`/api/student/mastery?student_id=${currentStudentId}&chapter_id=CH-01`);
-        if (!res.ok) throw new Error('Failed to load mastery profile');
-        allMasteryItems = await res.json();
-        renderMasteryGrid(allMasteryItems);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    function renderMasteryGrid(items) {
-      const grid = document.getElementById('full-mastery-grid');
-      grid.innerHTML = '';
-
-      items.forEach(c => {
-        const card = document.createElement('div');
-        card.className = 'bg-sand p-5 rounded-2xl border border-sandDark shadow-sm flex flex-col justify-between';
-        
-        let statusBadge = '';
-        if (c.status === 'STRONG') statusBadge = '<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full">STRONG</span>';
-        else if (c.status === 'IMPROVING') statusBadge = '<span class="bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-0.5 rounded-full">IMPROVING</span>';
-        else if (c.status === 'DEVELOPING') statusBadge = '<span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full">DEVELOPING</span>';
-        else statusBadge = '<span class="bg-sandDark text-muted text-xs font-bold px-2.5 py-0.5 rounded-full">UNASSESSED</span>';
-
-        const pct = Math.round(c.mastery_score * 100);
-
-        card.innerHTML = `
+          <div class="p-3 rounded-xl bg-white/5">
+            <span class="text-[11px] text-sand block font-medium">Time Spent</span>
+            <span class="text-lg font-extrabold text-cream" id="result-time-spent-display">120m</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5">
+            <span class="text-[11px] text-sand block font-medium">Questions Evaluated</span>
+            <span class="text-lg font-extrabold text-cream" id="result-q-count-display">39 / 39</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5">
+            <span class="text-[11px] text-sand block font-medium">Board Status</span>
+            <span class="text-lg font-extrabold text-green-400" id="result-pass-status">QUALIFIED</span>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-xl font-bold text-deepPurple">Section-by-Section Score Breakdown</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" id="result-section-cards">
+        </div>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-sandDark shadow-sm space-y-4">
+        <h3 class="text-lg font-bold text-deepPurple">Unit-Wise Syllabus Performance (Units I to V)</h3>
+        <div class="space-y-4" id="result-unit-bars">
+        </div>
+      </div>
+      <div class="bg-sand p-6 rounded-3xl border border-sandDark flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="space-y-1">
+          <span class="text-xs font-extrabold text-deepPurple uppercase tracking-wider block">🎯 Recommended Pedagogical Action</span>
+          <p class="text-sm font-semibold text-deepPurple" id="result-rec-reason">Review identified weak concepts to solidify board readiness.</p>
+        </div>
+        <button onclick="executeResultRecommendation()" class="px-6 py-3 rounded-xl bg-deepPurple hover:bg-black text-brandYellow font-extrabold text-xs shadow transition-all whitespace-nowrap">
+          Open Targeted Remediation &rarr;
+        </button>
+      </div>
+      <div class="bg-white p-6 md:p-8 rounded-3xl border border-sandDark shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b border-sandDark pb-4">
           <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-mono text-muted">${c.concept_id}</span>
-              ${statusBadge}
-            </div>
-            <h4 class="font-bold text-deepPurple text-base mb-1">${c.concept_name}</h4>
-            <p class="text-xs text-muted mb-4">Topic: ${c.topic_id}</p>
+            <h3 class="text-xl font-bold text-deepPurple">Detailed Question-Wise Marking & NCERT Solutions</h3>
+            <p class="text-xs text-muted">Review your answers against official CBSE marking schemes, rubrics, and textbook explanations.</p>
           </div>
-          <div>
-            <div class="flex items-center justify-between text-xs font-semibold mb-1">
-              <span>Mastery Score</span>
-              <span>${pct}%</span>
-            </div>
-            <div class="w-full bg-sandDark h-2 rounded-full overflow-hidden mb-3">
-              <div class="bg-brandYellow h-full" style="width: ${pct}%"></div>
-            </div>
-            <div class="flex items-center justify-between text-xs text-muted">
-              <span>Attempts: ${c.total_attempts}</span>
-              <button onclick="loadRemediationForConcept('${c.concept_id}')" class="font-bold text-deepPurple hover:underline">Remediate &rarr;</button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function filterMastery(status) {
-      document.querySelectorAll('.mastery-filter-btn').forEach(b => {
-        b.classList.remove('bg-deepPurple', 'text-cream');
-        b.classList.add('bg-sand', 'text-muted');
-      });
-      event.target.classList.remove('bg-sand', 'text-muted');
-      event.target.classList.add('bg-deepPurple', 'text-cream');
-
-      if (status === 'ALL') {
-        renderMasteryGrid(allMasteryItems);
-      } else {
-        const filtered = allMasteryItems.filter(item => item.status === status);
-        renderMasteryGrid(filtered);
-      }
-    }
-
-    // ------------------------------------------------------------------------------
-    // 4. Adaptive Question Practice
-    // ------------------------------------------------------------------------------
-    async function loadAdaptiveQuestion() {
-      switchView('adaptive');
-      document.getElementById('adapt-feedback-box').classList.add('hidden');
-      document.getElementById('btn-submit-adapt').disabled = false;
-
-      try {
-        const res = await fetch(`/api/questions/next?student_id=${currentStudentId}&chapter_id=CH-01`);
-        if (!res.ok) throw new Error('Failed to fetch adaptive question');
-        currentAdaptiveRec = await res.json();
-
-        const rec = currentAdaptiveRec;
-        document.getElementById('adapt-concept-name').innerText = `Concept: ${rec.target_concept_name} (${rec.target_concept_id})`;
-        document.getElementById('adapt-rationale').innerText = rec.selection_rationale;
-
-        const q = rec.question;
-        document.getElementById('adapt-qtype').innerText = q.question_type;
-        document.getElementById('adapt-diff').innerText = rec.difficulty;
-        document.getElementById('adapt-qtext').innerText = q.question_text;
-
-        const optsContainer = document.getElementById('adapt-options-container');
-        optsContainer.innerHTML = '';
-
-        if (q.options) {
-          for (const [key, text] of Object.entries(q.options)) {
-            const card = document.createElement('div');
-            card.className = 'option-card p-4 rounded-2xl border-2 border-sandDark bg-sandLight cursor-pointer flex items-center gap-4';
-            card.onclick = () => {
-              optsContainer.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
-              card.classList.add('selected');
-              card.dataset.selectedKey = key;
-            };
-            card.innerHTML = `
-              <div class="w-8 h-8 rounded-xl font-bold bg-sandDark text-muted flex items-center justify-center text-sm">
-                ${key}
-              </div>
-              <div class="text-sm font-medium text-deepPurple flex-1">
-                ${text}
-              </div>
-            `;
-            optsContainer.appendChild(card);
-          }
-        }
-
-        if (window.renderMathInElement) {
-          renderMathInElement(document.getElementById('view-adaptive'), {
-            delimiters: [
-              { left: '$$', right: '$$', display: true },
-              { left: '$', right: '$', display: false }
-            ]
-          });
-        }
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    async function submitAdaptiveAnswer() {
-      if (!currentAdaptiveRec) return;
-      const q = currentAdaptiveRec.question;
-      const selected = document.querySelector('#adapt-options-container .option-card.selected');
-      if (!selected) {
-        showToast('Please select an option before submitting.', false);
-        return;
-      }
-
-      const chosenKey = selected.dataset.selectedKey;
-      try {
-        const res = await fetch(`/api/assessments/start`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            student_id: currentStudentId,
-            chapter_id: 'CH-01',
-            question_count: 1
-          })
-        });
-        const asm = await res.json();
-
-        const evalRes = await fetch(`/api/assessments/${asm.assessment_id}/answers`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            student_id: currentStudentId,
-            question_id: q.question_id,
-            submitted_answer: { selected_option: chosenKey },
-            time_spent_seconds: 45
-          })
-        });
-        const evalData = await evalRes.json();
-
-        const fb = document.getElementById('adapt-feedback-box');
-        fb.classList.remove('hidden');
-        if (evalData.is_correct) {
-          fb.className = 'p-5 rounded-2xl border text-sm leading-relaxed space-y-2 bg-green-50 border-green-300 text-green-900';
-          fb.innerHTML = `
-            <div class="flex items-center gap-2 font-bold text-base text-green-800">
-              <span>✓ Correct Answer!</span>
-            </div>
-            <p>${evalData.feedback}</p>
-          `;
-        } else {
-          fb.className = 'p-5 rounded-2xl border text-sm leading-relaxed space-y-2 bg-red-50 border-red-300 text-red-900';
-          fb.innerHTML = `
-            <div class="flex items-center gap-2 font-bold text-base text-red-800">
-              <span>✗ Incorrect</span>
-            </div>
-            <p>${evalData.feedback}</p>
-          `;
-        }
-
-        document.getElementById('btn-submit-adapt').disabled = true;
-        showToast(evalData.is_correct ? 'Correct! Mastery updated.' : 'Answer evaluated.');
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    // ------------------------------------------------------------------------------
-    // 5. Targeted Remediation View (P4)
-    // ------------------------------------------------------------------------------
-    async function loadRemediationView(conceptId = null) {
-      switchView('remediation');
-      document.getElementById('rem-feedback-box').classList.add('hidden');
-      document.getElementById('btn-submit-rem').disabled = false;
-
-      try {
-        let url = `/api/student/remediation?student_id=${currentStudentId}`;
-        if (conceptId) url += `&concept_id=${conceptId}`;
-
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to load remediation');
-        currentRemediation = await res.json();
-
-        const r = currentRemediation;
-        document.getElementById('rem-target-concept-title').innerText = `${r.concept_name} (${r.concept_id})`;
-        document.getElementById('rem-mastery-badge').innerText = `Mastery: ${Math.round(r.current_mastery * 100)}%`;
-        
-        if (r.prerequisite_concept_id) {
-          document.getElementById('rem-prereq-text').innerText = `Prerequisite Foundation Gap: ${r.prerequisite_concept_name || r.prerequisite_concept_id}`;
-          document.getElementById('rem-gap-summary').innerText = r.gap_summary;
-        } else {
-          document.getElementById('rem-prereq-text').innerText = 'Direct Remediation Focus';
-          document.getElementById('rem-gap-summary').innerText = r.gap_summary;
-        }
-
-        document.getElementById('rem-ncert-ref').innerText = r.ncert_reference;
-        document.getElementById('rem-explanation').innerText = r.explanation;
-        document.getElementById('rem-example').innerText = r.example_activity;
-
-        // Render Practice Question
-        const qCard = document.getElementById('rem-practice-card');
-        const optsContainer = document.getElementById('rem-options-container');
-        optsContainer.innerHTML = '';
-
-        if (r.practice_question) {
-          qCard.classList.remove('hidden');
-          const pq = r.practice_question;
-          document.getElementById('rem-q-id').innerText = pq.question_id;
-          document.getElementById('rem-q-text').innerText = pq.question_text;
-
-          if (pq.options) {
-            for (const [key, text] of Object.entries(pq.options)) {
-              const card = document.createElement('div');
-              card.className = 'option-card p-4 rounded-2xl border-2 border-sandDark bg-sandLight cursor-pointer flex items-center gap-4';
-              card.onclick = () => {
-                optsContainer.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
-                card.classList.add('selected');
-                card.dataset.selectedKey = key;
-              };
-              card.innerHTML = `
-                <div class="w-8 h-8 rounded-xl font-bold bg-sandDark text-muted flex items-center justify-center text-sm">
-                  ${key}
-                </div>
-                <div class="text-sm font-medium text-deepPurple flex-1">
-                  ${text}
-                </div>
-              `;
-              optsContainer.appendChild(card);
-            }
-          }
-        } else {
-          qCard.classList.add('hidden');
-        }
-
-        if (window.renderMathInElement) {
-          renderMathInElement(document.getElementById('view-remediation'), {
-            delimiters: [
-              { left: '$$', right: '$$', display: true },
-              { left: '$', right: '$', display: false }
-            ]
-          });
-        }
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function loadRemediationForConcept(conceptId) {
-      loadRemediationView(conceptId);
-    }
-
-    async function submitRemediationPractice() {
-      if (!currentRemediation || !currentRemediation.practice_question) return;
-      const selected = document.querySelector('#rem-options-container .option-card.selected');
-      if (!selected) {
-        showToast('Please select an option before submitting.', false);
-        return;
-      }
-
-      const chosenKey = selected.dataset.selectedKey;
-      try {
-        const res = await fetch('/api/student/remediation/complete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            remediation_id: currentRemediation.remediation_id,
-            student_id: currentStudentId,
-            question_id: currentRemediation.practice_question.question_id,
-            student_answer: { selected_option: chosenKey }
-          })
-        });
-
-        if (!res.ok) throw new Error('Remediation submission failed');
-        const data = await res.json();
-
-        const fb = document.getElementById('rem-feedback-box');
-        fb.classList.remove('hidden');
-        if (data.is_correct) {
-          fb.className = 'p-5 rounded-2xl border text-sm leading-relaxed space-y-2 bg-green-50 border-green-300 text-green-900';
-          fb.innerHTML = `
-            <div class="flex items-center gap-2 font-bold text-base text-green-800">
-              <span>✓ Remediation Successful!</span>
-            </div>
-            <p>${data.feedback}</p>
-            <p class="text-xs text-green-950 font-bold">Mastery increased from ${Math.round(data.mastery_before * 100)}% to ${Math.round(data.mastery_after * 100)}% (+${Math.round(data.mastery_delta * 100)}%).</p>
-            <p class="text-xs text-muted">Next spaced repetition scheduled for: ${new Date(data.next_revision_date).toLocaleDateString()}</p>
-          `;
-        } else {
-          fb.className = 'p-5 rounded-2xl border text-sm leading-relaxed space-y-2 bg-red-50 border-red-300 text-red-900';
-          fb.innerHTML = `
-            <div class="flex items-center gap-2 font-bold text-base text-red-800">
-              <span>✗ Keep Reviewing</span>
-            </div>
-            <p>${data.feedback}</p>
-            <p class="text-xs text-muted">Interval reset to 1 day for reinforcement.</p>
-          `;
-        }
-
-        document.getElementById('btn-submit-rem').disabled = true;
-        showToast('Remediation practice completed!');
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    // ------------------------------------------------------------------------------
-    // 6. Revision Center View (P4)
-    // ------------------------------------------------------------------------------
-    let allRevisionItems = [];
-
-    async function loadRevisionView() {
-      switchView('revision');
-      try {
-        const [dueRes, upRes] = await Promise.all([
-          fetch(`/api/student/revision-due?student_id=${currentStudentId}`),
-          fetch(`/api/student/revision-upcoming?student_id=${currentStudentId}`)
-        ]);
-
-        const dueItems = dueRes.ok ? await dueRes.json() : [];
-        const upItems = upRes.ok ? await upRes.json() : [];
-
-        document.getElementById('rev-due-count').innerText = dueItems.length;
-        document.getElementById('rev-upcoming-count').innerText = upItems.length;
-
-        allRevisionItems = [...dueItems, ...upItems];
-        renderRevisionList(dueItems.length > 0 ? dueItems : upItems);
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function renderRevisionList(items) {
-      const container = document.getElementById('revision-items-list');
-      container.innerHTML = '';
-
-      if (items.length === 0) {
-        container.innerHTML = '<p class="text-sm text-muted text-center py-8">No revision items scheduled. Complete a diagnostic test to auto-schedule concept reviews!</p>';
-        return;
-      }
-
-      items.forEach(item => {
-        const card = document.createElement('div');
-        const isDue = (item.review_status === 'DUE' || item.review_status === 'OVERDUE');
-        card.className = `p-6 rounded-2xl border-2 bg-sand flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${isDue ? 'border-errorRed/40 bg-red-50/20' : 'border-sandDark'}`;
-
-        card.innerHTML = `
-          <div>
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-xs font-mono text-muted">${item.concept_id}</span>
-              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${isDue ? 'bg-red-100 text-red-800' : 'bg-sandDark text-muted'}">
-                ${item.review_status}
-              </span>
-            </div>
-            <h4 class="font-bold text-deepPurple text-lg">${item.concept_name}</h4>
-            <div class="flex items-center gap-4 text-xs text-muted mt-2">
-              <span>Interval: <strong>${item.interval_days} days</strong></span>
-              <span>Reviews Completed: <strong>${item.review_count}</strong></span>
-              <span>Current Mastery: <strong>${Math.round(item.current_mastery * 100)}%</strong></span>
-            </div>
-          </div>
-          <div class="flex items-center gap-2 w-full md:w-auto">
-            <button onclick="executeRevisionCheck('${item.concept_id}', true)" class="flex-1 md:flex-initial px-4 py-2 rounded-xl bg-successGreen hover:bg-green-700 text-cream font-bold text-xs shadow transition-all">
-              Mark Correct
-            </button>
-            <button onclick="executeRevisionCheck('${item.concept_id}', false)" class="flex-1 md:flex-initial px-4 py-2 rounded-xl bg-sandDark hover:bg-errorRed hover:text-cream text-deepPurple font-bold text-xs transition-all">
-              Needs Practice
-            </button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    async function executeRevisionCheck(conceptId, isCorrect) {
-      try {
-        const res = await fetch('/api/student/revision/complete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            student_id: currentStudentId,
-            concept_id: conceptId,
-            is_correct: isCorrect,
-            difficulty_rating: isCorrect ? 'NORMAL' : 'HARD'
-          })
-        });
-
-        if (!res.ok) throw new Error('Failed to record revision');
-        const data = await res.json();
-        showToast(data.message, isCorrect);
-        loadRevisionView();
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function filterRevisions(type) {
-      document.querySelectorAll('.rev-tab-btn').forEach(b => {
-        b.classList.remove('bg-deepPurple', 'text-cream');
-        b.classList.add('bg-sand', 'text-muted');
-      });
-      event.target.classList.remove('bg-sand', 'text-muted');
-      event.target.classList.add('bg-deepPurple', 'text-cream');
-
-      if (type === 'DUE') {
-        const due = allRevisionItems.filter(i => i.review_status === 'DUE' || i.review_status === 'OVERDUE');
-        renderRevisionList(due);
-      } else {
-        const upcoming = allRevisionItems.filter(i => i.review_status === 'PENDING');
-        renderRevisionList(upcoming);
-      }
-    }
-
-    // ------------------------------------------------------------------------------
-    // 7. Misconceptions Review View (P4)
-    // ------------------------------------------------------------------------------
-    async function loadMisconceptionsView() {
-      switchView('misconceptions');
-      try {
-        const res = await fetch(`/api/student/misconceptions?student_id=${currentStudentId}`);
-        if (!res.ok) throw new Error('Failed to load misconceptions');
-        const items = await res.json();
-
-        const container = document.getElementById('misconception-items-list');
-        container.innerHTML = '';
-
-        if (items.length === 0) {
-          container.innerHTML = '<p class="text-sm text-muted text-center py-8">No misconceptions detected! Student demonstrates verified conceptual understanding.</p>';
-          return;
-        }
-
-        items.forEach(item => {
-          const card = document.createElement('div');
-          let badgeClass = 'bg-amber-100 text-amber-900 border-amber-300';
-          if (item.status === 'CONFIRMED') badgeClass = 'bg-red-100 text-red-900 border-red-300';
-          if (item.status === 'RESOLVED') badgeClass = 'bg-green-100 text-green-900 border-green-300';
-
-          card.className = 'bg-sand p-6 rounded-2xl border border-sandDark shadow-sm space-y-3';
-          card.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-muted">${item.misconception_tag}</span>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${badgeClass}">
-                ${item.status} (Evidence: ${item.evidence_count}x)
-              </span>
-            </div>
-            <h4 class="font-bold text-deepPurple text-lg">${item.concept_name}</h4>
-            <div class="bg-sandLight p-3.5 rounded-xl border border-sandDark text-xs text-muted leading-relaxed">
-              <span class="font-bold text-deepPurple block mb-1">Diagnostic Evidence:</span>
-              ${item.evidence_text || 'Demonstrated conceptual ambiguity on reaction stoichiometry.'}
-            </div>
-            <div class="flex justify-end pt-1">
-              <button onclick="loadRemediationForConcept('${item.concept_id}')" class="text-xs font-bold text-deepPurple hover:underline">
-                Resolve via Targeted Remediation &rarr;
-              </button>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    // ------------------------------------------------------------------------------
-    // 8. Teacher Dashboard View (P4)
-    // ------------------------------------------------------------------------------
-    async function loadTeacherDashboard() {
-      switchView('teacher');
-      try {
-        const [dashRes, stuRes, miscRes] = await Promise.all([
-          fetch('/api/teacher/dashboard?role=teacher'),
-          fetch('/api/teacher/students?role=teacher'),
-          fetch('/api/teacher/misconceptions?role=teacher')
-        ]);
-
-        if (!dashRes.ok) throw new Error('Teacher authorization required');
-        const dash = await dashRes.json();
-        const students = await stuRes.json();
-        const miscList = await miscRes.json();
-
-        document.getElementById('t-kpi-students').innerText = dash.total_students;
-        document.getElementById('t-kpi-accuracy').innerText = `${Math.round(dash.average_accuracy_pct)}%`;
-        document.getElementById('t-kpi-interventions').innerText = dash.students_requiring_intervention.length;
-
-        // Weakest Concepts
-        const weakContainer = document.getElementById('t-weakest-concepts-list');
-        weakContainer.innerHTML = '';
-        if (dash.weakest_concepts.length > 0) {
-          dash.weakest_concepts.forEach(c => {
-            const row = document.createElement('div');
-            row.className = 'p-3 rounded-xl bg-sandLight border border-sandDark flex items-center justify-between text-xs';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${c.concept_name}</span>
-                <span class="text-muted">Attempts: ${c.assessed_students}</span>
-              </div>
-              <span class="font-extrabold text-errorRed">${c.avg_mastery_pct}% avg</span>
-            `;
-            weakContainer.appendChild(row);
-          });
-        } else {
-          weakContainer.innerHTML = '<p class="text-xs text-muted text-center py-4">No cohort weaknesses below 60%.</p>';
-        }
-
-        // Common Misconceptions
-        const miscContainer = document.getElementById('t-common-misc-list');
-        miscContainer.innerHTML = '';
-        if (miscList.length > 0) {
-          miscList.slice(0, 4).forEach(m => {
-            const row = document.createElement('div');
-            row.className = 'p-3 rounded-xl bg-sandLight border border-sandDark flex items-center justify-between text-xs';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${m.misconception_tag}</span>
-                <span class="text-muted">${m.concept_name || m.concept_id}</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800">${m.affected_students} students</span>
-            `;
-            miscContainer.appendChild(row);
-          });
-        } else {
-          miscContainer.innerHTML = '<p class="text-xs text-muted text-center py-4">No recurring misconceptions found.</p>';
-        }
-
-        // Student Roster
-        const tableBody = document.getElementById('t-students-table-body');
-        tableBody.innerHTML = '';
-        students.forEach(s => {
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-sandLight transition-colors';
-          tr.innerHTML = `
-            <td class="py-3 px-4 font-mono text-xs text-muted">${s.student_id}</td>
-            <td class="py-3 px-4 font-bold text-deepPurple">${s.name}</td>
-            <td class="py-3 px-4 font-semibold">${Math.round(s.accuracy_pct)}%</td>
-            <td class="py-3 px-4 font-semibold">${Math.round(s.mastery_pct)}%</td>
-            <td class="py-3 px-4">
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${s.needs_intervention ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
-                ${s.needs_intervention ? 'Intervention Needed' : 'On Track'}
-              </span>
-            </td>
-            <td class="py-3 px-4 text-right">
-              <button onclick="drilldownStudent('${s.student_id}')" class="font-bold text-deepPurple text-xs hover:underline">
-                Drill-Down &rarr;
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(tr);
-        });
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    async function drilldownStudent(studentId) {
-      try {
-        const res = await fetch(`/api/teacher/students/${studentId}?role=teacher`);
-        if (!res.ok) throw new Error('Failed to load student details');
-        const detail = await res.json();
-
-        document.getElementById('t-drill-name').innerText = `${detail.student.name} (${detail.student.student_id})`;
-
-        // Intervention Notes
-        const notesContainer = document.getElementById('t-drill-notes');
-        notesContainer.innerHTML = '';
-        detail.intervention_notes.forEach(note => {
-          const p = document.createElement('p');
-          p.className = 'p-3 rounded-xl bg-sand text-xs text-deepPurple font-medium leading-relaxed border border-sandDark';
-          p.innerText = `• ${note}`;
-          notesContainer.appendChild(p);
-        });
-
-        // Active Misconceptions
-        const miscContainer = document.getElementById('t-drill-misconceptions');
-        miscContainer.innerHTML = '';
-        if (detail.active_misconceptions.length > 0) {
-          detail.active_misconceptions.forEach(m => {
-            const p = document.createElement('div');
-            p.className = 'p-3 rounded-xl bg-red-50 text-xs text-red-900 border border-red-200';
-            p.innerHTML = `<strong>${m.concept_name}:</strong> ${m.misconception_tag} (${m.status})`;
-            miscContainer.appendChild(p);
-          });
-        } else {
-          miscContainer.innerHTML = '<p class="text-xs text-muted">No active misconceptions.</p>';
-        }
-
-        document.getElementById('t-drilldown-panel').classList.remove('hidden');
-        document.getElementById('t-drilldown-panel').scrollIntoView({ behavior: 'smooth' });
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function closeDrilldown() {
-      document.getElementById('t-drilldown-panel').classList.add('hidden');
-    }
-
-    // Initialize application on load
-    window.addEventListener('DOMContentLoaded', () => {
-      loadDashboard();
-    });
-  </script>
-
+        </div>
+        <div class="space-y-4" id="result-question-reviews-list">
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pb-8">
+        <button onclick="loadExaminationHub()" class="px-6 py-3 rounded-xl bg-sandDark hover:bg-sand text-deepPurple font-bold text-sm transition-all">
+          &larr; Back to Examination Hub
+        </button>
+        <button onclick="switchView('dashboard')" class="px-6 py-3 rounded-xl bg-deepPurple text-cream font-bold text-sm shadow transition-all">
+          Return to Dashboard
+        </button>
+      </div>
+    </section>
+  </main>
+  <script src="/index.js"></script>
 </body>
 </html>

@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf8f2">
+<title>Sign in · BodhAI (बोध AI)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#FAF8F2;--sand:#EFECE1;--yellow:#F9BE27;--purple:#7868C7;--deep:#3A3359;--ink:#242235;--muted:#777487;--line:#e8e4d9;--white:#fffefa}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100vh;max-height:100vh;overflow:hidden;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif;font-size:15px}
+button,input{font:inherit}
+.page{height:100vh;max-height:100vh;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;padding:14px 18px;gap:18px;box-sizing:border-box}
+.story{position:relative;overflow:hidden;border-radius:24px;background:var(--deep);color:white;height:calc(100vh - 28px);max-height:calc(100vh - 28px);padding:26px 30px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box}
+.story:before{content:"";position:absolute;width:440px;height:440px;right:-160px;top:16%;border-radius:50%;background:radial-gradient(circle,rgba(120,104,199,.55),transparent 70%)}
+.story:after{content:"";position:absolute;width:400px;height:400px;left:-160px;bottom:-130px;border-radius:50%;background:radial-gradient(circle,rgba(249,190,39,.22),transparent 70%)}
+.brand,.story-copy,.visual,.story-foot{position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:12px;font:800 22px "Plus Jakarta Sans";letter-spacing:-.5px}
+.brand-mark{width:40px;height:40px;border-radius:12px;background:var(--yellow);display:grid;place-items:center;color:var(--deep);font-size:24px;box-shadow:0 6px 14px rgba(0,0,0,0.15)}
+.brand small{display:block;font:600 11px "DM Sans";letter-spacing:1.8px;color:#c9c4dd;margin-top:2px}
+.story-copy{max-width:480px;margin-top:10px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#f8d77c;background:#f9be271c;border:1px solid #f9be273d;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--yellow)}
+h1{font:800 clamp(26px,3.2vw,40px)/1.15 "Plus Jakarta Sans";letter-spacing:-1.5px;margin:12px 0 10px}
+h1 span{color:var(--yellow)}
+.story-copy p{color:#dcd8ea;font-size:15px;line-height:1.6;max-width:440px;margin:0}
+.visual{margin:8px auto;width:min(100%,340px);height:170px;display:grid;place-items:center}
+.orbit{width:160px;height:160px;border:1px solid #ffffff30;border-radius:50%;position:relative;display:grid;place-items:center;animation:spin 60s linear infinite}
+.orbit:before,.orbit:after{content:"";position:absolute;border:1px dashed #ffffff30;border-radius:50%}
+.orbit:before{inset:16px}
+.orbit:after{inset:34px}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.core{width:76px;height:76px;border-radius:22px;background:var(--yellow);color:var(--deep);display:grid;place-items:center;font:800 32px "Plus Jakarta Sans";box-shadow:0 10px 30px #f9be2740;transform:rotate(-7deg)}
+.node{position:absolute;width:34px;height:34px;border-radius:10px;background:#fff;color:var(--deep);display:grid;place-items:center;box-shadow:0 6px 18px #0003;font-size:15px}
+.n1{top:-6px;left:63px}
+.n2{right:-6px;top:63px}
+.n3{bottom:-6px;left:63px}
+.n4{left:-6px;top:63px}
+.story-foot{display:flex;justify-content:space-between;color:#c4bfd6;font-size:12px;gap:10px}
+.story-foot strong{color:#fff}
+.form-side{height:calc(100vh - 28px);max-height:calc(100vh - 28px);display:flex;align-items:center;justify-content:center;padding:10px 20px;overflow:hidden;box-sizing:border-box}
+.form-wrap{width:100%;max-width:430px;display:flex;flex-direction:column;justify-content:center}
+.mobile-brand{display:none}
+.welcome{margin-bottom:12px}
+.kicker{color:var(--purple);font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase}
+h2{font:800 clamp(24px,2.5vw,30px)/1.15 "Plus Jakarta Sans";letter-spacing:-1px;margin:4px 0;color:var(--deep)}
+.welcome p{color:var(--muted);font-size:14px;line-height:1.4;margin:0}
+.role-label{font-size:13px;font-weight:700;color:#5f5b70;margin-bottom:6px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.role{border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:#fffefaab;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;color:var(--muted);transition:.2s}
+.role.active{border-color:var(--purple);background:#f2effb;color:var(--deep);box-shadow:0 0 0 2.5px #7868c714}
+.role-icon{width:32px;height:32px;border-radius:9px;background:var(--sand);display:grid;place-items:center;font-size:16px}
+.role b{display:block;font-size:13px}
+.role small{display:block;font-size:11px;margin-top:1px;color:var(--muted)}
+.field{margin:8px 0}
+.field-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+label{font-size:13px;font-weight:700;color:#514d63}
+.field input{width:100%;height:42px;border:1px solid var(--line);border-radius:10px;padding:0 14px;background:var(--white);outline:none;color:var(--ink);font-size:14px;transition:.2s}
+.field input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #7868c71a}
+.field input::placeholder{color:#aaa6b2}
+.password-wrap{position:relative}
+.password-wrap input{padding-right:65px}
+.toggle-pass{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;padding:6px}
+.forgot{border:0;background:none;padding:0;color:var(--purple);font-size:12px;font-weight:700;cursor:pointer}
+.options{display:flex;align-items:center;justify-content:space-between;margin:3px 0 10px}
+.check{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12.5px;cursor:pointer}
+.check input{accent-color:var(--purple);width:14px;height:14px}
+.submit{width:100%;height:44px;border:0;border-radius:10px;background:var(--deep);color:#fff;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 18px #3a335924;transition:.2s}
+.submit:hover{background:#4b426f;transform:translateY(-1px)}
+.arrow{font-size:16px}
+.divider{display:flex;align-items:center;gap:10px;color:#aaa6b2;font-size:11px;margin:10px 0;letter-spacing:.5px;font-weight:700}
+.divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}
+.demo-chips{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:2px}
+.chip{display:flex;flex-direction:column;justify-content:center;padding:7px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;text-align:left;transition:.15s}
+.chip:hover{border-color:var(--purple);background:#fbfaff;transform:translateY(-1px)}
+.chip-header{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.chip-name{font-size:12.5px;font-weight:700;color:var(--deep)}
+.chip-desc{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip-badge{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:700}
+.signup{text-align:center;color:var(--muted);font-size:13px;margin:10px 0 0}
+.signup a{color:var(--purple);font-weight:700;text-decoration:none}
+.legal{text-align:center;color:#aaa6b2;font-size:11px;line-height:1.3;margin-top:6px}
+.legal a{color:#777287;text-decoration:none}
+.message{display:none;margin:0 0 10px;padding:9px 12px;border-radius:9px;font-size:13px;line-height:1.4}
+.message.error{display:block;background:#fff0ed;color:#a44636;border:1px solid #f5d1c9}
+.message.info{display:block;background:#f0edfa;color:var(--deep);border:1px solid #ded7f3}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--deep);color:white;padding:11px 18px;border-radius:10px;font-size:13px;transition:.25s;z-index:50;max-width:calc(100% - 32px);text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.25)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){
+  html,body{overflow-y:auto}
+  .page{grid-template-columns:1fr;padding:12px;height:auto;max-height:none;overflow:visible}
+  .story{display:none}
+  .form-side{height:auto;max-height:none;padding:24px 14px}
+  .mobile-brand{display:flex;margin-bottom:24px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="story" aria-label="BodhAI introduction">
+ <div class="brand"><div class="brand-mark">ब</div><div>BodhAI<small>LEARN WITH UNDERSTANDING</small></div></div>
+ <div>
+  <div class="story-copy">
+   <div class="eyebrow"><span class="dot"></span>Your learning journey starts here</div>
+   <h1>Learn smarter.<br><span>Understand deeper.</span></h1>
+   <p>A more thoughtful way to learn, discover knowledge gaps, strengthen core concepts, and build lasting academic confidence.</p>
+  </div>
+  <div class="visual" aria-hidden="true">
+   <div class="orbit">
+    <div class="core">ब</div>
+    <div class="node n1">✦</div>
+    <div class="node n2">⌘</div>
+    <div class="node n3">∑</div>
+    <div class="node n4">◎</div>
+   </div>
+  </div>
+ </div>
+ <div class="story-foot"><span>ADAPTIVE LEARNER MODEL</span><strong>Curiosity becomes clarity.</strong></div>
+</section>
+<section class="form-side">
+ <div class="form-wrap">
+  <div class="brand mobile-brand"><div class="brand-mark">ब</div><div style="color:var(--deep)">BodhAI<small style="color:var(--muted)">LEARN WITH UNDERSTANDING</small></div></div>
+  <header class="welcome">
+   <div class="kicker">Welcome back</div>
+   <h2>Sign in to BodhAI</h2>
+   <p>Your next learning breakthrough is just a step away.</p>
+  </header>
+  <div class="role-label">Continue as</div>
+  <div class="roles" role="group" aria-label="Choose account role">
+   <button class="role active" type="button" data-role="student" aria-pressed="true">
+    <span class="role-icon">🎓</span>
+    <span><b>Student</b><small>My learning space</small></span>
+   </button>
+   <button class="role" type="button" data-role="teacher" aria-pressed="false">
+    <span class="role-icon">📚</span>
+    <span><b>Teacher</b><small>Educator workspace</small></span>
+   </button>
+  </div>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <form id="loginForm" novalidate>
+   <div class="field">
+    <div class="field-head"><label for="email">Email address</label></div>
+    <input id="email" name="email" type="email" autocomplete="username" placeholder="aarav@bodhai.edu" value="aarav@bodhai.edu" required>
+   </div>
+   <div class="field">
+    <div class="field-head"><label for="password">Password</label><button class="forgot" type="button" id="forgotBtn">Forgot password?</button></div>
+    <div class="password-wrap">
+     <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" value="password123" required minlength="8">
+     <button class="toggle-pass" type="button" id="togglePass" aria-label="Show password">SHOW</button>
+    </div>
+   </div>
+   <div class="options">
+    <label class="check"><input type="checkbox" id="remember" checked>Remember me</label>
+    <span style="font-size:11px;color:#aaa6b2">256-bit Secure</span>
+   </div>
+   <button class="submit" type="submit" id="submitBtn"><span>Sign in</span><span class="arrow">→</span></button>
+  </form>
+  <div class="divider">OR CHOOSE INSTANT DEMO ACCOUNT</div>
+  <div id="demoAccountsPanel" class="demo-chips">
+   <div class="chip" onclick="quickLogin('aarav@bodhai.edu', 'password123', 'student')">
+    <div class="chip-header">
+     <span class="chip-name">Aarav Sharma</span>
+     <span class="chip-badge" style="background:#eaf7ee;color:#1e7e34">Top Learner</span>
+    </div>
+    <div class="chip-desc">Grade 10 · High Mastery</div>
+   </div>
+   <div class="chip" onclick="quickLogin('priya@bodhai.edu', 'password123', 'student')">
+    <div class="chip-header">
+     <span class="chip-name">Priya Patel</span>
+     <span class="chip-badge" style="background:#fff3cd;color:#856404">Remediation</span>
+    </div>
+    <div class="chip-desc">Grade 10 · Active Support</div>
+   </div>
+   <div class="chip" onclick="quickLogin('rohan@bodhai.edu', 'password123', 'student')">
+    <div class="chip-header">
+     <span class="chip-name">Rohan Verma</span>
+     <span class="chip-badge" style="background:#ede9fe;color:#5b21b6">Revision Due</span>
+    </div>
+    <div class="chip-desc">Grade 10 · Leitner Reviews</div>
+   </div>
+   <div class="chip" onclick="quickLogin('sunita@bodhai.edu', 'password123', 'teacher')">
+    <div class="chip-header">
+     <span class="chip-name">Dr. Sunita Rao</span>
+     <span class="chip-badge" style="background:#fef3c7;color:#92400e">Educator</span>
+    </div>
+    <div class="chip-desc">Senior Educator · Telemetry</div>
+   </div>
+  </div>
+  <p class="signup">Need instant access? <a href="/" id="guestLink">Open Dashboard as Guest</a></p>
+  <div class="legal">By continuing you agree to Terms & Privacy Policy.<br>© 2026 BodhAI (बोध AI) · Academic Session 2026–27.</div>
+ </div>
+</section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+// Check if user is already logged in; if so, immediately go to main page / home
+(function checkExistingSession(){
+  if (window.location.search.includes('logout=1')) {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch(e) {}
+    return;
+  }
+  const existingSession = localStorage.getItem('bodhai_user');
+  if (existingSession) {
+    try {
+      const user = JSON.parse(existingSession);
+      if (user && user.user_id) {
+        window.location.replace(user.role === 'teacher' ? '/teacher' : '/dashboard');
+      }
+    } catch(e) {
+      localStorage.removeItem('bodhai_user');
+    }
+  }
+})();
+const form=document.getElementById('loginForm');
+const emailInput=document.getElementById('email');
+const passwordInput=document.getElementById('password');
+const messageBox=document.getElementById('message');
+const toastBox=document.getElementById('toast');
+const submitBtn=document.getElementById('submitBtn');
+let selectedRole='student';
+let toastTimer;
+function notify(text){
+  toastBox.textContent=text;
+  toastBox.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toastBox.classList.remove('show'),3200);
+}
+function showMessage(text,type='info'){
+  messageBox.textContent=text;
+  messageBox.className='message '+type;
+}
+function clearMessage(){
+  messageBox.textContent='';
+  messageBox.className='message';
+}
+document.querySelectorAll('.role').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    selectedRole=btn.dataset.role;
+    document.querySelectorAll('.role').forEach(x=>{
+      let active = x === btn;
+      x.classList.toggle('active', active);
+      x.setAttribute('aria-pressed', String(active));
+    });
+    if(selectedRole==='teacher'){
+      emailInput.placeholder='sunita@bodhai.edu';
+      if(emailInput.value==='aarav@bodhai.edu') emailInput.value='sunita@bodhai.edu';
+    }else{
+      emailInput.placeholder='aarav@bodhai.edu';
+      if(emailInput.value==='sunita@bodhai.edu') emailInput.value='aarav@bodhai.edu';
+    }
+    clearMessage();
+  });
+});
+document.getElementById('togglePass').addEventListener('click',e=>{
+  let visible = passwordInput.type==='password';
+  passwordInput.type = visible ? 'text' : 'password';
+  e.currentTarget.textContent = visible ? 'HIDE' : 'SHOW';
+  e.currentTarget.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+});
+async function performLogin(email, password, role){
+  clearMessage();
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span>Signing in...</span>';
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, role })
+    });
+    const data = await res.json();
+    if(!res.ok || !data.success){
+      showMessage(data.message || 'Login failed. Please check credentials.', 'error');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>Sign in</span><span class="arrow">→</span>';
+      return;
+    }
+    localStorage.setItem('bodhai_user', JSON.stringify(data.user));
+    localStorage.setItem('bodhai_token', data.token);
+    localStorage.setItem('active_student_id', data.user.user_id);
+    localStorage.setItem('bodhai_role', data.user.role);
+    try {
+      await fetch('/api/student/activity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          student_id: data.user.user_id,
+          event_type: 'AUTH_LOGIN',
+          action_title: `Signed in as ${data.user.name} (${data.user.role})`,
+          details: { email: data.user.email, role: data.user.role, grade: data.user.grade },
+          duration_seconds: 60
+        })
+      });
+    } catch(err) {
+      console.warn('Telemetry error:', err);
+    }
+    notify(`Welcome back, ${data.user.name}! Redirecting...`);
+    showMessage(`Authentication successful as ${data.user.name}. Opening dashboard...`, 'info');
+    setTimeout(()=>{
+      window.location.replace(data.user.role === 'teacher' ? '/teacher' : '/dashboard');
+    }, 400);
+  } catch(err) {
+    console.error(err);
+    showMessage('Connection error. Server may be starting.', 'error');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<span>Sign in</span><span class="arrow">→</span>';
+  }
+}
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  if(!email || !emailInput.checkValidity()){
+    showMessage('Please enter a valid email address.', 'error');
+    emailInput.focus();
+    return;
+  }
+  if(!password || password.length < 8){
+    showMessage('Password must contain at least 8 characters.', 'error');
+    passwordInput.focus();
+    return;
+  }
+  performLogin(email, password, selectedRole);
+});
+function quickLogin(email, password, role){
+  emailInput.value = email;
+  passwordInput.value = password;
+  selectedRole = role;
+  document.querySelectorAll('.role').forEach(x=>{
+    let active = x.dataset.role === role;
+    x.classList.toggle('active', active);
+    x.setAttribute('aria-pressed', String(active));
+  });
+  performLogin(email, password, role);
+}
+document.getElementById('guestLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  const guestUser = {
+    user_id: 'STU-001',
+    name: 'Aarav Sharma',
+    email: 'aarav@bodhai.edu',
+    role: 'student',
+    grade: 10,
+    avatar: 'AS',
+    school: 'Delhi Public School, R.K. Puram'
+  };
+  localStorage.setItem('bodhai_user', JSON.stringify(guestUser));
+  localStorage.setItem('active_student_id', 'STU-001');
+  localStorage.setItem('bodhai_role', 'student');
+  window.location.replace('/');
+});
+document.getElementById('forgotBtn').addEventListener('click',()=>{
+  let v = emailInput.value.trim();
+  if(v && emailInput.checkValidity()){
+    notify('Password reset instructions sent to '+v+'.');
+  } else {
+    showMessage('Please enter email address first.', 'error');
+    emailInput.focus();
+  }
+});
+</script>
+</body>
+</html>

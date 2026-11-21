@@ -42,6 +42,7 @@ class DiagnosticAssessmentService:
         self.question_repo = question_repo
         self.evaluation_service = evaluation_service
         self.learner_service = learner_service
+        self.learner_repo = getattr(learner_service, "learner_repo", None)
         self.misconception_service = misconception_service
         self.spaced_repetition_service = spaced_repetition_service
 
@@ -49,42 +50,69 @@ class DiagnosticAssessmentService:
         self,
         student_id: str = "STU-001",
         chapter_id: str = "CH-01",
-        question_count: int = 5,
+        question_count: int = 10,
     ) -> AssessmentSession:
         """
         Initializes a balanced diagnostic assessment session.
-        Selects representative questions from Chapter 1 (balanced by difficulty and concept).
+        Strict 10-Question Structure:
+        - Questions 1 to 4: EASY (4 questions)
+        - Questions 5 to 7: MEDIUM (3 questions)
+        - Questions 8 to 10: HARD (3 questions)
         """
-        # Ensure student exists
         self.learner_service.get_or_create_student(student_id)
 
-        # Retrieve available Chapter 1 questions
         all_qs = self.question_repo.get_questions_by_chapter(chapter_id)
         if not all_qs:
             raise ValueError(f"No questions found for chapter '{chapter_id}' in question bank.")
 
-        # Balanced selection: e.g. 2 Easy, 2 Medium, 1 Hard
-        easy_qs = [q for q in all_qs if q.difficulty == QuestionDifficulty.EASY]
-        med_qs = [q for q in all_qs if q.difficulty == QuestionDifficulty.MEDIUM]
-        hard_qs = [q for q in all_qs if q.difficulty == QuestionDifficulty.HARD]
+        correctly_answered = self.assessment_repo.get_student_answered_question_ids(student_id, only_correct=True)
 
-        selected_qs: List[Question] = []
-        if easy_qs:
-            selected_qs.extend(easy_qs[:2])
-        if med_qs:
-            selected_qs.extend(med_qs[:2])
-        if hard_qs:
-            selected_qs.extend(hard_qs[:1])
+        candidate_qs = [q for q in all_qs if q.question_id not in correctly_answered]
+        if len(candidate_qs) < question_count:
+            candidate_qs = candidate_qs if candidate_qs else all_qs
 
-        # Fill remaining if needed
-        for q in all_qs:
-            if len(selected_qs) >= question_count:
-                break
-            if q not in selected_qs:
-                selected_qs.append(q)
+        weak_cids = set()
+        if self.learner_repo and hasattr(self.learner_repo, 'get_all_concept_mastery'):
+            all_mastery = self.learner_repo.get_all_concept_mastery(student_id, chapter_id)
+            weak_cids = {m.concept_id for m in all_mastery if getattr(m, 'mastery_score', 1.0) < 0.6}
 
-        # Cap strictly to requested question_count
-        selected_qs = selected_qs[:question_count]
+        candidate_easy = [q for q in candidate_qs if q.difficulty == QuestionDifficulty.EASY]
+        candidate_med = [q for q in candidate_qs if q.difficulty == QuestionDifficulty.MEDIUM]
+        candidate_hard = [q for q in candidate_qs if q.difficulty == QuestionDifficulty.HARD]
+
+        all_easy = [q for q in all_qs if q.difficulty == QuestionDifficulty.EASY]
+        all_med = [q for q in all_qs if q.difficulty == QuestionDifficulty.MEDIUM]
+        all_hard = [q for q in all_qs if q.difficulty == QuestionDifficulty.HARD]
+
+        if weak_cids:
+            candidate_easy.sort(key=lambda q: any(cid in weak_cids for cid in q.concept_ids), reverse=True)
+            candidate_med.sort(key=lambda q: any(cid in weak_cids for cid in q.concept_ids), reverse=True)
+
+        selected_easy = candidate_easy[:4]
+        if len(selected_easy) < 4:
+            for q in all_easy:
+                if len(selected_easy) >= 4:
+                    break
+                if q not in selected_easy:
+                    selected_easy.append(q)
+
+        selected_med = candidate_med[:3]
+        if len(selected_med) < 3:
+            for q in all_med:
+                if len(selected_med) >= 3:
+                    break
+                if q not in selected_med:
+                    selected_med.append(q)
+
+        selected_hard = candidate_hard[:3]
+        if len(selected_hard) < 3:
+            for q in all_hard:
+                if len(selected_hard) >= 3:
+                    break
+                if q not in selected_hard:
+                    selected_hard.append(q)
+
+        selected_qs: List[Question] = selected_easy + selected_med + selected_hard
 
         assessment_id = f"ASM-{uuid.uuid4().hex[:8].upper()}"
         total_marks = sum(q.marks for q in selected_qs)
@@ -99,7 +127,6 @@ class DiagnosticAssessmentService:
             total_marks=total_marks,
         )
 
-        # Build safe question views (excluding answer keys)
         views = [self._to_question_view(q) for q in selected_qs]
 
         return AssessmentSession(
@@ -131,7 +158,6 @@ class DiagnosticAssessmentService:
             if q:
                 questions.append(self._to_question_view(q))
 
-        # Fetch recorded answers
         recorded = self.assessment_repo.get_answers_for_assessment(assessment_id)
         answers_map = {r["question_id"]: r["submitted_answer"] for r in recorded}
 
@@ -173,10 +199,8 @@ class DiagnosticAssessmentService:
         if not question:
             raise ValueError(f"Question '{question_id}' not found in Question Bank.")
 
-        # Evaluate response
         eval_result = self.evaluation_service.evaluate_answer(question, submitted_answer)
 
-        # Persist answer record
         answer_id = f"ANS-{uuid.uuid4().hex[:8]}"
         self.assessment_repo.record_student_answer(
             answer_id=answer_id,
@@ -191,7 +215,6 @@ class DiagnosticAssessmentService:
             time_spent_seconds=time_spent_seconds,
         )
 
-        # Update concept mastery in Learner Model
         self.learner_service.process_evaluated_answer(
             student_id=student_id,
             concept_ids=question.concept_ids,
@@ -200,7 +223,6 @@ class DiagnosticAssessmentService:
             misconception_tags=eval_result.detected_misconceptions,
         )
 
-        # Trigger evidence-based misconception detection
         if self.misconception_service:
             self.misconception_service.analyze_student_answer(
                 student_id=student_id,
@@ -223,7 +245,6 @@ class DiagnosticAssessmentService:
         if not assessment:
             raise ValueError(f"Assessment '{assessment_id}' not found.")
 
-        # Fetch all questions and recorded answers
         qids = self.assessment_repo.get_assessment_question_ids(assessment_id)
         recorded_answers = self.assessment_repo.get_answers_for_assessment(assessment_id)
         ans_by_qid = {a["question_id"]: a for a in recorded_answers}
@@ -246,7 +267,6 @@ class DiagnosticAssessmentService:
                 sub_ans = ans["submitted_answer"]
                 misconceptions = ans.get("detected_misconceptions", [])
             else:
-                # Unanswered item
                 is_correct = False
                 marks = 0.0
                 sub_ans = {}
@@ -255,7 +275,6 @@ class DiagnosticAssessmentService:
             total_score += marks
             all_misconceptions.extend(misconceptions)
 
-            # Track per-concept performance
             for cid in q.concept_ids:
                 if cid not in concept_perf:
                     concept_perf[cid] = {"total": 0, "correct": 0, "marks_earned": 0.0}
@@ -264,7 +283,6 @@ class DiagnosticAssessmentService:
                     concept_perf[cid]["correct"] += 1
                     concept_perf[cid]["marks_earned"] += marks
 
-            # Review item
             correct_val = q.answer_key.get("correct_option") or q.answer_key.get("numerical_value") or q.answer_key.get("key_points")
             reviews.append(
                 QuestionReviewItem(
@@ -285,14 +303,11 @@ class DiagnosticAssessmentService:
 
         pct = round((total_score / total_marks) * 100, 1) if total_marks > 0 else 0.0
 
-        # Identify strong and weak concepts in this test
         strong_c = [cid for cid, stats in concept_perf.items() if stats["correct"] == stats["total"]]
         weak_c = [cid for cid, stats in concept_perf.items() if stats["correct"] < stats["total"]]
 
-        # Mark finalized in database
         self.assessment_repo.finalize_assessment(assessment_id=assessment_id, score=total_score)
 
-        # Recommendation
         if weak_c:
             rec = {
                 "title": "Targeted Adaptive Remediation",
@@ -306,7 +321,6 @@ class DiagnosticAssessmentService:
                 "action": "ADVANCE_CHAPTER",
             }
 
-        # Auto-schedule tested concepts into spaced repetition
         if self.spaced_repetition_service:
             try:
                 self.spaced_repetition_service.sync_weak_concepts_to_schedule(student_id)

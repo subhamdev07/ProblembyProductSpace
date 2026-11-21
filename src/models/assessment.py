@@ -38,17 +38,35 @@ class AssessmentQuestionView(BaseModel):
     cognitive_level: CognitiveLevel
     marks: int
     expected_time_seconds: int
-    # For MCQs: provides options dict (e.g. {'A': '...', 'B': '...'})
     options: Optional[Dict[str, str]] = None
-    # For Case-Based: provides passage without answers
     passage: Optional[str] = None
-    # For Assertion-Reason: provides assertion and reason statements
     assertion: Optional[str] = None
     reason: Optional[str] = None
 
     @classmethod
     def from_question(cls, q: Any) -> "AssessmentQuestionView":
         ak = getattr(q, "answer_key", None) or {}
+        opts = ak.get("options")
+        assertion = ak.get("assertion")
+        reason = ak.get("reason")
+
+        if q.question_type == QuestionType.ASSERTION_REASON:
+            if not opts:
+                opts = {
+                    "A": "Both Assertion (A) and Reason (R) are true and Reason (R) is the correct explanation of Assertion (A).",
+                    "B": "Both Assertion (A) and Reason (R) are true but Reason (R) is not the correct explanation of Assertion (A).",
+                    "C": "Assertion (A) is true but Reason (R) is false.",
+                    "D": "Assertion (A) is false but Reason (R) is true.",
+                }
+            if not assertion and "Assertion" in q.question_text:
+                import re
+                a_match = re.search(r"Assertion\s*\(?A?\)?\s*:\s*(.*?)(?=Reason|\n|$)", q.question_text, re.IGNORECASE | re.DOTALL)
+                r_match = re.search(r"Reason\s*\(?R?\)?\s*:\s*(.*?)(?=$)", q.question_text, re.IGNORECASE | re.DOTALL)
+                if a_match:
+                    assertion = a_match.group(1).strip()
+                if r_match:
+                    reason = r_match.group(1).strip()
+
         return cls(
             question_id=q.question_id,
             question_text=q.question_text,
@@ -60,10 +78,10 @@ class AssessmentQuestionView(BaseModel):
             cognitive_level=q.cognitive_level,
             marks=q.marks,
             expected_time_seconds=q.expected_time_seconds,
-            options=ak.get("options"),
+            options=opts,
             passage=ak.get("passage"),
-            assertion=ak.get("assertion"),
-            reason=ak.get("reason"),
+            assertion=assertion,
+            reason=reason,
         )
 
 

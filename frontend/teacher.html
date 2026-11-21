@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Command Center · BodhAI (बोध AI)</title>
+  <script>
+    (function(){
+      try {
+        var u = JSON.parse(localStorage.getItem('bodhai_user') || '{}');
+        if (!u || !u.user_id) {
+          window.location.replace('/login');
+        } else if (u.role !== 'teacher') {
+          window.location.replace('/dashboard');
+        }
+      } catch(e) {
+        window.location.replace('/login');
+      }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandYellow: '#F9BE27',
+            brandYellowDark: '#DFA512',
+            deepPurple: '#3A3359',
+            deepPurpleHover: '#4E4573',
+            sand: '#FAF8F2',
+            sandDark: '#EFECE1',
+            sandLight: '#FFFEFA',
+            ink: '#242235',
+            muted: '#777487',
+            errorRed: '#D34537',
+            successGreen: '#2E7D32',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/teacher.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400..700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-sand text-ink antialiased min-h-screen p-4 md:p-8">
+  <div id="toast" class="hidden fixed top-6 right-6 z-50 bg-deepPurple text-cream px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium transition-all">
+    <span class="text-brandYellow font-bold">&bull;</span>
+    <span id="toast-msg">Notification message</span>
+  </div>
+  <div class="max-w-7xl mx-auto space-y-8">
+    <header class="flex items-center justify-between pb-4 border-b border-sandDark">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-brandYellow flex items-center justify-center font-bold text-deepPurple text-xl shadow-sm">ब</div>
+        <div>
+          <h1 class="text-xl font-extrabold text-deepPurple tracking-tight">BodhAI Educator Portal</h1>
+          <p class="text-xs text-muted font-medium">CBSE Class 10 Science &bull; Academic Session 2026–27</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="logoutTeacher()" class="px-3.5 py-2 rounded-xl bg-red-100 hover:bg-red-200 text-red-800 text-xs font-bold transition-all">
+          Log Out
+        </button>
+      </div>
+    </header>
+    <section class="teacher-header flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-xs font-bold text-brandYellow mb-2">
+          <span>Educator Command Center</span>
+        </div>
+        <h2 class="text-3xl font-extrabold tracking-tight">Class 10 Science Cohort Performance</h2>
+        <p class="text-sandDark text-sm mt-1">Dr. Sunita Rao &bull; Senior Science Educator</p>
+      </div>
+      <div class="flex gap-4">
+        <div class="kpi-card min-w-[100px]">
+          <span class="text-xs text-sandDark block font-medium">Students</span>
+          <span class="text-2xl font-bold text-white" id="t-kpi-students">3</span>
+        </div>
+        <div class="kpi-card min-w-[100px]">
+          <span class="text-xs text-sandDark block font-medium">Avg Accuracy</span>
+          <span class="text-2xl font-bold text-brandYellow" id="t-kpi-accuracy">0%</span>
+        </div>
+        <div class="kpi-card min-w-[100px]">
+          <span class="text-xs text-sandDark block font-medium">Interventions</span>
+          <span class="text-2xl font-bold text-errorRed" id="t-kpi-interventions">0</span>
+        </div>
+      </div>
+    </section>
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card-box space-y-4">
+        <h3 class="font-bold text-deepPurple text-lg">Weakest Concepts Across Cohort</h3>
+        <div id="t-weakest-concepts-list" class="space-y-3"></div>
+      </div>
+      <div class="card-box space-y-4">
+        <h3 class="font-bold text-deepPurple text-lg">Common Cohort Misconceptions</h3>
+        <div id="t-common-misc-list" class="space-y-3"></div>
+      </div>
+    </section>
+    <section class="card-box space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-deepPurple text-lg">Summative Board Examination Cohort Analytics (80M)</h3>
+        <span class="text-xs font-semibold text-muted">CBSE 2026–27 Simulation</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div class="metric-box">
+          <span class="text-xs text-muted block font-semibold">Exams Taken</span>
+          <span class="text-2xl font-black text-deepPurple" id="t-exam-taken">0</span>
+        </div>
+        <div class="metric-box">
+          <span class="text-xs text-muted block font-semibold">Avg Score</span>
+          <span class="text-2xl font-black text-deepPurple" id="t-exam-avg-score">0 / 80</span>
+        </div>
+        <div class="metric-box">
+          <span class="text-xs text-muted block font-semibold">Avg Percentage</span>
+          <span class="text-2xl font-black text-brandYellowDark" id="t-exam-avg-pct">0%</span>
+        </div>
+        <div class="metric-box">
+          <span class="text-xs text-muted block font-semibold">Pass Rate</span>
+          <span class="text-2xl font-black text-green-700" id="t-exam-pass-rate">0%</span>
+        </div>
+        <div class="metric-box col-span-2 sm:col-span-1">
+          <span class="text-xs text-muted block font-semibold">Highest Score</span>
+          <span class="text-2xl font-black text-deepPurple" id="t-exam-high-score">0 / 80</span>
+        </div>
+      </div>
+    </section>
+    <section class="card-box space-y-4">
+      <h3 class="font-bold text-deepPurple text-lg">Enrolled Students Roster</h3>
+      <div class="overflow-x-auto">
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Accuracy</th>
+              <th>Mastery</th>
+              <th>Status</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="t-students-table-body" class="divide-y divide-sandDark"></tbody>
+        </table>
+      </div>
+    </section>
+    <section id="t-drilldown-panel" class="hidden card-box border-2 border-deepPurple shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-sandDark pb-4">
+        <div>
+          <span class="text-xs font-bold text-muted uppercase">Student Drill-Down</span>
+          <h3 class="text-2xl font-bold text-deepPurple" id="t-drill-name">Aarav Sharma</h3>
+        </div>
+        <button onclick="closeDrilldown()" class="px-4 py-2 rounded-xl bg-sandDark font-bold text-xs text-deepPurple hover:bg-white">
+          Close &times;
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <h4 class="font-bold text-deepPurple text-base">Teacher Intervention Notes</h4>
+          <div id="t-drill-notes" class="space-y-2"></div>
+        </div>
+        <div class="space-y-4">
+          <h4 class="font-bold text-deepPurple text-base">Active Misconceptions</h4>
+          <div id="t-drill-misconceptions" class="space-y-2"></div>
+        </div>
+        <div class="space-y-3 md:col-span-2 pt-4 border-t border-sandDark">
+          <h4 class="font-bold text-deepPurple text-base flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brandYellow"></span>
+            Student Personal Activity & Audit Stream
+          </h4>
+          <div id="t-drill-activity-list" class="space-y-2 max-h-72 overflow-y-auto"></div>
+        </div>
+      </div>
+    </section>
+    <section class="card-box space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sandDark pb-4">
+        <div>
+          <div class="inline-flex items-center gap-1.5 bg-brandYellow/30 text-deepPurple px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider mb-1">
+            <span>Live Classroom Feed</span>
+          </div>
+          <h3 class="font-extrabold text-deepPurple text-xl">Real-Time Student Telemetry & Interactions</h3>
+          <p class="text-xs text-muted">Audits logins, board exam answers, diagnostic tests, and remediation milestones across all students.</p>
+        </div>
+        <button onclick="loadTeacherActivityFeed()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-sandDark text-deepPurple font-bold text-xs border border-sandDark shadow-sm transition-all flex items-center gap-1.5">
+          Refresh Feed
+        </button>
+      </div>
+      <div class="space-y-3" id="t-activity-feed-list">
+        <p class="text-xs text-muted text-center py-4">Loading real-time classroom telemetry...</p>
+      </div>
+    </section>
+  </div>
+  <script src="/teacher.js"></script>
+</body>
+</html>

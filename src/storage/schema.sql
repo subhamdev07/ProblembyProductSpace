@@ -386,6 +386,114 @@ CREATE INDEX IF NOT EXISTS idx_remediation_concept ON remediation_records(concep
 CREATE INDEX IF NOT EXISTS idx_embeddings_chapter ON curriculum_embeddings(chapter_id);
 CREATE INDEX IF NOT EXISTS idx_embeddings_concept ON curriculum_embeddings(concept_id);
 
+-- P5 CBSE Board Examination Simulation Schema Extensions
+
+CREATE TABLE IF NOT EXISTS examination_blueprints (
+    blueprint_id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    curriculum_id TEXT NOT NULL REFERENCES curricula(curriculum_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    academic_session TEXT NOT NULL,
+    total_marks INTEGER NOT NULL,
+    duration_minutes INTEGER NOT NULL,
+    question_count INTEGER NOT NULL,
+    sections_config_json TEXT NOT NULL,
+    unit_weightage_json TEXT NOT NULL,
+    cognitive_distribution_json TEXT NOT NULL,
+    instructions_json TEXT NOT NULL,
+    is_official INTEGER NOT NULL DEFAULT 1 CHECK(is_official IN (0, 1)),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS examination_templates (
+    template_id TEXT PRIMARY KEY,
+    blueprint_id TEXT NOT NULL REFERENCES examination_blueprints(blueprint_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    paper_code TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    questions_sequence_json TEXT NOT NULL,
+    total_marks INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS examination_sessions (
+    session_id TEXT PRIMARY KEY,
+    student_id TEXT NOT NULL REFERENCES students(student_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    blueprint_id TEXT NOT NULL REFERENCES examination_blueprints(blueprint_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    template_id TEXT REFERENCES examination_templates(template_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    paper_title TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('NOT_STARTED', 'IN_PROGRESS', 'SUBMITTED', 'EVALUATED', 'TIMED_OUT', 'ABANDONED')),
+    started_at TIMESTAMP NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    submitted_at TIMESTAMP,
+    total_marks INTEGER NOT NULL,
+    total_questions INTEGER NOT NULL,
+    duration_minutes INTEGER NOT NULL,
+    score REAL DEFAULT 0.0,
+    percentage REAL DEFAULT 0.0,
+    time_spent_seconds INTEGER DEFAULT 0,
+    is_timeout_submission INTEGER DEFAULT 0 CHECK(is_timeout_submission IN (0, 1)),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS examination_answers (
+    answer_id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL REFERENCES examination_sessions(session_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    student_id TEXT NOT NULL REFERENCES students(student_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    question_id TEXT NOT NULL REFERENCES questions(question_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    question_number INTEGER NOT NULL,
+    section_name TEXT NOT NULL,
+    submitted_answer_json TEXT,
+    is_marked_for_review INTEGER NOT NULL DEFAULT 0 CHECK(is_marked_for_review IN (0, 1)),
+    is_answered INTEGER NOT NULL DEFAULT 0 CHECK(is_answered IN (0, 1)),
+    time_spent_seconds INTEGER DEFAULT 0,
+    is_correct INTEGER CHECK(is_correct IN (0, 1) OR is_correct IS NULL),
+    marks_awarded REAL DEFAULT 0.0,
+    evaluation_feedback TEXT,
+    last_saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(session_id, question_id)
+);
+
+CREATE TABLE IF NOT EXISTS examination_results (
+    result_id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL UNIQUE REFERENCES examination_sessions(session_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    student_id TEXT NOT NULL REFERENCES students(student_id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    total_marks INTEGER NOT NULL,
+    score_obtained REAL NOT NULL,
+    percentage REAL NOT NULL,
+    section_scores_json TEXT NOT NULL,
+    unit_scores_json TEXT NOT NULL,
+    chapter_scores_json TEXT NOT NULL,
+    difficulty_scores_json TEXT NOT NULL,
+    cognitive_scores_json TEXT NOT NULL,
+    weak_concepts_json TEXT DEFAULT '[]',
+    strong_concepts_json TEXT DEFAULT '[]',
+    misconceptions_detected_json TEXT DEFAULT '[]',
+    recommended_remediation_json TEXT DEFAULT '{}',
+    completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_exam_session_student ON examination_sessions(student_id);
+CREATE INDEX IF NOT EXISTS idx_exam_session_status ON examination_sessions(status);
+CREATE INDEX IF NOT EXISTS idx_exam_answers_session ON examination_answers(session_id);
+CREATE INDEX IF NOT EXISTS idx_exam_answers_student ON examination_answers(student_id);
+CREATE INDEX IF NOT EXISTS idx_exam_results_student ON examination_results(student_id);
+
+-- Student Telemetry & Comprehensive Activity Tracking Schema
+CREATE TABLE IF NOT EXISTS student_activity_logs (
+    log_id TEXT PRIMARY KEY,
+    student_id TEXT NOT NULL REFERENCES students(student_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event_type TEXT NOT NULL,
+    action_title TEXT NOT NULL,
+    details_json TEXT NOT NULL DEFAULT '{}',
+    duration_seconds INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_activity_student ON student_activity_logs(student_id);
+CREATE INDEX IF NOT EXISTS idx_activity_event_type ON student_activity_logs(event_type);
+CREATE INDEX IF NOT EXISTS idx_activity_created_at ON student_activity_logs(created_at);
+
+
 
 
 

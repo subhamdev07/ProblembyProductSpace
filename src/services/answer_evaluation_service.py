@@ -45,7 +45,6 @@ class AnswerEvaluationService:
         elif qtype == QuestionType.CASE_BASED:
             return self._evaluate_case_based(question, submitted_answer)
 
-        # Default fallback
         return AnswerEvaluationResult(
             question_id=question.question_id,
             is_correct=False,
@@ -55,12 +54,53 @@ class AnswerEvaluationService:
             explanation=question.explanation,
         )
 
+    def _normalize_selected_option(self, raw_input: Any, options: Dict[str, str]) -> str:
+        """
+        Robustly resolves student input to a standard option key ('A', 'B', 'C', 'D').
+        Handles:
+        1. Direct key: 'A', 'b', 'C'
+        2. Prefixed formats: 'Option A', 'A.', '(A)', 'A: ...'
+        3. Full text matching: If the student submitted the option description text (e.g. '(ii) and (iv)')
+        """
+        if raw_input is None:
+            return ""
+        s = str(raw_input).strip()
+        if not s:
+            return ""
+
+        upper_s = s.upper()
+        norm_options = {k.upper(): str(v).strip() for k, v in options.items()}
+
+        if upper_s in norm_options:
+            return upper_s
+
+        m = re.match(r"^(?:OPTION\s+)?\(?([A-D])\)?(?:\.|\:|\s|$)", upper_s)
+        if m and m.group(1) in norm_options:
+            return m.group(1)
+
+        cleaned_s = re.sub(r"\s+", " ", s).lower().strip()
+        for opt_k, opt_v in norm_options.items():
+            cleaned_v = re.sub(r"\s+", " ", opt_v).lower().strip()
+            if cleaned_s == cleaned_v or (len(cleaned_s) > 3 and cleaned_s in cleaned_v):
+                return opt_k
+
+        return upper_s
+
     def _evaluate_mcq(
         self, question: Question, submitted: Dict[str, Any]
     ) -> AnswerEvaluationResult:
         ak = question.answer_key
         correct_opt = str(ak.get("correct_option", "")).strip().upper()
-        student_opt = str(submitted.get("selected_option", "")).strip().upper()
+        options = ak.get("options") or {}
+
+        raw_student_val = (
+            submitted.get("selected_option")
+            or submitted.get("option")
+            or submitted.get("text_answer")
+            or submitted.get("answer")
+            or ""
+        )
+        student_opt = self._normalize_selected_option(raw_student_val, options)
 
         is_correct = (student_opt == correct_opt)
         marks = float(question.marks) if is_correct else 0.0
@@ -88,7 +128,21 @@ class AnswerEvaluationService:
     ) -> AnswerEvaluationResult:
         ak = question.answer_key
         correct_opt = str(ak.get("correct_option", "")).strip().upper()
-        student_opt = str(submitted.get("selected_option", "")).strip().upper()
+        options = ak.get("options") or {
+            "A": "Both Assertion (A) and Reason (R) are true and Reason (R) is the correct explanation of Assertion (A).",
+            "B": "Both Assertion (A) and Reason (R) are true but Reason (R) is not the correct explanation of Assertion (A).",
+            "C": "Assertion (A) is true but Reason (R) is false.",
+            "D": "Assertion (A) is false but Reason (R) is true.",
+        }
+
+        raw_student_val = (
+            submitted.get("selected_option")
+            or submitted.get("option")
+            or submitted.get("text_answer")
+            or submitted.get("answer")
+            or ""
+        )
+        student_opt = self._normalize_selected_option(raw_student_val, options)
 
         is_correct = (student_opt == correct_opt)
         marks = float(question.marks) if is_correct else 0.0
@@ -123,7 +177,6 @@ class AnswerEvaluationService:
         try:
             if raw_sub is None:
                 raise ValueError("No value provided")
-            # Extract first float from string if necessary
             if isinstance(raw_sub, str):
                 match = re.search(r"[-+]?\d*\.?\d+", raw_sub)
                 if match:
@@ -177,7 +230,6 @@ class AnswerEvaluationService:
             )
 
         if not key_points:
-            # Fallback when key_points are omitted
             is_correct = len(text) > 15
             marks = float(question.marks) if is_correct else 0.0
             return AnswerEvaluationResult(
@@ -189,11 +241,9 @@ class AnswerEvaluationService:
                 explanation=question.explanation,
             )
 
-        # Rubric matching: count matching key concepts
         matched_points = 0
         for kp in key_points:
             kp_clean = kp.lower()
-            # Extract keywords longer than 3 characters
             keywords = [w for w in re.findall(r"\b\w+\b", kp_clean) if len(w) > 3 and w not in ("with", "that", "this", "from", "when")]
             if any(kw in text for kw in keywords):
                 matched_points += 1
@@ -227,7 +277,6 @@ class AnswerEvaluationService:
         text = str(submitted.get("text_answer", "")).strip()
 
         if text or sub_answers:
-            # Credit full marks if structured answer provided
             return AnswerEvaluationResult(
                 question_id=question.question_id,
                 is_correct=True,

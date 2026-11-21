@@ -66,11 +66,13 @@ class QuestionGenerationService:
         difficulty: QuestionDifficulty = QuestionDifficulty.MEDIUM,
         cognitive_level: CognitiveLevel = CognitiveLevel.APPLICATION,
         mock_response: Optional[str] = None,
+        save_to_db: bool = False,
     ) -> Question:
         """
         Generates a source-grounded question targeting a specific concept node.
         Supports mock_response to guarantee hermetic testing without live API token usage.
         """
+        import uuid
         concept = self.concept_repo.get_concept(concept_id)
         if not concept:
             raise ValueError(f"Concept '{concept_id}' not found in Concept Graph.")
@@ -107,15 +109,27 @@ class QuestionGenerationService:
                 parsed = parsed["question"]
             candidate = GeneratedQuestionCandidate(**parsed)
 
-        # Build formal Question object
-        qid = f"Q-{concept.chapter_id}-{candidate.question_type[:3]}-{concept.concept_id[-3:]}-GEN"
+        # Build formal Question object with unique stable ID
+        short_suffix = uuid.uuid4().hex[:4].upper()
+        qid = f"Q-{concept.chapter_id}-{candidate.question_type[:3]}-{concept.concept_id[-3:]}-{short_suffix}"
         prov_obj = QuestionProvenance(
-            source_document_id=source_prov.source_document_id if source_prov else "NCERT_SCI_10_CH01",
-            source_filename=source_prov.source_filename if source_prov else "jesc101.pdf",
+            source_document_id=source_prov.source_document_id if source_prov else f"NCERT_SCI_10_{concept.chapter_id}",
+            source_filename=source_prov.source_filename if source_prov else f"ch_{concept.chapter_id.lower()}.pdf",
             page_number=page_num,
             section_heading=section,
             verbatim_source_context=source_context,
         )
+
+        # Ensure Assertion-Reason options are standard CBSE options if omitted
+        ak_dict = dict(candidate.answer_key)
+        if candidate.question_type == QuestionType.ASSERTION_REASON.value:
+            if "options" not in ak_dict or not ak_dict["options"]:
+                ak_dict["options"] = {
+                    "A": "Both Assertion (A) and Reason (R) are true and Reason (R) is the correct explanation of Assertion (A).",
+                    "B": "Both Assertion (A) and Reason (R) are true but Reason (R) is not the correct explanation of Assertion (A).",
+                    "C": "Assertion (A) is true but Reason (R) is false.",
+                    "D": "Assertion (A) is false but Reason (R) is true.",
+                }
 
         question = Question(
             question_id=qid,
@@ -129,7 +143,7 @@ class QuestionGenerationService:
             cognitive_level=CognitiveLevel(candidate.cognitive_level),
             marks=candidate.marks,
             expected_time_seconds=candidate.expected_time_seconds,
-            answer_key=candidate.answer_key,
+            answer_key=ak_dict,
             explanation=candidate.explanation,
             misconception_tags=candidate.misconception_tags,
             source_status=SourceStatus.INFERRED,
@@ -146,6 +160,9 @@ class QuestionGenerationService:
         else:
             question.question_status = QuestionStatus.PENDING_REVIEW
 
+        if save_to_db:
+            self.question_repo.upsert_question(question)
+
         return question
 
     def _build_generation_prompt(
@@ -156,8 +173,36 @@ class QuestionGenerationService:
         cognitive_level: CognitiveLevel,
         source_context: str,
     ) -> str:
-        return f"""You are a Senior CBSE Examination Question Designer for Class 10 Science.
-Design a high-quality assessment question grounded STRICTLY in NCERT Chapter {concept.chapter_id}.
+        if question_type == QuestionType.ASSERTION_REASON:
+            type_instructions = """Question Type: ASSERTION_REASON
+The question MUST present an Assertion (A) and a Reason (R).
+The answer_key MUST contain:
+- 'assertion': Statement (A)
+- 'reason': Statement (R)
+- 'options': {
+    "A": "Both Assertion (A) and Reason (R) are true and Reason (R) is the correct explanation of Assertion (A).",
+    "B": "Both Assertion (A) and Reason (R) are true but Reason (R) is not the correct explanation of Assertion (A).",
+    "C": "Assertion (A) is true but Reason (R) is false.",
+    "D": "Assertion (A) is false but Reason (R) is true."
+  }
+- 'correct_option': Exactly one of 'A', 'B', 'C', or 'D'.
+- 'explanation': Broad, in-depth scientific explanation analyzing:
+    1) Why Assertion is true or false according to NCERT
+    2) Why Reason is true or false according to NCERT
+    3) The causal relationship between Reason and Assertion."""
+        else:
+            type_instructions = f"""Question Type: {question_type.value}
+The question MUST include:
+- 'question_text': Clear, unambiguous stem with necessary scientific context or chemical equations.
+- 'answer_key':
+    - 'options': {{"A": "...", "B": "...", "C": "...", "D": "..."}} (4 distinct, mutually exclusive choices)
+    - 'correct_option': Exactly one of 'A', 'B', 'C', or 'D'.
+- 'explanation': Broad, comprehensive step-by-step scientific justification. Must explicitly explain:
+    1) Why the correct option is scientifically valid based on NCERT.
+    2) Why EACH distractor (incorrect option) is scientifically flawed, false, or incomplete."""
+
+        return f"""You are a Senior CBSE Examination Question Designer and Curriculum Expert for Class 10 Science.
+Design a high-quality, authentic CBSE Board assessment question grounded STRICTLY in NCERT Chapter {concept.chapter_id}.
 
 Target Concept: {concept.name} ({concept.concept_id})
 Concept Description: {concept.description}
@@ -167,6 +212,8 @@ Question Requirements:
 - Format: {question_type.value}
 - Difficulty: {difficulty.value}
 - Cognitive Level: {cognitive_level.value}
+
+{type_instructions}
 
 Return ONLY valid JSON matching this schema:
 {{
@@ -180,7 +227,7 @@ Return ONLY valid JSON matching this schema:
     "options": {{"A": "...", "B": "...", "C": "...", "D": "..."}},
     "correct_option": "A"
   }},
-  "explanation": "Clear step-by-step scientific justification...",
+  "explanation": "Broad, in-depth scientific justification...",
   "misconception_tags": ["..."]
 }}
 """
