@@ -4,19 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Command Center · BodhAI (बोध AI)</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <script>
-    (function(){
+    document.documentElement.style.visibility = 'hidden';
+    function guardTeacherPortal() {
       try {
-        var u = JSON.parse(localStorage.getItem('bodhai_user') || '{}');
-        if (!u || !u.user_id) {
+        var raw = localStorage.getItem('bodhai_user');
+        if (!raw) {
+          document.documentElement.innerHTML = '';
           window.location.replace('/login');
-        } else if (u.role !== 'teacher') {
-          window.location.replace('/dashboard');
+          return false;
         }
+        var u = JSON.parse(raw || '{}');
+        if (!u || !u.user_id) {
+          document.documentElement.innerHTML = '';
+          window.location.replace('/login');
+          return false;
+        }
+        if (u.role !== 'teacher' && !(u.user_id && String(u.user_id).toUpperCase().indexOf('TCH') === 0)) {
+          document.documentElement.innerHTML = '';
+          window.location.replace('/dashboard');
+          return false;
+        }
+        document.documentElement.style.visibility = 'visible';
+        return true;
       } catch(e) {
+        document.documentElement.innerHTML = '';
         window.location.replace('/login');
+        return false;
       }
-    })();
+    }
+    guardTeacherPortal();
+    window.addEventListener('pageshow', function() {
+      guardTeacherPortal();
+    });
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>

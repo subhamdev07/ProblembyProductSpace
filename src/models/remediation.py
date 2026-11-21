@@ -15,7 +15,6 @@ class MisconceptionStatus(str, Enum):
 
 
 class StudentMisconceptionItem(BaseModel):
-    """Evidence-based misconception tracked per student and concept."""
     misconception_record_id: str
     student_id: str
     concept_id: str
@@ -25,6 +24,7 @@ class StudentMisconceptionItem(BaseModel):
     status: MisconceptionStatus = MisconceptionStatus.SUSPECTED
     evidence_count: int = 1
     evidence_text: Optional[str] = None
+    parsed_evidences: Optional[List[Dict[str, Any]]] = None
     last_observed_at: Optional[str] = None
 
 

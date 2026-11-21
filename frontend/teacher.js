@@ -261,6 +261,10 @@ function logoutTeacher() {
   try {
     localStorage.clear();
     sessionStorage.clear();
+    document.cookie = 'bodhai_role=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'bodhai_user_id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'bodhai_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    fetch('/api/auth/logout', { method: 'POST', keepalive: true });
   } catch (e) {}
   window.location.replace('/login?logout=1');
 }

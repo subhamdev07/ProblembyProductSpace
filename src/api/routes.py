@@ -4,8 +4,9 @@ Implements all student diagnostic assessment, learner mastery, targeted remediat
 spaced repetition, teacher dashboard, and NCERT RAG search endpoints.
 """
 
+import re
 from typing import Optional, Dict, Any, List
-from fastapi import APIRouter, HTTPException, Query, Path, Header
+from fastapi import APIRouter, HTTPException, Query, Path, Header, Response
 from pydantic import BaseModel, Field
 
 from src.storage.database import Database
@@ -226,14 +227,14 @@ def health_check():
 
 
 @router.post("/auth/login", response_model=LoginResponse)
-def login_user(payload: LoginRequest):
-    """
-    Authenticates students and teachers.
-    Generates role-based session and records initial login telemetry.
-    """
+def login_user(payload: LoginRequest, response: Response):
     svcs = get_services()
     resp = svcs["auth_service"].authenticate(payload)
     if resp.success and resp.user.user_id:
+        response.set_cookie(key="bodhai_role", value=resp.user.role, path="/")
+        response.set_cookie(key="bodhai_user_id", value=resp.user.user_id, path="/")
+        if resp.token:
+            response.set_cookie(key="bodhai_token", value=resp.token, path="/")
         svcs["activity_service"].record_event(
             student_id=resp.user.user_id,
             event_type="AUTH_LOGIN",
@@ -242,6 +243,14 @@ def login_user(payload: LoginRequest):
             duration_seconds=60,
         )
     return resp
+
+
+@router.post("/auth/logout")
+def logout_user_api(response: Response):
+    response.delete_cookie("bodhai_role", path="/")
+    response.delete_cookie("bodhai_user_id", path="/")
+    response.delete_cookie("bodhai_token", path="/")
+    return {"success": True, "message": "Logged out successfully"}
 
 
 @router.get("/auth/me")
@@ -323,6 +332,8 @@ def get_classroom_activity_feed(
 
 @router.get("/student/dashboard", response_model=StudentDashboardData)
 def get_student_dashboard(student_id: str = Query("STU-001")):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access student dashboard.")
     svcs = get_services()
     try:
         return svcs["learner_service"].get_student_dashboard(student_id=student_id)
@@ -332,6 +343,8 @@ def get_student_dashboard(student_id: str = Query("STU-001")):
 
 @router.post("/assessments/start", response_model=AssessmentSession)
 def start_assessment(payload: StartAssessmentRequest):
+    if payload.student_id and str(payload.student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot attempt student diagnostic assessments.")
     svcs = get_services()
     try:
         session = svcs["diagnostic_service"].start_diagnostic_assessment(
@@ -457,6 +470,8 @@ def get_next_question(
     chapter_id: str = Query("CH-01"),
     exclude: Optional[str] = Query(None, description="Comma-separated question IDs to exclude"),
 ):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access adaptive practice.")
     svcs = get_services()
     exclude_list = [x.strip() for x in exclude.split(",") if x.strip()] if exclude else []
     try:
@@ -474,8 +489,42 @@ def get_next_question(
 def get_student_misconceptions(
     student_id: str = Query("STU-001"), status: Optional[str] = Query(None)
 ):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access student misconceptions.")
     svcs = get_services()
-    return svcs["misconception_service"].get_student_misconceptions(student_id, status)
+    items = svcs["misconception_service"].get_student_misconceptions(student_id, status)
+    q_repo = svcs["question_repo"]
+    for item in items:
+        ev_list = []
+        if item.evidence_text:
+            raw_blocks = [b.strip() for b in item.evidence_text.split("||") if b.strip()]
+            for block in raw_blocks:
+                q_id_match = re.search(r"Q-[A-Za-z0-9_-]+", block)
+                if not q_id_match:
+                    continue
+                qid = q_id_match.group(0)
+                sub_match = re.search(r"selected_option['\"]\s*:\s*['\"]([A-Da-d])['\"]", block)
+                if not sub_match:
+                    sub_match = re.search(r"Submitted answer:\s*['\"]([A-Da-d])['\"]", block)
+                selected_opt = sub_match.group(1).upper() if sub_match else None
+                q_obj = q_repo.get_question(qid)
+                if q_obj:
+                    opts = q_obj.answer_key.get("options", {}) if isinstance(q_obj.answer_key, dict) else {}
+                    corr = q_obj.answer_key.get("correct_option") if isinstance(q_obj.answer_key, dict) else None
+                    ev_list.append({
+                        "question_id": q_obj.question_id,
+                        "question_text": q_obj.question_text,
+                        "options": opts,
+                        "correct_option": corr,
+                        "student_selected_option": selected_opt,
+                        "student_answer_text": opts.get(selected_opt) if selected_opt and isinstance(opts, dict) else None,
+                        "correct_answer_text": opts.get(corr) if corr and isinstance(opts, dict) else None,
+                        "explanation": q_obj.explanation or "",
+                        "difficulty": q_obj.difficulty.value if hasattr(q_obj.difficulty, "value") else str(q_obj.difficulty),
+                        "marks": q_obj.marks
+                    })
+        item.parsed_evidences = ev_list
+    return items
 
 
 @router.get("/student/misconceptions/summary")
@@ -488,6 +537,8 @@ def get_misconceptions_summary():
 def get_remediation_package(
     student_id: str = Query("STU-001"), concept_id: Optional[str] = Query(None)
 ):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access student remediation.")
     svcs = get_services()
     try:
         return svcs["targeted_remediation_service"].get_remediation_for_student(
@@ -510,11 +561,11 @@ def complete_remediation(payload: CompleteRemediationRequest):
         svcs["activity_service"].record_event(
             student_id=payload.student_id,
             event_type="REMEDIATION_STEP_COMPLETE",
-            action_title=f"Completed Remediation Practice ({'Mastered' if resp.is_completed else 'Needs Review'})",
+            action_title=f"Completed Remediation Practice ({'Mastered' if resp.is_correct else 'Needs Review'})",
             details={
                 "remediation_id": payload.remediation_id,
-                "concept_id": payload.concept_id,
-                "is_completed": resp.is_completed,
+                "concept_id": resp.concept_id,
+                "is_correct": resp.is_correct,
                 "mastery_before": resp.mastery_before,
                 "mastery_after": resp.mastery_after,
             },
@@ -529,6 +580,8 @@ def complete_remediation(payload: CompleteRemediationRequest):
 
 @router.get("/student/revision-due", response_model=List[SpacedRepetitionItem])
 def get_due_revisions(student_id: str = Query("STU-001")):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access student revision schedules.")
     svcs = get_services()
     svcs["spaced_repetition_service"].sync_weak_concepts_to_schedule(student_id)
     return svcs["spaced_repetition_service"].get_due_revisions(student_id)
@@ -536,6 +589,8 @@ def get_due_revisions(student_id: str = Query("STU-001")):
 
 @router.get("/student/revision-upcoming", response_model=List[SpacedRepetitionItem])
 def get_upcoming_revisions(student_id: str = Query("STU-001")):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access student revision schedules.")
     svcs = get_services()
     svcs["spaced_repetition_service"].sync_weak_concepts_to_schedule(student_id)
     return svcs["spaced_repetition_service"].get_upcoming_revisions(student_id)
@@ -559,7 +614,7 @@ def complete_revision(payload: CompleteRevisionRequest):
                 "concept_id": payload.concept_id,
                 "is_correct": payload.is_correct,
                 "interval_days": resp.new_interval_days,
-                "ease_factor": resp.new_ease_factor,
+                "mastery": resp.new_mastery,
             },
             duration_seconds=60,
         )
@@ -791,6 +846,8 @@ def get_concept_graph(
     student_id: str = Query("STU-001"),
     chapter_id: Optional[str] = Query(None),
 ):
+    if student_id and str(student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot access student concept graph.")
     svcs = get_services()
     concept_repo = svcs["concept_repo"]
     learner_repo = svcs["learner_repo"]
@@ -872,10 +929,8 @@ def get_examination_blueprint_details(blueprint_id: str = Path(...)):
 
 @router.post("/examinations/start", response_model=ExaminationSessionState)
 def start_or_resume_examination(req: StartExamRequest):
-    """
-    Starts a new examination session or resumes an in-progress session.
-    Server computes remaining seconds and initializes authoritative timer.
-    """
+    if req.student_id and str(req.student_id).upper().startswith("TCH"):
+        raise HTTPException(status_code=403, detail="Teachers cannot sit for board examination simulations.")
     svcs = get_services()
     try:
         sess_state = svcs["examination_service"].start_examination(

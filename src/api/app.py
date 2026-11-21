@@ -1,8 +1,8 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 from src.api.routes import router as api_router
 
@@ -25,18 +25,36 @@ def create_app() -> FastAPI:
     app.include_router(api_router)
 
     frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend")
-    if os.path.exists(frontend_dir):
-        @app.get("/", include_in_schema=False)
-        async def serve_index():
-            return FileResponse(os.path.join(frontend_dir, "index.html"))
+    no_cache_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
 
+    if os.path.exists(frontend_dir):
         @app.get("/login", include_in_schema=False)
-        async def serve_login():
-            return FileResponse(os.path.join(frontend_dir, "login.html"))
+        async def serve_login(request: Request):
+            if request.query_params.get("logout") == "1":
+                resp = FileResponse(os.path.join(frontend_dir, "login.html"), headers=no_cache_headers)
+                resp.delete_cookie("bodhai_role", path="/")
+                resp.delete_cookie("bodhai_user_id", path="/")
+                resp.delete_cookie("bodhai_token", path="/")
+                return resp
+            role = request.cookies.get("bodhai_role", "")
+            uid = request.cookies.get("bodhai_user_id", "")
+            if role == "teacher" or uid.upper().startswith("TCH"):
+                return RedirectResponse(url="/teacher", status_code=307)
+            elif role == "student" or uid.upper().startswith("STU"):
+                return RedirectResponse(url="/dashboard", status_code=307)
+            return FileResponse(os.path.join(frontend_dir, "login.html"), headers=no_cache_headers)
 
         @app.get("/teacher", include_in_schema=False)
-        async def serve_teacher():
-            return FileResponse(os.path.join(frontend_dir, "teacher.html"))
+        async def serve_teacher(request: Request):
+            role = request.cookies.get("bodhai_role", "")
+            uid = request.cookies.get("bodhai_user_id", "")
+            if role == "student" or (uid and not uid.upper().startswith("TCH")):
+                return RedirectResponse(url="/dashboard", status_code=307)
+            return FileResponse(os.path.join(frontend_dir, "teacher.html"), headers=no_cache_headers)
 
         @app.get("/index.css", include_in_schema=False)
         async def serve_index_css():
@@ -44,7 +62,7 @@ def create_app() -> FastAPI:
 
         @app.get("/index.js", include_in_schema=False)
         async def serve_index_js():
-            return FileResponse(os.path.join(frontend_dir, "index.js"), media_type="application/javascript")
+            return FileResponse(os.path.join(frontend_dir, "index.js"), media_type="application/javascript", headers=no_cache_headers)
 
         @app.get("/teacher.css", include_in_schema=False)
         async def serve_teacher_css():
@@ -52,9 +70,10 @@ def create_app() -> FastAPI:
 
         @app.get("/teacher.js", include_in_schema=False)
         async def serve_teacher_js():
-            return FileResponse(os.path.join(frontend_dir, "teacher.js"), media_type="application/javascript")
+            return FileResponse(os.path.join(frontend_dir, "teacher.js"), media_type="application/javascript", headers=no_cache_headers)
 
         student_routes = [
+            "/",
             "/dashboard",
             "/diagnostic",
             "/exam",
@@ -71,8 +90,12 @@ def create_app() -> FastAPI:
         ]
 
         def create_student_handler():
-            async def handler():
-                return FileResponse(os.path.join(frontend_dir, "index.html"))
+            async def handler(request: Request):
+                role = request.cookies.get("bodhai_role", "")
+                uid = request.cookies.get("bodhai_user_id", "")
+                if role == "teacher" or uid.upper().startswith("TCH"):
+                    return RedirectResponse(url="/teacher", status_code=307)
+                return FileResponse(os.path.join(frontend_dir, "index.html"), headers=no_cache_headers)
             return handler
 
         for r in student_routes:

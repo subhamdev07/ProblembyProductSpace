@@ -284,6 +284,9 @@ async function performLogin(email, password, role){
     localStorage.setItem('bodhai_token', data.token);
     localStorage.setItem('active_student_id', data.user.user_id);
     localStorage.setItem('bodhai_role', data.user.role);
+    document.cookie = 'bodhai_role=' + encodeURIComponent(data.user.role) + '; path=/; SameSite=Lax';
+    document.cookie = 'bodhai_user_id=' + encodeURIComponent(data.user.user_id) + '; path=/; SameSite=Lax';
+    document.cookie = 'bodhai_token=' + encodeURIComponent(data.token) + '; path=/; SameSite=Lax';
     try {
       await fetch('/api/student/activity', {
         method: 'POST',
@@ -352,7 +355,9 @@ document.getElementById('guestLink').addEventListener('click', (e) => {
   localStorage.setItem('bodhai_user', JSON.stringify(guestUser));
   localStorage.setItem('active_student_id', 'STU-001');
   localStorage.setItem('bodhai_role', 'student');
-  window.location.replace('/');
+  document.cookie = 'bodhai_role=student; path=/; SameSite=Lax';
+  document.cookie = 'bodhai_user_id=STU-001; path=/; SameSite=Lax';
+  window.location.replace('/dashboard');
 });
 document.getElementById('forgotBtn').addEventListener('click',()=>{
   let v = emailInput.value.trim();

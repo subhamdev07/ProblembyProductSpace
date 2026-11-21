@@ -7,16 +7,44 @@
     let currentAdaptiveRec = null;
     let currentRemediation = null;
 
+    function checkTeacherAccess() {
+      try {
+        const raw = localStorage.getItem('bodhai_user');
+        if (!raw) {
+          document.documentElement.innerHTML = '';
+          window.location.replace('/login');
+          return false;
+        }
+        const user = JSON.parse(raw);
+        if (!user || !user.user_id) {
+          document.documentElement.innerHTML = '';
+          window.location.replace('/login');
+          return false;
+        }
+        if (user.role === 'teacher' || (user.user_id && String(user.user_id).toUpperCase().startsWith('TCH'))) {
+          document.documentElement.innerHTML = '';
+          window.location.replace('/teacher');
+          return false;
+        }
+      } catch (e) {
+        document.documentElement.innerHTML = '';
+        window.location.replace('/login');
+        return false;
+      }
+      return true;
+    }
+
     function initAuthSession() {
+      if (!checkTeacherAccess()) return;
       const stored = localStorage.getItem('bodhai_user');
       if (stored) {
         try {
           const user = JSON.parse(stored);
-          if (user.role === 'teacher') {
-            window.location.replace('/teacher');
-            return;
+          if (user.user_id && !String(user.user_id).toUpperCase().startsWith('TCH')) {
+            currentStudentId = user.user_id;
+          } else {
+            currentStudentId = 'STU-001';
           }
-          if (user.user_id) currentStudentId = user.user_id;
           currentRole = 'student';
           const nameEl = document.getElementById('sidebar-user-name');
           if (nameEl) nameEl.innerText = user.name || 'Aarav Sharma';
@@ -48,12 +76,18 @@
       }
     }
 
+    let currentActiveView = '';
+
     function switchView(viewName) {
+      if (!checkTeacherAccess()) return;
       if (viewName === 'teacher' && currentRole !== 'teacher') {
         showToast('Access restricted: Educator Portal is accessible to verified teachers only.');
         switchView('dashboard');
         return;
       }
+
+      if (currentActiveView === viewName) return;
+      currentActiveView = viewName;
 
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -90,8 +124,6 @@
         try { history.pushState({ view: viewName }, '', newPath); } catch (e) {}
       }
 
-      trackStudentActivity('VIEW_NAVIGATION', 'Viewed ' + viewName.replace(/-/g, ' ').toUpperCase(), { view: viewName }, 5);
-
       const bc = document.getElementById('breadcrumb-current-view');
       if (bc) {
         const viewTitles = {
@@ -110,11 +142,6 @@
         };
         bc.innerText = viewTitles[viewName] || viewName;
       }
-
-      if (viewName === 'dashboard') loadDashboard();
-      if (viewName === 'mastery') loadMasteryView();
-      if (viewName === 'concept-graph') loadConceptGraphView();
-      if (viewName === 'examination-hub') loadExaminationHub();
     }
 
     function toggleSidebar() {
@@ -953,63 +980,6 @@
       }
     }
 
-    async function loadTeacherActivityFeed() {
-      try {
-        const res = await fetch('/api/teacher/activity-stream?role=teacher&limit=40');
-        const container = document.getElementById('t-activity-feed-list');
-        if (!container) return;
-
-        if (!res.ok) {
-          container.innerHTML = '<p class="text-xs text-muted text-center py-4">Live telemetry feed requires teacher credentials.</p>';
-          return;
-        }
-
-        const events = await res.json();
-        container.innerHTML = '';
-        if (events.length === 0) {
-          container.innerHTML = '<p class="text-xs text-muted text-center py-4">No student telemetry events recorded in classroom feed.</p>';
-          return;
-        }
-
-        events.forEach(ev => {
-          const el = document.createElement('div');
-          el.className = 'p-3.5 rounded-2xl bg-white border border-sandDark flex items-start justify-between gap-3 shadow-2xs hover:border-deepPurple/40 transition-all';
-
-          let icon = '⚡';
-          let badgeBg = 'bg-sandDark text-deepPurple';
-          if (ev.event_type.includes('LOGIN')) { icon = '🔑'; badgeBg = 'bg-blue-100 text-blue-900'; }
-          else if (ev.event_type.includes('BOARD_EXAM')) { icon = '🏆'; badgeBg = 'bg-amber-100 text-amber-900'; }
-          else if (ev.event_type.includes('DIAGNOSTIC')) { icon = '📝'; badgeBg = 'bg-purple-100 text-purple-900'; }
-          else if (ev.event_type.includes('REMEDIATION')) { icon = '🎯'; badgeBg = 'bg-green-100 text-green-900'; }
-          else if (ev.event_type.includes('SPACED')) { icon = '🔄'; badgeBg = 'bg-indigo-100 text-indigo-900'; }
-
-          const dateObj = new Date(ev.created_at);
-          const timeStr = isNaN(dateObj.getTime()) ? ev.created_at : `${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, ${dateObj.toLocaleDateString()}`;
-
-          el.innerHTML = `
-            <div class="flex items-start gap-3">
-              <span class="w-8 h-8 rounded-xl ${badgeBg} flex items-center justify-center text-sm font-bold shrink-0">${icon}</span>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-extrabold text-deepPurple text-xs">${ev.student_name}</span>
-                  <span class="text-[10px] font-mono text-muted">(${ev.student_id})</span>
-                </div>
-                <p class="text-xs font-semibold text-deepPurple/90 mt-0.5">${ev.action_title}</p>
-                <span class="text-[10px] text-muted block mt-1">${timeStr}</span>
-              </div>
-            </div>
-            <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${badgeBg} shrink-0">
-              ${ev.event_type.replace(/_/g, ' ')}
-            </span>
-          `;
-          container.appendChild(el);
-        });
-
-      } catch (err) {
-        console.error('Failed to load teacher activity feed:', err);
-      }
-    }
-
     let diagTimerInterval = null;
     let diagRemainingSeconds = 900;
 
@@ -1039,16 +1009,18 @@
     }
 
     async function startDiagnosticTest() {
+      if (!checkTeacherAccess()) return;
       try {
         switchView('assessment');
         document.getElementById('q-text-content').innerText = 'Initializing diagnostic session...';
         startDiagnosticTimer(900);
         
+        const studentId = (currentStudentId && !currentStudentId.startsWith('TCH')) ? currentStudentId : 'STU-001';
         const res = await fetch('/api/assessments/start', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            student_id: currentStudentId,
+            student_id: studentId,
             chapter_id: 'CH-01',
             question_count: 10
           })
@@ -1732,7 +1704,8 @@
     async function loadMisconceptionsView() {
       switchView('misconceptions');
       try {
-        const res = await fetch(`/api/student/misconceptions?student_id=${currentStudentId}`);
+        const studentId = (currentStudentId && !currentStudentId.startsWith('TCH')) ? currentStudentId : 'STU-001';
+        const res = await fetch(`/api/student/misconceptions?student_id=${studentId}`);
         if (!res.ok) throw new Error('Failed to load misconceptions');
         const items = await res.json();
 
@@ -1750,7 +1723,84 @@
           if (item.status === 'CONFIRMED') badgeClass = 'bg-red-100 text-red-900 border-red-300';
           if (item.status === 'RESOLVED') badgeClass = 'bg-green-100 text-green-900 border-green-300';
 
-          card.className = 'bg-sand p-6 rounded-2xl border border-sandDark shadow-sm space-y-3';
+          let evidencesHTML = '';
+          if (item.parsed_evidences && item.parsed_evidences.length > 0) {
+            evidencesHTML = item.parsed_evidences.map((ev) => {
+              const options = ev.options || {};
+              const optionKeys = ['A', 'B', 'C', 'D'];
+
+              let optionsHTML = '';
+              if (Object.keys(options).length > 0) {
+                optionsHTML = `
+                  <div class="grid grid-cols-1 gap-2 mt-2">
+                    ${optionKeys.map(k => {
+                      if (!options[k]) return '';
+                      const isCorrect = (ev.correct_option === k);
+                      const isSelected = (ev.student_selected_option === k);
+
+                      let cardStyle = 'bg-white border-sandDark text-ink';
+                      let statusBadge = '';
+
+                      if (isCorrect) {
+                        cardStyle = 'bg-green-50 border-green-500 text-green-950 font-medium shadow-2xs';
+                        statusBadge = '<span class="ml-auto text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-green-200 text-green-900">✓ Correct Answer</span>';
+                      } else if (isSelected) {
+                        cardStyle = 'bg-red-50 border-red-400 text-red-950 font-medium shadow-2xs';
+                        statusBadge = '<span class="ml-auto text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-200 text-red-900">❌ Your Answer (Selected Option ' + k + ')</span>';
+                      }
+
+                      return `
+                        <div class="flex items-center gap-2.5 p-3 rounded-xl border ${cardStyle} text-xs transition-all">
+                          <span class="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${isCorrect ? 'bg-green-600 text-white' : (isSelected ? 'bg-red-500 text-white' : 'bg-sandDark text-deepPurple')}">${k}</span>
+                          <span class="flex-1">${options[k]}</span>
+                          ${statusBadge}
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                `;
+              }
+
+              let explanationHTML = '';
+              if (ev.explanation) {
+                explanationHTML = `
+                  <div class="mt-3 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950">
+                    <div class="flex items-center gap-1.5 font-bold text-amber-900 mb-1">
+                      <span>💡 NCERT Conceptual Diagnosis & Explanation:</span>
+                    </div>
+                    <p class="leading-relaxed">${ev.explanation}</p>
+                  </div>
+                `;
+              }
+
+              return `
+                <div class="bg-sandLight p-4 rounded-xl border border-sandDark text-xs space-y-2 mt-3">
+                  <div class="flex items-center justify-between text-[11px] text-muted">
+                    <span class="font-mono font-bold text-deepPurple">Question ${ev.question_id}</span>
+                    <span class="px-2 py-0.5 rounded bg-sand font-bold text-muted uppercase text-[10px]">${ev.difficulty || 'MEDIUM'}</span>
+                  </div>
+                  <p class="font-semibold text-deepPurple text-sm leading-relaxed">${ev.question_text || ''}</p>
+                  ${optionsHTML}
+                  ${explanationHTML}
+                </div>
+              `;
+            }).join('');
+          } else {
+            const cleanEvidence = (item.evidence_text || 'Demonstrated conceptual ambiguity on this topic.')
+              .replace(/\{'options':.*?\},?\s*'correct_option':\s*'[A-D]'\}/g, '')
+              .replace(/\{'selected_option':\s*'([A-D])'\}/g, 'Option $1')
+              .replace(/Submitted answer:\s*'\{\}'/g, 'Unanswered')
+              .replace(/\|\s*\|/g, '')
+              .trim();
+            evidencesHTML = `
+              <div class="bg-sandLight p-3.5 rounded-xl border border-sandDark text-xs text-muted leading-relaxed">
+                <span class="font-bold text-deepPurple block mb-1">Diagnostic Summary:</span>
+                ${cleanEvidence}
+              </div>
+            `;
+          }
+
+          card.className = 'bg-sand p-6 rounded-2xl border border-sandDark shadow-sm space-y-4';
           card.innerHTML = `
             <div class="flex items-center justify-between">
               <span class="text-xs font-mono font-bold text-muted">${item.misconception_tag}</span>
@@ -1758,194 +1808,36 @@
                 ${item.status} (Evidence: ${item.evidence_count}x)
               </span>
             </div>
-            <h4 class="font-bold text-deepPurple text-lg">${item.concept_name}</h4>
-            <div class="bg-sandLight p-3.5 rounded-xl border border-sandDark text-xs text-muted leading-relaxed">
-              <span class="font-bold text-deepPurple block mb-1">Diagnostic Evidence:</span>
-              ${item.evidence_text || 'Demonstrated conceptual ambiguity on reaction stoichiometry.'}
+            <div>
+              <h4 class="font-extrabold text-deepPurple text-lg">${item.concept_name}</h4>
+              <p class="text-xs text-muted mt-0.5">Corroborated misunderstanding identified across diagnostic and assessment answers.</p>
             </div>
-            <div class="flex justify-end pt-1">
-              <button onclick="loadRemediationForConcept('${item.concept_id}')" class="text-xs font-bold text-deepPurple hover:underline">
-                Resolve via Targeted Remediation &rarr;
+            <div class="space-y-3">
+              <span class="text-xs font-bold text-deepPurple tracking-wide uppercase">Corroborated Evidence & Detailed Review:</span>
+              ${evidencesHTML}
+            </div>
+            <div class="flex justify-end pt-2 border-t border-sandDark">
+              <button onclick="loadRemediationForConcept('${item.concept_id}')" class="px-4 py-2 rounded-xl bg-deepPurple hover:bg-deepPurpleHover text-cream font-bold text-xs shadow-sm transition-all flex items-center gap-1.5">
+                <span>Resolve via Targeted Remediation</span>
+                <span>&rarr;</span>
               </button>
             </div>
           `;
           container.appendChild(card);
         });
 
+        if (window.renderMathInElement) {
+          renderMathInElement(container, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false }
+            ],
+            throwOnError: false
+          });
+        }
       } catch (err) {
         showToast(err.message, false);
       }
-    }
-
-    async function loadTeacherDashboard() {
-      switchView('teacher');
-      try {
-        const [dashRes, stuRes, miscRes] = await Promise.all([
-          fetch('/api/teacher/dashboard?role=teacher'),
-          fetch('/api/teacher/students?role=teacher'),
-          fetch('/api/teacher/misconceptions?role=teacher')
-        ]);
-
-        if (!dashRes.ok) throw new Error('Teacher authorization required');
-        const dash = await dashRes.json();
-        const students = await stuRes.json();
-        const miscList = await miscRes.json();
-
-        document.getElementById('t-kpi-students').innerText = dash.total_students;
-        document.getElementById('t-kpi-accuracy').innerText = `${Math.round(dash.average_accuracy_pct)}%`;
-        document.getElementById('t-kpi-interventions').innerText = dash.students_requiring_intervention.length;
-
-        try {
-          const examRes = await fetch('/api/teacher/examinations?role=teacher');
-          if (examRes.ok) {
-            const es = await examRes.json();
-            document.getElementById('t-exam-taken').innerText = es.total_examinations_taken;
-            document.getElementById('t-exam-avg-score').innerText = `${es.cohort_average_score} / 80`;
-            document.getElementById('t-exam-avg-pct').innerText = `${es.cohort_average_percentage}%`;
-            document.getElementById('t-exam-pass-rate').innerText = `${es.pass_rate_percentage}%`;
-            document.getElementById('t-exam-high-score').innerText = `${es.highest_score} / 80`;
-          }
-        } catch (e) {
-          console.warn('Teacher exam metrics error:', e);
-        }
-
-        const weakContainer = document.getElementById('t-weakest-concepts-list');
-        weakContainer.innerHTML = '';
-        if (dash.weakest_concepts.length > 0) {
-          dash.weakest_concepts.forEach(c => {
-            const row = document.createElement('div');
-            row.className = 'p-3 rounded-xl bg-sandLight border border-sandDark flex items-center justify-between text-xs';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${c.concept_name}</span>
-                <span class="text-muted">Attempts: ${c.assessed_students}</span>
-              </div>
-              <span class="font-extrabold text-errorRed">${c.avg_mastery_pct}% avg</span>
-            `;
-            weakContainer.appendChild(row);
-          });
-        } else {
-          weakContainer.innerHTML = '<p class="text-xs text-muted text-center py-4">No cohort weaknesses below 60%.</p>';
-        }
-
-        const miscContainer = document.getElementById('t-common-misc-list');
-        miscContainer.innerHTML = '';
-        if (miscList.length > 0) {
-          miscList.slice(0, 4).forEach(m => {
-            const row = document.createElement('div');
-            row.className = 'p-3 rounded-xl bg-sandLight border border-sandDark flex items-center justify-between text-xs';
-            row.innerHTML = `
-              <div>
-                <span class="font-bold text-deepPurple block">${m.misconception_tag}</span>
-                <span class="text-muted">${m.concept_name || m.concept_id}</span>
-              </div>
-              <span class="px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800">${m.affected_students} students</span>
-            `;
-            miscContainer.appendChild(row);
-          });
-        } else {
-          miscContainer.innerHTML = '<p class="text-xs text-muted text-center py-4">No recurring misconceptions found.</p>';
-        }
-
-        const tableBody = document.getElementById('t-students-table-body');
-        tableBody.innerHTML = '';
-        students.forEach(s => {
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-sandLight transition-colors';
-          tr.innerHTML = `
-            <td class="py-3 px-4 font-mono text-xs text-muted">${s.student_id}</td>
-            <td class="py-3 px-4 font-bold text-deepPurple">${s.name}</td>
-            <td class="py-3 px-4 font-semibold">${Math.round(s.accuracy_pct)}%</td>
-            <td class="py-3 px-4 font-semibold">${Math.round(s.mastery_pct)}%</td>
-            <td class="py-3 px-4">
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${s.needs_intervention ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
-                ${s.needs_intervention ? 'Intervention Needed' : 'On Track'}
-              </span>
-            </td>
-            <td class="py-3 px-4 text-right">
-              <button onclick="drilldownStudent('${s.student_id}')" class="font-bold text-deepPurple text-xs hover:underline">
-                Drill-Down &rarr;
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(tr);
-        });
-
-        await loadTeacherActivityFeed();
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    async function drilldownStudent(studentId) {
-      try {
-        const res = await fetch(`/api/teacher/students/${studentId}?role=teacher`);
-        if (!res.ok) throw new Error('Failed to load student details');
-        const detail = await res.json();
-
-        document.getElementById('t-drill-name').innerText = `${detail.student.name} (${detail.student.student_id})`;
-
-        const notesContainer = document.getElementById('t-drill-notes');
-        notesContainer.innerHTML = '';
-        detail.intervention_notes.forEach(note => {
-          const p = document.createElement('p');
-          p.className = 'p-3 rounded-xl bg-sand text-xs text-deepPurple font-medium leading-relaxed border border-sandDark';
-          p.innerText = `• ${note}`;
-          notesContainer.appendChild(p);
-        });
-
-        const miscContainer = document.getElementById('t-drill-misconceptions');
-        miscContainer.innerHTML = '';
-        if (detail.active_misconceptions.length > 0) {
-          detail.active_misconceptions.forEach(m => {
-            const p = document.createElement('div');
-            p.className = 'p-3 rounded-xl bg-red-50 text-xs text-red-900 border border-red-200';
-            p.innerHTML = `<strong>${m.concept_name}:</strong> ${m.misconception_tag} (${m.status})`;
-            miscContainer.appendChild(p);
-          });
-        } else {
-          miscContainer.innerHTML = '<p class="text-xs text-muted">No active misconceptions.</p>';
-        }
-
-        try {
-          const actRes = await fetch(`/api/student/${studentId}/activity?limit=15`);
-          const actContainer = document.getElementById('t-drill-activity-list');
-          if (actContainer && actRes.ok) {
-            const acts = await actRes.json();
-            actContainer.innerHTML = '';
-            if (acts.length > 0) {
-              acts.forEach(a => {
-                const row = document.createElement('div');
-                row.className = 'p-2.5 rounded-xl bg-sandLight border border-sandDark flex items-center justify-between text-xs';
-                const timeStr = new Date(a.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + new Date(a.created_at).toLocaleDateString();
-                row.innerHTML = `
-                  <div>
-                    <span class="font-bold text-deepPurple block">${a.action_title}</span>
-                    <span class="text-[10px] text-muted">${timeStr}</span>
-                  </div>
-                  <span class="font-mono text-[9px] px-2 py-0.5 rounded-full bg-white text-deepPurple border border-sandDark uppercase font-bold">${a.event_type.replace(/_/g, ' ')}</span>
-                `;
-                actContainer.appendChild(row);
-              });
-            } else {
-              actContainer.innerHTML = '<p class="text-xs text-muted text-center py-2">No activity records for this student.</p>';
-            }
-          }
-        } catch (e) {
-          console.warn('Drilldown activity warning:', e);
-        }
-
-        document.getElementById('t-drilldown-panel').classList.remove('hidden');
-        document.getElementById('t-drilldown-panel').scrollIntoView({ behavior: 'smooth' });
-
-      } catch (err) {
-        showToast(err.message, false);
-      }
-    }
-
-    function closeDrilldown() {
-      document.getElementById('t-drilldown-panel').classList.add('hidden');
     }
 
     let conceptGraphData = null;
@@ -1957,7 +1849,8 @@
       if (svg) svg.innerHTML = '<text x="50%" y="50%" text-anchor="middle" fill="#777487" font-size="14">Loading Concept Dependency DAG...</text>';
 
       try {
-        const url = `/api/concept-graph?student_id=${currentStudentId}${chapterId ? '&chapter_id=' + encodeURIComponent(chapterId) : ''}`;
+        const studentId = (currentStudentId && !currentStudentId.startsWith('TCH')) ? currentStudentId : 'STU-001';
+        const url = `/api/concept-graph?student_id=${studentId}${chapterId ? '&chapter_id=' + encodeURIComponent(chapterId) : ''}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to load concept graph');
         conceptGraphData = await res.json();
@@ -2203,17 +2096,16 @@
       try {
         localStorage.clear();
         sessionStorage.clear();
+        document.cookie = 'bodhai_role=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = 'bodhai_user_id=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = 'bodhai_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        fetch('/api/auth/logout', { method: 'POST', keepalive: true });
       } catch (e) {}
       window.location.replace('/login?logout=1');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      const stored = localStorage.getItem('bodhai_user');
-      if (!stored) {
-        window.location.replace('/login');
-        return;
-      }
-
+      if (!checkTeacherAccess()) return;
       initAuthSession();
 
       const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, '');
@@ -2244,6 +2136,7 @@
     });
 
     window.addEventListener('popstate', () => {
+      if (!checkTeacherAccess()) return;
       const p = window.location.pathname.toLowerCase().replace(/\/$/, '');
       if (p === '/diagnostic') switchView('assessment');
       else if (p === '/exam' || p === '/board-exam' || p === '/examination-hub') switchView('examination-hub');

@@ -36,3 +36,14 @@ class ActivityTrackerService:
 
     def get_summary(self, student_id: str, student_name: str = "Student") -> StudentTelemetrySummary:
         return self.repo.get_student_telemetry_summary(student_id, student_name)
+
+    def seed_initial_demo_activities_if_empty(self, student_id: str, student_name: str):
+        existing = self.get_timeline(student_id, limit=1)
+        if not existing:
+            self.record_event(
+                student_id=student_id,
+                event_type="AUTH_LOGIN",
+                action_title=f"{student_name} signed in to BodhAI",
+                details={"student_id": student_id, "student_name": student_name},
+                duration_seconds=60,
+            )
