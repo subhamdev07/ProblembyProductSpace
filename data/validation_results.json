@@ -1,0 +1,109 @@
+{
+  "is_valid": true,
+  "error_count": 0,
+  "warning_count": 0,
+  "rule_reports": {
+    "RULE_01_DUPLICATE_CHAPTER_IDS": {
+      "rule_id": "RULE_01_DUPLICATE_CHAPTER_IDS",
+      "description": "No duplicate Chapter IDs detected.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_02_DUPLICATE_TOPIC_IDS": {
+      "rule_id": "RULE_02_DUPLICATE_TOPIC_IDS",
+      "description": "No duplicate Topic IDs detected.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_03_MISSING_CHAPTER_NAMES": {
+      "rule_id": "RULE_03_MISSING_CHAPTER_NAMES",
+      "description": "All chapters possess non-empty official names.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_04_INVALID_PARENT_REFERENCES": {
+      "rule_id": "RULE_04_INVALID_PARENT_REFERENCES",
+      "description": "All parent references across Topics and Subtopics are valid.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_05_INVALID_UNIT_MAPPINGS": {
+      "rule_id": "RULE_05_INVALID_UNIT_MAPPINGS",
+      "description": "All 13 Chapters correctly map to valid CBSE Units.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_06_MISSING_SOURCE_REFERENCES": {
+      "rule_id": "RULE_06_MISSING_SOURCE_REFERENCES",
+      "description": "All Topics and Learning Outcomes carry traceable source document IDs.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_07_INVALID_ASSESSMENT_CLASSIFICATIONS": {
+      "rule_id": "RULE_07_INVALID_ASSESSMENT_CLASSIFICATIONS",
+      "description": "All assessment classifications conform to SUMMATIVE, FORMATIVE, NOT_IN_CURRENT_SCOPE, PENDING_VERIFICATION.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_08_MISSING_VERIFICATION_STATUS": {
+      "rule_id": "RULE_08_MISSING_VERIFICATION_STATUS",
+      "description": "All Chapters and Topics have explicit and valid verification statuses.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_09_DUPLICATE_CURRICULUM_ENTRIES": {
+      "rule_id": "RULE_09_DUPLICATE_CURRICULUM_ENTRIES",
+      "description": "No duplicate chapter numbers or duplicate topic names under chapters.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_10_INCONSISTENT_HIERARCHIES": {
+      "rule_id": "RULE_10_INCONSISTENT_HIERARCHIES",
+      "description": "Hierarchical consistency verified: all Units contain Chapters; all Chapters contain Topics.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_11_MISSING_TOPIC_MAPPINGS": {
+      "rule_id": "RULE_11_MISSING_TOPIC_MAPPINGS",
+      "description": "All Learning Outcomes map accurately to valid Chapters and Topics.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    },
+    "RULE_12_UNVERIFIED_CURRICULUM_CONTENT": {
+      "rule_id": "RULE_12_UNVERIFIED_CURRICULUM_CONTENT",
+      "description": "All curriculum content is 100% verified against primary sources.",
+      "status": "PASSED",
+      "errors": [],
+      "warnings": []
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "total_rules_evaluated": 12,
+    "passed_rules": 12,
+    "passed_with_warnings": 0,
+    "failed_rules": 0,
+    "total_errors": 0,
+    "total_warnings": 0,
+    "total_units": 5,
+    "total_chapters": 13,
+    "total_topics": 56,
+    "total_subtopics": 113,
+    "total_learning_outcomes": 15,
+    "summative_topics": 52,
+    "formative_topics": 3,
+    "excluded_topics": 1
+  }
+}

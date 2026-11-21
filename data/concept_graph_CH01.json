@@ -1,0 +1,1579 @@
+{
+  "chapter_id": "CH-01",
+  "total_concepts": 29,
+  "total_edges": 46,
+  "concepts": [
+    {
+      "concept_id": "CPT-CH01-001",
+      "name": "Chemical Reaction",
+      "canonical_name": "chemical_reaction",
+      "description": "A process in which one or more substances undergo chemical change with bond reorganization to form new substances with distinct properties, characterized by change in state, colour, temperature, or gas evolution.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S01",
+      "concept_type": "FOUNDATIONAL",
+      "difficulty_level": "EASY",
+      "learning_objective": "Identify the occurrence of a chemical reaction through observable experimental indicators.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-001-01",
+          "concept_id": "CPT-CH01-001",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 1,
+          "section_heading": "1.1 Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Whenever a chemical change occurs, we can say that a chemical reaction has taken place.",
+          "created_at": "2026-11-21 09:52:16"
+        },
+        {
+          "provenance_id": "PROV-CH01-001-02",
+          "concept_id": "CPT-CH01-001",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 2,
+          "section_heading": "1.1 Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "change in state, change in colour, evolution of a gas, change in temperature help us to determine whether a chemical reaction has taken place.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:51:14",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-002",
+      "name": "Chemical Equation",
+      "canonical_name": "chemical_equation",
+      "description": "The symbolic representation of a chemical reaction using chemical formulas of reactants and products separated by a directional arrow pointing towards products.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S02",
+      "concept_type": "CORE",
+      "difficulty_level": "EASY",
+      "learning_objective": "Express chemical transformations in standard chemical equation format.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-002-01",
+          "concept_id": "CPT-CH01-002",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 2,
+          "section_heading": "1.1 Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "A chemical equation represents a chemical reaction. If you recall formulae of magnesium, oxygen and magnesium oxide...",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-003",
+      "name": "Word Equation",
+      "canonical_name": "word_equation",
+      "description": "A preliminary textual representation of a chemical reaction stating the names of reactants on the left-hand side and names of products on the right-hand side.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S02",
+      "concept_type": "FOUNDATIONAL",
+      "difficulty_level": "EASY",
+      "learning_objective": "Convert descriptive chemical observations into word equations.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-003-01",
+          "concept_id": "CPT-CH01-003",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 2,
+          "section_heading": "1.1 Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "The word-equation for the above reaction would be – Magnesium + Oxygen -> Magnesium oxide",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-004",
+      "name": "Skeletal Chemical Equation",
+      "canonical_name": "skeletal_chemical_equation",
+      "description": "An unbalanced chemical equation showing chemical formulas of reactants and products where the number of atoms of elements on LHS does not equal RHS.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S02",
+      "concept_type": "CORE",
+      "difficulty_level": "EASY",
+      "learning_objective": "Differentiate between skeletal equations and balanced equations.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-004-01",
+          "concept_id": "CPT-CH01-004",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 3,
+          "section_heading": "1.1.1 Writing a Chemical Equation",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Such a chemical equation is a skeletal chemical equation for a reaction. Equation (1.2) is a skeletal chemical equation for the burning of magnesium in air.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-005",
+      "name": "Law of Conservation of Mass",
+      "canonical_name": "law_of_conservation_of_mass",
+      "description": "Fundamental scientific law stating that mass can neither be created nor destroyed in a chemical reaction; the total mass of reactants must equal total mass of products.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S03",
+      "concept_type": "FOUNDATIONAL",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Apply the conservation of mass principle as the governing rationale for equation balancing.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-005-01",
+          "concept_id": "CPT-CH01-005",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 3,
+          "section_heading": "1.1.2 Balanced Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Recall the law of conservation of mass that you studied in Class IX; mass can neither be created nor destroyed in a chemical reaction.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-006",
+      "name": "Balanced Chemical Equation",
+      "canonical_name": "balanced_chemical_equation",
+      "description": "A chemical equation in which the total number of atoms of each element is identical on both sides of the reaction arrow, satisfying mass conservation.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S03",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Verify whether a given chemical equation satisfies atomic balance.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-006-01",
+          "concept_id": "CPT-CH01-006",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 3,
+          "section_heading": "1.1.2 Balanced Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "the number of atoms of each element remains the same, before and after a chemical reaction. Hence, we need to balance a skeletal chemical equation.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-007",
+      "name": "Balancing Chemical Equations (Hit and Trial Method)",
+      "canonical_name": "balancing_chemical_equations",
+      "description": "Systematic method of adjusting stoichiometric coefficients before formulas to equate atom counts on LHS and RHS without altering molecular subscripts.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S03",
+      "concept_type": "PRACTICAL",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Balance complex skeletal chemical equations using stoichiometric coefficients.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-007-01",
+          "concept_id": "CPT-CH01-007",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 4,
+          "section_heading": "1.1.2 Balanced Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "This method of balancing chemical equations is called hit-and-trial method as we make trials to balance the equation by using the smallest whole number coefficient.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-008",
+      "name": "Physical State Notations in Equations",
+      "canonical_name": "physical_state_notations",
+      "description": "Indicating physical states of reactants and products using symbols (s) for solid, (l) for liquid, (g) for gas, and (aq) for aqueous solutions in chemical equations.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "subtopic_id": "CH01-T01-S03",
+      "concept_type": "CORE",
+      "difficulty_level": "EASY",
+      "learning_objective": "Annotate chemical equations with complete physical state and reaction condition symbols.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-008-01",
+          "concept_id": "CPT-CH01-008",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 5,
+          "section_heading": "1.1.2 Balanced Chemical Equations",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "The gaseous, liquid, aqueous and solid states of reactants and products are represented by the notations (g), (l), (aq) and (s), respectively.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-009",
+      "name": "Combination Reaction",
+      "canonical_name": "combination_reaction",
+      "description": "A type of chemical reaction in which two or more elements or compounds combine to synthesize a single compound.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S01",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Recognize and write equations for combination reactions.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-009-01",
+          "concept_id": "CPT-CH01-009",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 6,
+          "section_heading": "1.2.1 Combination Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Such a reaction in which a single product is formed from two or more reactants is known as a combination reaction.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-010",
+      "name": "Slaked Lime Formation and Whitewashing",
+      "canonical_name": "slaked_lime_formation",
+      "description": "Exothermic combination of quicklime (calcium oxide) with water forming slaked lime (calcium hydroxide), followed by slow reaction with atmospheric CO2 to form shiny calcium carbonate.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S01",
+      "concept_type": "APPLIED",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Explain the chemistry of whitewashing using CaO, Ca(OH)2, and CaCO3 reactions.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-010-01",
+          "concept_id": "CPT-CH01-010",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 6,
+          "section_heading": "1.2.1 Combination Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Calcium oxide reacts vigorously with water to produce slaked lime (calcium hydroxide) releasing a large amount of heat.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-011",
+      "name": "Exothermic Reaction",
+      "canonical_name": "exothermic_reaction",
+      "description": "Chemical reactions accompanied by the evolution or release of thermal energy into the surroundings, resulting in temperature rise.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S05",
+      "concept_type": "CORE",
+      "difficulty_level": "EASY",
+      "learning_objective": "Distinguish exothermic reactions from endothermic reactions on energetic criteria.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-011-01",
+          "concept_id": "CPT-CH01-011",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 7,
+          "section_heading": "1.2.1 Combination Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Reactions in which heat is released along with the formation of products are called exothermic chemical reactions.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-012",
+      "name": "Respiration as an Exothermic Process",
+      "canonical_name": "respiration_exothermic_process",
+      "description": "Biological oxidation of glucose in body cells releasing energy necessary for life maintenance, making cellular respiration an exothermic process.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S05",
+      "concept_type": "APPLIED",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Write the chemical equation for cellular respiration and justify its exothermic nature.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-012-01",
+          "concept_id": "CPT-CH01-012",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 7,
+          "section_heading": "1.2.1 Combination Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Respiration is an exothermic process. C6H12O6(aq) + 6O2(aq) -> 6CO2(aq) + 6H2O(l) + energy",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-013",
+      "name": "Decomposition Reaction",
+      "canonical_name": "decomposition_reaction",
+      "description": "A chemical reaction in which a single reactant breaks down upon energy input to yield two or more simpler products.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S02",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Identify decomposition reactions and write balanced chemical equations for their pathways.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-013-01",
+          "concept_id": "CPT-CH01-013",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 8,
+          "section_heading": "1.2.2 Decomposition Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "In this reaction you can observe that a single reactant breaks down to give simpler products. This is a decomposition reaction.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-014",
+      "name": "Thermal Decomposition",
+      "canonical_name": "thermal_decomposition",
+      "description": "Decomposition reaction triggered by thermal energy (heating), exemplified by heating ferrous sulphate crystals, limestone (CaCO3), and lead nitrate.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S02",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Predict products and observations (colour change, gases evolved) during thermal decomposition.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-014-01",
+          "concept_id": "CPT-CH01-014",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 8,
+          "section_heading": "1.2.2 Decomposition Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "When a decomposition reaction is carried out by heating, it is called thermal decomposition.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-015",
+      "name": "Electrolytic Decomposition (Electrolysis)",
+      "canonical_name": "electrolytic_decomposition",
+      "description": "Decomposition of chemical compounds induced by passing an electric current, notably the electrolysis of acidified water producing hydrogen and oxygen in a 2:1 volume ratio.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S02",
+      "concept_type": "PRACTICAL",
+      "difficulty_level": "HARD",
+      "learning_objective": "Explain the electrolysis of water and justify the 2:1 gas volume ratio at cathode and anode.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-015-01",
+          "concept_id": "CPT-CH01-015",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 9,
+          "section_heading": "1.2.2 Decomposition Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Activity 1.7 (Electrolysis of water) ... Is the volume of gas collected the same in both the test tubes?",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-016",
+      "name": "Photolytic Decomposition (Photolysis)",
+      "canonical_name": "photolytic_decomposition",
+      "description": "Decomposition reaction initiated by absorption of light photons, exemplified by silver chloride and silver bromide turning grey in sunlight; historically utilized in black-and-white photography.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S02",
+      "concept_type": "APPLIED",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Describe photolysis of silver halides and its historical application in photography.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-016-01",
+          "concept_id": "CPT-CH01-016",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 9,
+          "section_heading": "1.2.2 Decomposition Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "White silver chloride turns grey in sunlight. This is due to the decomposition of silver chloride into silver and chlorine by light. 2AgCl(s) -> 2Ag(s) + Cl2(g)",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-017",
+      "name": "Endothermic Reaction",
+      "canonical_name": "endothermic_reaction",
+      "description": "Chemical reactions requiring continuous absorption of energy in the form of heat, light, or electricity to rupture reactant bonds and proceed.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S05",
+      "concept_type": "CORE",
+      "difficulty_level": "EASY",
+      "learning_objective": "Classify chemical transformations as endothermic based on enthalpy absorption.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-017-01",
+          "concept_id": "CPT-CH01-017",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 9,
+          "section_heading": "1.2.2 Decomposition Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Reactions in which energy is absorbed are known as endothermic reactions.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-018",
+      "name": "Displacement Reaction",
+      "canonical_name": "displacement_reaction",
+      "description": "A reaction in which a more reactive chemical element displaces or expels a less reactive element from its aqueous salt solution (e.g. Iron nails dipping in copper sulphate solution).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S03",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Predict displacement outcomes using relative metal reactivities.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-018-01",
+          "concept_id": "CPT-CH01-018",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 10,
+          "section_heading": "1.2.3 Displacement Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "In this reaction, iron has displaced or removed another element, copper, from copper sulphate solution. This reaction is known as displacement reaction.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-019",
+      "name": "Double Displacement Reaction",
+      "canonical_name": "double_displacement_reaction",
+      "description": "A chemical reaction involving mutual exchange of ions between two aqueous ionic reactant compounds to generate two new product compounds.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S04",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Formulate balanced double displacement equations and identify ionic exchange.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-019-01",
+          "concept_id": "CPT-CH01-019",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 11,
+          "section_heading": "1.2.4 Double Displacement Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Such reactions in which there is an exchange of ions between the reactants are called double displacement reactions.",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-020",
+      "name": "Precipitation Reaction",
+      "canonical_name": "precipitation_reaction",
+      "description": "A reaction resulting in the formation of an insoluble solid compound (precipitate) that settles out of an aqueous solution (e.g. BaSO4 formation from Na2SO4 and BaCl2).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "subtopic_id": "CH01-T02-S04",
+      "concept_type": "PRACTICAL",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Identify precipitates and write ionic net precipitation equations.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-020-01",
+          "concept_id": "CPT-CH01-020",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 11,
+          "section_heading": "1.2.4 Double Displacement Reaction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Any reaction that produces a precipitate can be called a precipitation reaction. The white precipitate of BaSO4 is formed by the reaction of SO4(2-) and Ba(2+).",
+          "created_at": "2026-11-21 09:52:16"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:16",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-021",
+      "name": "Oxidation",
+      "canonical_name": "oxidation",
+      "description": "A chemical process characterized by the gain of oxygen atoms or loss of hydrogen atoms by a substance during a reaction.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S01",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Identify oxidized species in classical oxygen/hydrogen transfer reactions.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-021-01",
+          "concept_id": "CPT-CH01-021",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 12,
+          "section_heading": "1.2.5 Oxidation and Reduction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "If a substance gains oxygen during a reaction, it is said to be oxidised.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-022",
+      "name": "Reduction",
+      "canonical_name": "reduction",
+      "description": "A chemical process characterized by the loss of oxygen atoms or gain of hydrogen atoms by a substance during a reaction.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S01",
+      "concept_type": "CORE",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Identify reduced species in classical oxygen/hydrogen transfer reactions.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-022-01",
+          "concept_id": "CPT-CH01-022",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 12,
+          "section_heading": "1.2.5 Oxidation and Reduction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "If a substance loses oxygen during a reaction, it is said to be reduced.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-023",
+      "name": "Redox Reaction (Oxidation-Reduction Reaction)",
+      "canonical_name": "redox_reaction",
+      "description": "A reaction occurring with concurrent and complementary oxidation and reduction, where one reactant is oxidized while another is reduced (e.g. CuO + H2 -> Cu + H2O).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S01",
+      "concept_type": "CORE",
+      "difficulty_level": "HARD",
+      "learning_objective": "Analyze redox reactions to identify substances oxidized, reduced, oxidizing agents, and reducing agents.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-023-01",
+          "concept_id": "CPT-CH01-023",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 12,
+          "section_heading": "1.2.5 Oxidation and Reduction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "One reactant gets oxidised while the other gets reduced during a reaction. Such reactions are called oxidation-reduction reactions or redox reactions.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-024",
+      "name": "Oxidizing and Reducing Agents",
+      "canonical_name": "oxidizing_and_reducing_agents",
+      "description": "An oxidizing agent is a substance that causes oxidation by providing oxygen or accepting electrons (and is itself reduced); a reducing agent provides hydrogen or donates electrons (and is itself oxidized).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S01",
+      "concept_type": "CORE",
+      "difficulty_level": "HARD",
+      "learning_objective": "Determine the oxidizing agent and reducing agent in a redox reaction.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-024-01",
+          "concept_id": "CPT-CH01-024",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 13,
+          "section_heading": "1.2.5 Oxidation and Reduction",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "In equation (1.31), carbon is oxidised to CO and ZnO is reduced to Zn... MnO2 + 4HCl -> MnCl2 + 2H2O + Cl2",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-025",
+      "name": "Corrosion",
+      "canonical_name": "corrosion",
+      "description": "The slow destructive chemical or electrochemical deterioration of refined metals by airborne atmospheric agents like moisture, oxygen, and carbon dioxide (e.g. Rusting of iron, black silver sulphide, green copper carbonate).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S02",
+      "concept_type": "APPLIED",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Describe everyday metal corrosion phenomena and identify the environmental reactants involved.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-025-01",
+          "concept_id": "CPT-CH01-025",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 13,
+          "section_heading": "1.3.1 Corrosion",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "When a metal is attacked by substances around it such as moisture, acids, etc., it is said to corrode and this process is called corrosion.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-026",
+      "name": "Rancidity",
+      "canonical_name": "rancidity",
+      "description": "The aerial oxidation of unsaturated fats and oils in food substances, generating volatile degradation products causing unpleasant smell, stale taste, and nutritional decline.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S02",
+      "concept_type": "APPLIED",
+      "difficulty_level": "EASY",
+      "learning_objective": "Explain the causes of rancidity in lipid-containing foods.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-026-01",
+          "concept_id": "CPT-CH01-026",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 13,
+          "section_heading": "1.3.2 Rancidity",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "When fats and oils are oxidised, they become rancid and their smell and taste change.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-027",
+      "name": "Prevention of Oxidation in Everyday Life",
+      "canonical_name": "prevention_of_oxidation",
+      "description": "Technological interventions to mitigate destructive oxidation: addition of antioxidants, packaging in inert gas (e.g. Nitrogen flushed chips bags), airtight refrigeration, and surface barrier coatings.",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "subtopic_id": "CH01-T03-S02",
+      "concept_type": "APPLIED",
+      "difficulty_level": "EASY",
+      "learning_objective": "Evaluate prevention methods for food spoilage and metal degradation.",
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-027-01",
+          "concept_id": "CPT-CH01-027",
+          "source_document_id": "NCERT_SCI_10_CH01",
+          "source_filename": "jesc101.pdf",
+          "page_number": 13,
+          "section_heading": "1.3.2 Rancidity",
+          "extraction_method": "NATIVE_PDF_PARSE",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Usually substances which prevent oxidation (antioxidants) are added to foods containing fats and oil... flush bags of chips with gas such as nitrogen to prevent the chips from getting oxidised.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-028",
+      "name": "Early Attempts at Classification of Elements",
+      "canonical_name": "early_attempts_classification",
+      "description": "Historical grouping of chemical elements based on atomic mass and triad properties: Döbereiner's Triads and Newlands' Law of Octaves (Formative assessment only).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T04",
+      "subtopic_id": "CH01-T04-S01",
+      "concept_type": "EXTENDED",
+      "difficulty_level": "EASY",
+      "learning_objective": "Appreciate historical developments in chemical element classification.",
+      "source_status": "CURRICULUM_SYNTHESIZED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-028-01",
+          "concept_id": "CPT-CH01-028",
+          "source_document_id": "CBSE_SCI_10_2026_27",
+          "source_filename": "Science_SecP1_2026-27.pdf",
+          "page_number": 4,
+          "section_heading": "Unit I: Formative Assessment Scope",
+          "extraction_method": "CURRICULUM_AUDIT",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Periodic classification of elements: Dobereiner's Triads, Newlands' Law of Octaves. For internal assessment only.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    },
+    {
+      "concept_id": "CPT-CH01-029",
+      "name": "Mendeléev's Periodic Table and Modern Trends",
+      "canonical_name": "mendeleev_and_modern_trends",
+      "description": "Organization of elements by atomic number; modern periodic trends including valency, atomic size, metallic and non-metallic character across periods and down groups (Formative learning).",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T04",
+      "subtopic_id": "CH01-T04-S03",
+      "concept_type": "EXTENDED",
+      "difficulty_level": "MEDIUM",
+      "learning_objective": "Trace trends in atomic radius, valency, and metallic character across the modern periodic table.",
+      "source_status": "CURRICULUM_SYNTHESIZED",
+      "verification_status": "VERIFIED",
+      "metadata": {},
+      "provenance_records": [
+        {
+          "provenance_id": "PROV-CH01-029-01",
+          "concept_id": "CPT-CH01-029",
+          "source_document_id": "CBSE_SCI_10_2026_27",
+          "source_filename": "Science_SecP1_2026-27.pdf",
+          "page_number": 4,
+          "section_heading": "Unit I: Formative Assessment Scope",
+          "extraction_method": "CURRICULUM_AUDIT",
+          "confidence": 1.0,
+          "verification_status": "SOURCE_VERIFIED",
+          "verbatim_text": "Modern periodic table, gradation in properties, valency, atomic number, metallic and non-metallic properties.",
+          "created_at": "2026-11-21 09:52:17"
+        }
+      ],
+      "created_at": "2026-11-21 09:52:17",
+      "updated_at": "2026-11-21 09:53:27"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "EDGE-CPT-CH01-001-PREREQ-CPT-CH01-002",
+      "source_concept_id": "CPT-CH01-001",
+      "target_concept_id": "CPT-CH01-002",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Understanding physical/chemical change is prerequisite to writing chemical equations",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-001-PREREQ-CPT-CH01-021",
+      "source_concept_id": "CPT-CH01-001",
+      "target_concept_id": "CPT-CH01-021",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Chemical reaction concept is prerequisite to understanding oxidation",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-001-PREREQ-CPT-CH01-022",
+      "source_concept_id": "CPT-CH01-001",
+      "target_concept_id": "CPT-CH01-022",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Chemical reaction concept is prerequisite to understanding reduction",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-002-PREREQ-CPT-CH01-003",
+      "source_concept_id": "CPT-CH01-002",
+      "target_concept_id": "CPT-CH01-003",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Understanding chemical equations precedes word equations",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-002-PREREQ-CPT-CH01-004",
+      "source_concept_id": "CPT-CH01-002",
+      "target_concept_id": "CPT-CH01-004",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Understanding chemical equations precedes skeletal formula representation",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-004-PREREQ-CPT-CH01-006",
+      "source_concept_id": "CPT-CH01-004",
+      "target_concept_id": "CPT-CH01-006",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Skeletal equations are the starting point for producing balanced chemical equations",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-005-PREREQ-CPT-CH01-006",
+      "source_concept_id": "CPT-CH01-005",
+      "target_concept_id": "CPT-CH01-006",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Law of conservation of mass provides theoretical foundation for equation balancing",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-006-PREREQ-CPT-CH01-007",
+      "source_concept_id": "CPT-CH01-006",
+      "target_concept_id": "CPT-CH01-007",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Concept of balanced equations is required before applying hit-and-trial balancing method",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-006-PREREQ-CPT-CH01-008",
+      "source_concept_id": "CPT-CH01-006",
+      "target_concept_id": "CPT-CH01-008",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Equation balancing precedes physical state notation annotation",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-006-PREREQ-CPT-CH01-009",
+      "source_concept_id": "CPT-CH01-006",
+      "target_concept_id": "CPT-CH01-009",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Balanced chemical equations are required to study combination reaction stoichiometry",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-006-PREREQ-CPT-CH01-013",
+      "source_concept_id": "CPT-CH01-006",
+      "target_concept_id": "CPT-CH01-013",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Balanced chemical equations are required to study decomposition reaction stoichiometry",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-006-PREREQ-CPT-CH01-018",
+      "source_concept_id": "CPT-CH01-006",
+      "target_concept_id": "CPT-CH01-018",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Balanced chemical equations are required to study displacement reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-006-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-006",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Balanced chemical equation supports outcome on balancing equations",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-007-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-007",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Hit-and-trial balancing method supports outcome on balancing equations",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-009-PREREQ-CPT-CH01-010",
+      "source_concept_id": "CPT-CH01-009",
+      "target_concept_id": "CPT-CH01-010",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "General combination reaction concept is prerequisite to slaked lime case study",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-009-PREREQ-CPT-CH01-011",
+      "source_concept_id": "CPT-CH01-009",
+      "target_concept_id": "CPT-CH01-011",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Combination reactions introduce heat evolution (exothermic reactions)",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-009-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-009",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Combination reaction supports outcome on chemical interactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-010-PARTOF-CPT-CH01-009",
+      "source_concept_id": "CPT-CH01-010",
+      "target_concept_id": "CPT-CH01-009",
+      "relationship_type": "PART_OF",
+      "description": "Slaked lime formation is a specific exemplar of combination reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CURRICULUM_TAXONOMY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-011-PREREQ-CPT-CH01-012",
+      "source_concept_id": "CPT-CH01-011",
+      "target_concept_id": "CPT-CH01-012",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Exothermic reaction concept is prerequisite to understanding cellular respiration energetics",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-011-RELATED-CPT-CH01-017",
+      "source_concept_id": "CPT-CH01-011",
+      "target_concept_id": "CPT-CH01-017",
+      "relationship_type": "RELATED_TO",
+      "description": "Exothermic and endothermic reactions form thermodynamic complementary pairs",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CONCEPTUAL_ANALOGY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-013-PREREQ-CPT-CH01-014",
+      "source_concept_id": "CPT-CH01-013",
+      "target_concept_id": "CPT-CH01-014",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Decomposition reaction definition is prerequisite to thermal decomposition",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-013-PREREQ-CPT-CH01-015",
+      "source_concept_id": "CPT-CH01-013",
+      "target_concept_id": "CPT-CH01-015",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Decomposition reaction definition is prerequisite to electrolytic decomposition",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-013-PREREQ-CPT-CH01-016",
+      "source_concept_id": "CPT-CH01-013",
+      "target_concept_id": "CPT-CH01-016",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Decomposition reaction definition is prerequisite to photolytic decomposition",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-013-PREREQ-CPT-CH01-017",
+      "source_concept_id": "CPT-CH01-013",
+      "target_concept_id": "CPT-CH01-017",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Decomposition reactions introduce energy absorption (endothermic reactions)",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-013-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-013",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Decomposition reaction supports outcome on chemical interactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-014-PARTOF-CPT-CH01-013",
+      "source_concept_id": "CPT-CH01-014",
+      "target_concept_id": "CPT-CH01-013",
+      "relationship_type": "PART_OF",
+      "description": "Thermal decomposition is a subtype of decomposition reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CURRICULUM_TAXONOMY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-015-PARTOF-CPT-CH01-013",
+      "source_concept_id": "CPT-CH01-015",
+      "target_concept_id": "CPT-CH01-013",
+      "relationship_type": "PART_OF",
+      "description": "Electrolytic decomposition is a subtype of decomposition reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CURRICULUM_TAXONOMY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-016-PARTOF-CPT-CH01-013",
+      "source_concept_id": "CPT-CH01-016",
+      "target_concept_id": "CPT-CH01-013",
+      "relationship_type": "PART_OF",
+      "description": "Photolytic decomposition is a subtype of decomposition reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CURRICULUM_TAXONOMY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-017-RELATED-CPT-CH01-011",
+      "source_concept_id": "CPT-CH01-017",
+      "target_concept_id": "CPT-CH01-011",
+      "relationship_type": "RELATED_TO",
+      "description": "Endothermic and exothermic reactions form thermodynamic complementary pairs",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CONCEPTUAL_ANALOGY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-018-PREREQ-CPT-CH01-019",
+      "source_concept_id": "CPT-CH01-018",
+      "target_concept_id": "CPT-CH01-019",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Single displacement precedes understanding double displacement ion exchange",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-018-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-018",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Displacement reaction supports outcome on chemical interactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-019-PREREQ-CPT-CH01-020",
+      "source_concept_id": "CPT-CH01-019",
+      "target_concept_id": "CPT-CH01-020",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Double displacement concept is prerequisite to precipitate formation mechanics",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-019-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-019",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Double displacement reaction supports outcome on chemical interactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-020-PARTOF-CPT-CH01-019",
+      "source_concept_id": "CPT-CH01-020",
+      "target_concept_id": "CPT-CH01-019",
+      "relationship_type": "PART_OF",
+      "description": "Precipitation reactions represent aqueous double displacement reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CURRICULUM_TAXONOMY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-021-PREREQ-CPT-CH01-023",
+      "source_concept_id": "CPT-CH01-021",
+      "target_concept_id": "CPT-CH01-023",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Oxidation concept is required to understand concurrent redox reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-021-PREREQ-CPT-CH01-025",
+      "source_concept_id": "CPT-CH01-021",
+      "target_concept_id": "CPT-CH01-025",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Oxidation is the fundamental prerequisite mechanism for metal corrosion",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-021-PREREQ-CPT-CH01-026",
+      "source_concept_id": "CPT-CH01-021",
+      "target_concept_id": "CPT-CH01-026",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Oxidation is the fundamental prerequisite mechanism for lipid rancidity",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-022-PREREQ-CPT-CH01-023",
+      "source_concept_id": "CPT-CH01-022",
+      "target_concept_id": "CPT-CH01-023",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Reduction concept is required to understand concurrent redox reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-023-PREREQ-CPT-CH01-024",
+      "source_concept_id": "CPT-CH01-023",
+      "target_concept_id": "CPT-CH01-024",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Redox understanding is required to distinguish oxidizing and reducing agents",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-023-SUPPORTS-LO-C1.3",
+      "source_concept_id": "CPT-CH01-023",
+      "target_concept_id": "LO-C1.3",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Redox reaction supports outcome on chemical interactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-024-PARTOF-CPT-CH01-023",
+      "source_concept_id": "CPT-CH01-024",
+      "target_concept_id": "CPT-CH01-023",
+      "relationship_type": "PART_OF",
+      "description": "Oxidizing and reducing agents are structural components of redox reactions",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CURRICULUM_TAXONOMY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-025-RELATED-CPT-CH01-026",
+      "source_concept_id": "CPT-CH01-025",
+      "target_concept_id": "CPT-CH01-026",
+      "relationship_type": "RELATED_TO",
+      "description": "Corrosion and rancidity represent everyday oxidative damage to metals and foods respectively",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CONCEPTUAL_ANALOGY"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-026-PREREQ-CPT-CH01-027",
+      "source_concept_id": "CPT-CH01-026",
+      "target_concept_id": "CPT-CH01-027",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Understanding rancidity and corrosion is prerequisite to applying antioxidant/protection methods",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-028-PREREQ-CPT-CH01-029",
+      "source_concept_id": "CPT-CH01-028",
+      "target_concept_id": "CPT-CH01-029",
+      "relationship_type": "PREREQUISITE_OF",
+      "description": "Early classification attempts precede Mendeleev and Modern periodic trends",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "NCERT_PEDAGOGICAL_PROGRESSION"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-028-SUPPORTS-LO-C1.1",
+      "source_concept_id": "CPT-CH01-028",
+      "target_concept_id": "LO-C1.1",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Early attempts at classification supports periodic table outcome",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    },
+    {
+      "edge_id": "EDGE-CPT-CH01-029-SUPPORTS-LO-C1.1",
+      "source_concept_id": "CPT-CH01-029",
+      "target_concept_id": "LO-C1.1",
+      "relationship_type": "SUPPORTS_LEARNING_OUTCOME",
+      "description": "Modern periodic trends supports periodic table outcome",
+      "confidence": 1.0,
+      "verification_status": "VERIFIED",
+      "source_provenance": {
+        "basis": "CBSE_CURRICULUM_FRAMEWORK"
+      },
+      "created_at": "2026-11-21 09:52:17"
+    }
+  ],
+  "topological_learning_order": [
+    "CPT-CH01-001",
+    "CPT-CH01-005",
+    "CPT-CH01-028",
+    "CPT-CH01-002",
+    "CPT-CH01-021",
+    "CPT-CH01-022",
+    "CPT-CH01-029",
+    "CPT-CH01-003",
+    "CPT-CH01-004",
+    "CPT-CH01-025",
+    "CPT-CH01-026",
+    "CPT-CH01-023",
+    "CPT-CH01-006",
+    "CPT-CH01-027",
+    "CPT-CH01-024",
+    "CPT-CH01-007",
+    "CPT-CH01-008",
+    "CPT-CH01-009",
+    "CPT-CH01-013",
+    "CPT-CH01-018",
+    "CPT-CH01-010",
+    "CPT-CH01-011",
+    "CPT-CH01-014",
+    "CPT-CH01-015",
+    "CPT-CH01-016",
+    "CPT-CH01-017",
+    "CPT-CH01-019",
+    "CPT-CH01-012",
+    "CPT-CH01-020"
+  ]
+}

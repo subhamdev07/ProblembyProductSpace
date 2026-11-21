@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-11-21 15:02:21",
+  "pre_check": {
+    "nvidia_configured": true,
+    "nvidia_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "nvidia_base_url": "https://integrate.api.nvidia.com/v1",
+    "nvidia_key_masked": "nvap...VArV",
+    "bodhan_configured": true,
+    "bodhan_model": "indic-ocr",
+    "bodhan_base_url": "https://api.bodhan.ai/v1",
+    "bodhan_key_masked": "sk-A...ShRQ"
+  },
+  "nvidia_test": {
+    "status": "SUCCESS",
+    "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+    "latency_ms": 3623.48,
+    "response_text": "NVIDIA_CONNECTION_OK",
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 26,
+      "completion_tokens": 301,
+      "total_tokens": 327
+    },
+    "has_reasoning": true,
+    "streaming_verified": true,
+    "streaming_latency_ms": 3007.7,
+    "streamed_sample": "Water is a transparent, odorless liquid composed of hydrogen and oxygen, essential for all known for"
+  },
+  "bodhan_test": {
+    "status": "SUCCESS",
+    "latency_ms": 940.75,
+    "model": "indic-ocr",
+    "extracted_text": "CBSE Class 10 Science\n\nChapter 1: Chemical Reactions and Equations\n\nReaction: $2\\mathrm{Mg} + \\mathrm{O}_2 \\rightarrow 2\\mathrm{MgO}$",
+    "matched_fragments": [
+      "CBSE Class 10 Science",
+      "Chemical Reactions"
+    ],
+    "character_count": 133
+  },
+  "integration_test": {
+    "status": "SUCCESS",
+    "document_id": "HYBRID-TEST-01",
+    "total_pages": 2,
+    "native_pages": 1,
+    "ocr_pages": 1,
+    "ingestion_latency_ms": 2093.07,
+    "llm_analysis_latency_ms": 1810.57,
+    "llm_analysis_output": "- Life Processes (Biology)  \n- Chemical Reactions and Equations (Science/Chemistry)",
+    "reading_order_preserved": true
+  },
+  "overall_status": "PASSED_FULLY"
+}

@@ -1,0 +1,35 @@
+{
+  "is_valid": true,
+  "is_dag": true,
+  "cycle_detected": false,
+  "cycle_path": null,
+  "errors": [],
+  "warnings": [],
+  "rules_evaluated": 8,
+  "statistics": {
+    "total_concepts": 29,
+    "total_edges": 46,
+    "total_provenance_records": 30,
+    "concepts_by_status": {
+      "VERIFIED": 29
+    },
+    "concepts_by_type": {
+      "APPLIED": 6,
+      "CORE": 15,
+      "EXTENDED": 2,
+      "FOUNDATIONAL": 3,
+      "PRACTICAL": 3
+    },
+    "edges_by_relationship": {
+      "PART_OF": 6,
+      "PREREQUISITE_OF": 28,
+      "RELATED_TO": 3,
+      "SUPPORTS_LEARNING_OUTCOME": 9
+    },
+    "concepts_by_chapter": {
+      "CH-01": 29
+    },
+    "is_dag": true,
+    "cross_topic_prerequisites": 5
+  }
+}

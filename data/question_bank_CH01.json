@@ -1,0 +1,690 @@
+{
+  "chapter_id": "CH-01",
+  "total_questions": 15,
+  "statistics": {
+    "total_questions": 15,
+    "by_difficulty": {
+      "EASY": 5,
+      "HARD": 5,
+      "MEDIUM": 5
+    },
+    "by_cognitive_level": {
+      "ANALYZE_EVALUATE_CREATE": 6,
+      "APPLICATION": 5,
+      "KNOWLEDGE_UNDERSTANDING": 4
+    },
+    "by_question_type": {
+      "ASSERTION_REASON": 2,
+      "CASE_BASED": 1,
+      "DIAGRAM_BASED": 1,
+      "LONG_ANSWER": 1,
+      "MCQ": 5,
+      "NUMERICAL": 2,
+      "SHORT_ANSWER": 3
+    },
+    "by_question_status": {
+      "VALIDATED": 15
+    },
+    "by_chapter": {
+      "CH-01": 15
+    },
+    "distinct_concepts_covered": 23
+  },
+  "questions": [
+    {
+      "question_id": "Q-CH01-EAS-001",
+      "question_text": "Which of the following physical observations does NOT inherently indicate that a chemical reaction has taken place?",
+      "question_type": "MCQ",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "concept_ids": [
+        "CPT-CH01-001"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "EASY",
+      "cognitive_level": "KNOWLEDGE_UNDERSTANDING",
+      "marks": 1,
+      "expected_time_seconds": 45,
+      "answer_key": {
+        "options": {
+          "A": "Evolution of a gas",
+          "B": "Change in temperature",
+          "C": "Simple change in shape by cutting",
+          "D": "Formation of a precipitate"
+        },
+        "correct_option": "C"
+      },
+      "explanation": "According to NCERT Chapter 1 Section 1.1, the characteristic observations that determine whether a chemical reaction has occurred are: (i) change in state, (ii) change in colour, (iii) evolution of a gas, and (iv) change in temperature. Simple alteration in shape without bond breaking/formation (such as cutting paper) is a physical change, not a chemical reaction.",
+      "misconception_tags": [
+        "confusing_physical_and_chemical_change"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 2,
+        "section_heading": "1.1 Chemical Equations",
+        "verbatim_source_context": "change in state, change in colour, evolution of a gas, change in temperature help us to determine whether a chemical reaction has taken place."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-EAS-002",
+      "question_text": "In standard chemical equations, what physical state of a reactant or product is denoted by the notation $(aq)$?",
+      "question_type": "MCQ",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "concept_ids": [
+        "CPT-CH01-008"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "EASY",
+      "cognitive_level": "KNOWLEDGE_UNDERSTANDING",
+      "marks": 1,
+      "expected_time_seconds": 45,
+      "answer_key": {
+        "options": {
+          "A": "A gas under atmospheric pressure",
+          "B": "A solution in which water is the solvent",
+          "C": "A pure, non-aqueous melted liquid",
+          "D": "An insoluble solid precipitate"
+        },
+        "correct_option": "B"
+      },
+      "explanation": "In NCERT Section 1.1.2, physical states of reactants and products are denoted by (g) for gas, (l) for liquid, (s) for solid, and (aq) for aqueous solution. The word aqueous (aq) is written if the reactant or product is present as a solution in water.",
+      "misconception_tags": [
+        "confusing_liquid_with_aqueous"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 5,
+        "section_heading": "1.1.2 Balanced Chemical Equations",
+        "verbatim_source_context": "The word aqueous (aq) is written if the reactant or product is present as a solution in water."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-EAS-003",
+      "question_text": "Given below are an Assertion (A) and a Reason (R). Select the correct option:\n\n**Assertion (A):** A skeletal chemical equation must always be balanced.\n**Reason (R):** According to the Law of Conservation of Mass, the total mass of the elements present in the products of a chemical reaction has to be equal to the total mass of the elements present in the reactants.",
+      "question_type": "ASSERTION_REASON",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "concept_ids": [
+        "CPT-CH01-005",
+        "CPT-CH01-006"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "EASY",
+      "cognitive_level": "KNOWLEDGE_UNDERSTANDING",
+      "marks": 1,
+      "expected_time_seconds": 60,
+      "answer_key": {
+        "assertion": "A skeletal chemical equation must always be balanced.",
+        "reason": "According to the Law of Conservation of Mass, the total mass of the elements present in the products of a chemical reaction has to be equal to the total mass of the elements present in the reactants.",
+        "correct_option": "A",
+        "options": {
+          "A": "Both A and R are true and R is the correct explanation of A",
+          "B": "Both A and R are true but R is not the correct explanation of A",
+          "C": "A is true but R is false",
+          "D": "A is false but R is true"
+        }
+      },
+      "explanation": "Both Assertion and Reason are true. The fundamental Law of Conservation of Mass dictates that matter can neither be created nor destroyed in a chemical reaction. Because the number of atoms of each element must remain identical before and after the reaction, skeletal equations must be balanced.",
+      "misconception_tags": [
+        "mass_conservation_violation"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 3,
+        "section_heading": "1.1.2 Balanced Chemical Equations",
+        "verbatim_source_context": "Recall the law of conservation of mass... mass can neither be created nor destroyed in a chemical reaction. That is, the total mass of the elements present in the products of a chemical reaction has to be equal to the total mass of the elements present in the reactants."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-EAS-004",
+      "question_text": "Define an exothermic chemical reaction. State one common physiological or everyday example of an exothermic process highlighted in the NCERT textbook.",
+      "question_type": "SHORT_ANSWER",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-011",
+        "CPT-CH01-012"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "EASY",
+      "cognitive_level": "KNOWLEDGE_UNDERSTANDING",
+      "marks": 2,
+      "expected_time_seconds": 90,
+      "answer_key": {
+        "key_points": [
+          "Definition: Reactions in which heat/energy is released along with the formation of products.",
+          "Example: Respiration (oxidation of glucose releasing energy) OR the burning of natural gas OR the decomposition of vegetable matter into compost."
+        ]
+      },
+      "explanation": "NCERT Section 1.2.1 defines exothermic reactions as those where heat is released along with product formation. Cellular respiration is a prime example: glucose combines with oxygen in cells to release carbon dioxide, water, and vital thermal/metabolic energy (C6H12O6 + 6O2 -> 6CO2 + 6H2O + energy).",
+      "misconception_tags": [
+        "confusing_respiration_with_endothermic"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 7,
+        "section_heading": "1.2.1 Combination Reaction",
+        "verbatim_source_context": "Reactions in which heat is released along with the formation of products are called exothermic chemical reactions. Respiration is an exothermic process."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-EAS-005",
+      "question_text": "Commercial manufacturers of potato chips flush the plastic snack bags with an inert gas like nitrogen prior to sealing. What is the fundamental chemical reason for this procedure?",
+      "question_type": "MCQ",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "concept_ids": [
+        "CPT-CH01-026",
+        "CPT-CH01-027"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "EASY",
+      "cognitive_level": "APPLICATION",
+      "marks": 1,
+      "expected_time_seconds": 45,
+      "answer_key": {
+        "options": {
+          "A": "To add crispness by introducing extra moisture into the chips",
+          "B": "To prevent the aerial oxidation of fats and oils leading to rancidity",
+          "C": "To bleach the natural yellow pigments of the potato slices",
+          "D": "To accelerate anaerobic fermentation of carbohydrates"
+        },
+        "correct_option": "B"
+      },
+      "explanation": "Fats and oils present in food items undergo oxidation when exposed to oxygen in atmospheric air, producing volatile foul-smelling and bad-tasting compounds—a condition called rancidity. Flushing the package with an unreactive gas like nitrogen displaces oxygen, effectively preventing oxidative spoilage.",
+      "misconception_tags": [
+        "confusing_nitrogen_flushing_with_flavoring"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 13,
+        "section_heading": "1.3.2 Rancidity",
+        "verbatim_source_context": "chips manufacturers usually flush bags of chips with gas such as nitrogen to prevent the chips from getting oxidised."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-HAR-001",
+      "question_text": "Analyze the following redox transformation: $\\mathrm{MnO}_2 + 4\\mathrm{HCl} \\rightarrow \\mathrm{MnCl}_2 + 2\\mathrm{H}_2\\mathrm{O} + \\mathrm{Cl}_2$.\nWhich option accurately identifies the substance oxidized and the oxidizing agent respectively?",
+      "question_type": "MCQ",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "concept_ids": [
+        "CPT-CH01-021",
+        "CPT-CH01-022",
+        "CPT-CH01-023",
+        "CPT-CH01-024"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "HARD",
+      "cognitive_level": "ANALYZE_EVALUATE_CREATE",
+      "marks": 1,
+      "expected_time_seconds": 90,
+      "answer_key": {
+        "options": {
+          "A": "HCl is oxidized to Cl2, and MnO2 is the oxidizing agent",
+          "B": "MnO2 is oxidized to MnCl2, and HCl is the oxidizing agent",
+          "C": "HCl is reduced to H2O, and MnO2 is the reducing agent",
+          "D": "Cl2 is oxidized to HCl, and MnCl2 is the oxidizing agent"
+        },
+        "correct_option": "A"
+      },
+      "explanation": "In this reaction, HCl loses hydrogen to form Cl2; loss of hydrogen is oxidation, so HCl is oxidized. MnO2 loses oxygen to form MnCl2; loss of oxygen is reduction, meaning MnO2 is reduced. The substance that undergoes reduction (MnO2) acts as the oxidizing agent by causing the oxidation of HCl.",
+      "misconception_tags": [
+        "confusing_oxidized_substance_with_oxidizing_agent"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 13,
+        "section_heading": "1.2.5 Oxidation and Reduction",
+        "verbatim_source_context": "MnO2 + 4HCl -> MnCl2 + 2H2O + Cl2. In equation (1.32) HCl is oxidised to Cl2 whereas MnO2 is reduced to MnCl2."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-HAR-002",
+      "question_text": "**Case Study:** Read the following narrative and answer the questions that follow:\n\n*A mason preparing whitewash for a building added solid white lumps of compound 'X' into a drum filled with water. The mixture boiled vigorously without any external fire, evolving intense heat and forming suspension 'Y'. After allowing the mixture to cool, it was applied to the interior walls. Initially dull, after 2 to 3 days the walls developed a brilliant shiny white finish due to the formation of compound 'Z'.*\n\n(a) Identify compounds X, Y, and Z by their chemical names and molecular formulas.\n(b) Write balanced chemical equations for: (i) the reaction between X and water, and (ii) the reaction occurring on the wall over 2 to 3 days.\n(c) Classify the reaction between X and water on both structural (combination/decomposition) and energetic (exothermic/endothermic) grounds.",
+      "question_type": "CASE_BASED",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-009",
+        "CPT-CH01-010",
+        "CPT-CH01-011"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "HARD",
+      "cognitive_level": "ANALYZE_EVALUATE_CREATE",
+      "marks": 4,
+      "expected_time_seconds": 240,
+      "answer_key": {
+        "passage": "A mason preparing whitewash for a building added solid white lumps of compound 'X' into a drum filled with water...",
+        "sub_questions": [
+          {
+            "sub_q": "Identify compounds X, Y, and Z.",
+            "answer": "X = Calcium oxide (Quicklime, CaO); Y = Calcium hydroxide (Slaked lime, Ca(OH)2); Z = Calcium carbonate (Limestone, CaCO3)."
+          },
+          {
+            "sub_q": "Write balanced chemical equations for reactions (i) and (ii).",
+            "answer": "(i) CaO(s) + H2O(l) -> Ca(OH)2(aq) + heat; (ii) Ca(OH)2(aq) + CO2(g) -> CaCO3(s) + H2O(l)."
+          },
+          {
+            "sub_q": "Classify the reaction between X and water.",
+            "answer": "Structural: Combination reaction (two reactants form a single product). Energetic: Exothermic reaction (large quantity of thermal energy released)."
+          }
+        ]
+      },
+      "explanation": "NCERT Chapter 1 Section 1.2.1 Box details that quicklime (CaO) combines vigorously with water to form slaked lime (Ca(OH)2) releasing intense heat. When slaked lime is applied to walls, it slowly reacts with atmospheric carbon dioxide (CO2) over 2-3 days to form a thin, hard, shiny layer of calcium carbonate (CaCO3).",
+      "misconception_tags": [
+        "confusing_quicklime_with_slaked_lime"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 6,
+        "section_heading": "1.2.1 Combination Reaction",
+        "verbatim_source_context": "A solution of slaked lime produced by the reaction 1.13 is used for white-washing walls. Calcium hydroxide reacts slowly with the carbon dioxide in air to form a thin layer of calcium carbonate on the walls."
+      },
+      "created_at": "2026-11-21 10:13:43",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-HAR-003",
+      "question_text": "Decomposition reactions require energy input to split reactant bonds. (a) Name the three distinct forms of energy commonly utilized to initiate decomposition reactions. (b) Write one balanced chemical equation for each category. (c) Explain why decomposition reactions are regarded as the exact opposite of combination reactions.",
+      "question_type": "LONG_ANSWER",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-009",
+        "CPT-CH01-013",
+        "CPT-CH01-014",
+        "CPT-CH01-015",
+        "CPT-CH01-016"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "HARD",
+      "cognitive_level": "ANALYZE_EVALUATE_CREATE",
+      "marks": 5,
+      "expected_time_seconds": 300,
+      "answer_key": {
+        "key_points": [
+          "(a) Three forms of energy: Heat energy (Thermal decomposition), Electrical energy (Electrolytic decomposition), Light/Solar energy (Photolytic decomposition).",
+          "(b) Equations: Thermal: 2Pb(NO3)2(s) --heat--> 2PbO(s) + 4NO2(g) + O2(g) [OR CaCO3 -> CaO + CO2]; Electrolytic: 2H2O(l) --electric current--> 2H2(g) + O2(g); Photolytic: 2AgCl(s) --sunlight--> 2Ag(s) + Cl2(g).",
+          "(c) Opposites: In combination reactions, two or more simpler substances unite to form a single complex product, whereas in decomposition reactions, a single complex reactant splits to yield two or more simpler products."
+        ]
+      },
+      "explanation": "Decomposition reactions break chemical bonds using heat (thermal), electricity (electrolysis), or light (photolysis). Because combination reactions unite multiple reactants into a single product, whereas decomposition splits one reactant into multiple products, they represent complementary opposite reaction typologies.",
+      "misconception_tags": [
+        "misidentifying_energy_types_in_decomposition"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 8,
+        "section_heading": "1.2.2 Decomposition Reaction",
+        "verbatim_source_context": "decomposition reactions require energy either in the form of heat, light or electricity for breaking down the reactants."
+      },
+      "created_at": "2026-11-21 10:13:43",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-HAR-004",
+      "question_text": "Compare the environmental corrosion mechanisms observed on (i) Iron, (ii) Silver, and (iii) Copper. For each metal, specify the specific airborne environmental reactants responsible and the chemical name/colour of the corrosion coating formed.",
+      "question_type": "SHORT_ANSWER",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T03",
+      "concept_ids": [
+        "CPT-CH01-021",
+        "CPT-CH01-025"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "HARD",
+      "cognitive_level": "ANALYZE_EVALUATE_CREATE",
+      "marks": 3,
+      "expected_time_seconds": 150,
+      "answer_key": {
+        "key_points": [
+          "(i) Iron: Reacts with atmospheric oxygen and moisture/water vapour. Forms reddish-brown hydrated ferric oxide (Fe2O3.xH2O, rust).",
+          "(ii) Silver: Reacts with trace hydrogen sulphide (H2S) in air. Forms a black coating of silver sulphide (Ag2S).",
+          "(iii) Copper: Reacts with moist carbon dioxide (CO2) in air. Forms a green coating of basic copper carbonate [CuCO3.Cu(OH)2]."
+        ]
+      },
+      "explanation": "NCERT Section 1.3.1 highlights that corrosion attacks different metals through oxidation: iron rusts to reddish-brown hydrated ferric oxide, silver tarnishes black by reacting with sulphur compounds to form silver sulphide, and copper develops a green patina of basic copper carbonate when exposed to moist air.",
+      "misconception_tags": [
+        "confusing_tarnish_with_rust"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 13,
+        "section_heading": "1.3.1 Corrosion",
+        "verbatim_source_context": "Have you noticed the colour of the coating formed on iron... the black coating on silver and the green coating on copper are other examples of corrosion."
+      },
+      "created_at": "2026-11-21 10:13:43",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-HAR-005",
+      "question_text": "Balance the following complex chemical equation using smallest whole-number stoichiometric coefficients:\n$$a\\,\\mathrm{FeS}_2(s) + b\\,\\mathrm{O}_2(g) \\rightarrow c\\,\\mathrm{Fe}_2\\mathrm{O}_3(s) + d\\,\\mathrm{SO}_2(g)$$\nCalculate the numerical sum of the integer stoichiometric coefficients $(a + b + c + d)$.",
+      "question_type": "NUMERICAL",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "concept_ids": [
+        "CPT-CH01-006",
+        "CPT-CH01-007"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "HARD",
+      "cognitive_level": "ANALYZE_EVALUATE_CREATE",
+      "marks": 3,
+      "expected_time_seconds": 180,
+      "answer_key": {
+        "numerical_value": 25.0,
+        "unit": "sum",
+        "tolerance": 0.0,
+        "steps": [
+          "Unbalanced: a FeS2 + b O2 -> c Fe2O3 + d SO2",
+          "Equalize Fe: Put c=1, a=2. Then S=4, so d=4.",
+          "Count O on RHS: 3 (from Fe2O3) + 8 (from 4 SO2) = 11 O atoms.",
+          "On LHS: b O2 = 11/2 O2.",
+          "Multiply all coefficients by 2 to obtain whole numbers: a=4, b=11, c=2, d=8.",
+          "Balanced Equation: 4 FeS2 + 11 O2 -> 2 Fe2O3 + 8 SO2",
+          "Calculate sum: a + b + c + d = 4 + 11 + 2 + 8 = 25"
+        ]
+      },
+      "explanation": "Balancing requires equating atom counts of each element: 4 Fe atoms on LHS and RHS, 8 S atoms on LHS and RHS, and 22 O atoms (11x2 on LHS; 2x3 + 8x2 = 6 + 16 = 22 on RHS). The lowest whole number stoichiometric coefficients are a=4, b=11, c=2, d=8. Their sum is 4 + 11 + 2 + 8 = 25.",
+      "misconception_tags": [
+        "fractional_coefficient_error"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 4,
+        "section_heading": "1.1.2 Balanced Chemical Equations",
+        "verbatim_source_context": "This method of balancing chemical equations is called hit-and-trial method as we make trials to balance the equation by using the smallest whole number coefficient."
+      },
+      "created_at": "2026-11-21 10:13:43",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-MED-001",
+      "question_text": "When pale green crystals of ferrous sulphate ($\\mathrm{FeSO}_4\\cdot 7\\mathrm{H}_2\\mathrm{O}$) are heated strongly in a dry boiling tube, what are the observed colour changes and the characteristic odor of the gases evolved?",
+      "question_type": "MCQ",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-013",
+        "CPT-CH01-014"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "MEDIUM",
+      "cognitive_level": "APPLICATION",
+      "marks": 1,
+      "expected_time_seconds": 60,
+      "answer_key": {
+        "options": {
+          "A": "Turns deep blue; pungent ammonia smell evolved",
+          "B": "Turns reddish-brown; characteristic suffocating odor of burning sulphur",
+          "C": "Turns bright yellow; completely odorless gas evolved",
+          "D": "Remains pale green; pleasant fruity odor evolved"
+        },
+        "correct_option": "B"
+      },
+      "explanation": "On heating, green hydrated ferrous sulphate first loses water of crystallization to become white anhydrous FeSO4, and upon strong thermal decomposition ruptures into solid reddish-brown ferric oxide (Fe2O3) alongside sulphur dioxide (SO2) and sulphur trioxide (SO3) gases. These gases exhibit the pungent, suffocating smell of burning sulphur: 2FeSO4(s) -> Fe2O3(s) + SO2(g) + SO3(g).",
+      "misconception_tags": [
+        "misidentifying_decomposition_products"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 8,
+        "section_heading": "1.2.2 Decomposition Reaction",
+        "verbatim_source_context": "the green colour of the ferrous sulphate crystals has changed. You can also smell the characteristic odour of burning sulphur. 2FeSO4 -> Fe2O3 + SO2 + SO3"
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-MED-002",
+      "question_text": "A student completely burns $4.00\\text{ g}$ of magnesium ribbon in an excess of oxygen inside a sealed crucible, yielding exactly $6.67\\text{ g}$ of white magnesium oxide ($\\mathrm{MgO}$) powder. Based strictly on the Law of Conservation of Mass, calculate the exact mass of oxygen gas (in grams) consumed in the reaction.",
+      "question_type": "NUMERICAL",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T01",
+      "concept_ids": [
+        "CPT-CH01-005",
+        "CPT-CH01-006"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "MEDIUM",
+      "cognitive_level": "APPLICATION",
+      "marks": 2,
+      "expected_time_seconds": 120,
+      "answer_key": {
+        "numerical_value": 2.67,
+        "unit": "g",
+        "tolerance": 0.05,
+        "steps": [
+          "Reaction equation: 2Mg + O2 -> 2MgO",
+          "Total mass of reactants = Total mass of products",
+          "Mass of Mg + Mass of O2 = Mass of MgO",
+          "4.00 g + Mass of O2 = 6.67 g",
+          "Mass of O2 = 6.67 g - 4.00 g = 2.67 g"
+        ]
+      },
+      "explanation": "By the Law of Conservation of Mass, matter is neither created nor destroyed during a chemical transformation. Therefore: Mass of Reactants = Mass of Products. Given: Mass of Magnesium = 4.00 g, Mass of Magnesium Oxide = 6.67 g. Hence, Mass of Oxygen = 6.67 g - 4.00 g = 2.67 g.",
+      "misconception_tags": [
+        "ignoring_gaseous_reactant_mass"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 3,
+        "section_heading": "1.1.2 Balanced Chemical Equations",
+        "verbatim_source_context": "the total mass of the elements present in the products of a chemical reaction has to be equal to the total mass of the elements present in the reactants."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-MED-003",
+      "question_text": "Given below are an Assertion (A) and a Reason (R). Select the correct option:\n\n**Assertion (A):** When clean iron nails are left immersed in an aqueous copper sulphate solution for 20 minutes, the deep blue colour of the solution gradually fades and turns light green.\n**Reason (R):** Iron is chemically more reactive than copper; it displaces copper from copper sulphate solution to form ferrous sulphate.",
+      "question_type": "ASSERTION_REASON",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-018"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "MEDIUM",
+      "cognitive_level": "APPLICATION",
+      "marks": 1,
+      "expected_time_seconds": 60,
+      "answer_key": {
+        "assertion": "When clean iron nails are left immersed in an aqueous copper sulphate solution for 20 minutes, the deep blue colour of the solution gradually fades and turns light green.",
+        "reason": "Iron is chemically more reactive than copper; it displaces copper from copper sulphate solution to form ferrous sulphate.",
+        "correct_option": "A",
+        "options": {
+          "A": "Both A and R are true and R is the correct explanation of A",
+          "B": "Both A and R are true but R is not the correct explanation of A",
+          "C": "A is true but R is false",
+          "D": "A is false but R is true"
+        }
+      },
+      "explanation": "In NCERT Activity 1.9, iron nails dipped into blue copper sulphate solution (CuSO4) cause iron to displace copper: Fe(s) + CuSO4(aq) -> FeSO4(aq) + Cu(s). The blue colour fades because Cu2+ ions are reduced to copper metal (brown deposit on the nail), while Fe2+ ions dissolve into solution, imparting a distinctive light green hue.",
+      "misconception_tags": [
+        "reversing_displacement_order"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 10,
+        "section_heading": "1.2.3 Displacement Reaction",
+        "verbatim_source_context": "Why does the iron nail become brownish in colour and the blue colour of copper sulphate solution fades? Fe + CuSO4 -> FeSO4 + Cu. In this reaction, iron has displaced or removed another element, copper..."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-MED-004",
+      "question_text": "An aqueous solution of sodium sulphate is mixed with an aqueous solution of barium chloride in a clean test tube.\n(a) Formulate the complete balanced chemical equation including physical state symbols.\n(b) Name the precipitate formed and state its colour.",
+      "question_type": "SHORT_ANSWER",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-019",
+        "CPT-CH01-020"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "MEDIUM",
+      "cognitive_level": "APPLICATION",
+      "marks": 2,
+      "expected_time_seconds": 120,
+      "answer_key": {
+        "key_points": [
+          "(a) Balanced chemical equation: Na2SO4(aq) + BaCl2(aq) -> BaSO4(s) + 2NaCl(aq)",
+          "(b) Precipitate: Barium sulphate (BaSO4); Colour: White."
+        ]
+      },
+      "explanation": "NCERT Section 1.2.4 details the reaction between sodium sulphate and barium chloride. An exchange of ions (SO4 2- and Ba 2+) occurs, producing an insoluble white solid precipitate of barium sulphate (BaSO4) and soluble sodium chloride.",
+      "misconception_tags": [
+        "confusing_precipitate_with_soluble_salt"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 11,
+        "section_heading": "1.2.4 Double Displacement Reaction",
+        "verbatim_source_context": "You will observe that a white substance, which is insoluble in water, is formed. This insoluble substance formed is known as a precipitate. Na2SO4(aq) + BaCl2(aq) -> BaSO4(s) + 2NaCl(aq)"
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    },
+    {
+      "question_id": "Q-CH01-MED-005",
+      "question_text": "Refer to the experimental setup for the electrolysis of acidified water (NCERT Activity 1.7):\n(a) Why is the volume of gas collected in one test tube exactly double the volume collected in the other?\n(b) Identify the gas liberated at the cathode and at the anode, describing a simple confirmatory test for each gas.",
+      "question_type": "DIAGRAM_BASED",
+      "chapter_id": "CH-01",
+      "topic_id": "CH01-T02",
+      "concept_ids": [
+        "CPT-CH01-015"
+      ],
+      "learning_outcome_ids": [
+        "LO-C1.3"
+      ],
+      "difficulty": "MEDIUM",
+      "cognitive_level": "ANALYZE_EVALUATE_CREATE",
+      "marks": 3,
+      "expected_time_seconds": 180,
+      "answer_key": {
+        "key_points": [
+          "(a) Water (H2O) contains 2 parts of hydrogen and 1 part of oxygen by volume/atoms. Decomposition reaction 2H2O(l) -> 2H2(g) + O2(g) yields 2 moles of H2 gas for every 1 mole of O2 gas.",
+          "(b) Cathode (negative electrode) collects Hydrogen gas (H2); brings burning splinter which extinguishes with a 'pop' sound.",
+          "Anode (positive electrode) collects Oxygen gas (O2); rekindles a glowing wooden splinter."
+        ]
+      },
+      "explanation": "Electrolysis of water splits H2O molecules via electrical energy. Because stoichiometry dictates 2H2O -> 2H2 + O2, the gas volume of hydrogen generated at the negative cathode is precisely double that of oxygen generated at the positive anode.",
+      "misconception_tags": [
+        "reversing_anode_cathode_gases"
+      ],
+      "source_status": "SOURCE_DERIVED",
+      "verification_status": "VERIFIED",
+      "question_status": "VALIDATED",
+      "provenance": {
+        "source_document_id": "NCERT_SCI_10_CH01",
+        "source_filename": "jesc101.pdf",
+        "page_number": 9,
+        "section_heading": "1.2.2 Decomposition Reaction",
+        "verbatim_source_context": "Activity 1.7: Electrolysis of water... Is the volume of the gas collected the same in both the test tubes? Test these gases one by one by bringing a burning candle close to the mouth of the test tubes."
+      },
+      "created_at": "2026-11-21 10:13:42",
+      "updated_at": "2026-11-21 10:14:19"
+    }
+  ]
+}

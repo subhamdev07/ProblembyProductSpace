@@ -1,0 +1,104 @@
+{
+  "verified_documents": [
+    {
+      "document_id": "CBSE_SCI_10_2026_27",
+      "title": "CBSE Secondary School Curriculum 2026-27: Science (Class X, Subject Code 086)",
+      "document_type": "OFFICIAL_SYLLABUS",
+      "academic_session": "2026-27",
+      "subject": "Science",
+      "subject_code": "086",
+      "source_authority": "Central Board of Secondary Education (CBSE)",
+      "file_path": "sources/Science_SecP1_2026-27.pdf",
+      "file_size_bytes": 263105,
+      "sha256_hash": "7f1f8bd170b78640e8536d2344806a9c9e6187c1209e5ff3388dee5f3db624ea",
+      "page_count": 9,
+      "verification_status": "VERIFIED",
+      "metadata_json": "{\"theory_marks\": 80, \"internal_marks\": 20, \"duration_hours\": 3, \"syllabus_pages\": \"1-9\", \"authority_url\": \"https://cbseacademic.nic.in\"}",
+      "created_at": "2026-11-21 09:14:53"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH01",
+      "title": "NCERT Class X Science Textbook - Chapter 1: Chemical Reactions and Equations",
+      "document_type": "TEXTBOOK_CHAPTER",
+      "academic_session": "2026-27",
+      "subject": "Science",
+      "subject_code": "086",
+      "source_authority": "National Council of Educational Research and Training (NCERT)",
+      "file_path": "sources/jesc101.pdf",
+      "file_size_bytes": 4161216,
+      "sha256_hash": "9d58fa614b2d1064f4ef13423eaf85155b0efc5e74bdf3e8c5e6f15f1b742d36",
+      "page_count": 16,
+      "verification_status": "VERIFIED",
+      "metadata_json": "{\"chapter_number\": 1, \"code\": \"jesc101\", \"pages\": 16, \"edition\": \"Reprint / Rationalised Edition\"}",
+      "created_at": "2026-11-21 09:14:53"
+    }
+  ],
+  "missing_textbook_chapters": [
+    {
+      "document_id": "NCERT_SCI_10_CH02",
+      "chapter_number": 2,
+      "expected_file": "jesc102.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH03",
+      "chapter_number": 3,
+      "expected_file": "jesc103.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH04",
+      "chapter_number": 4,
+      "expected_file": "jesc104.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH05",
+      "chapter_number": 5,
+      "expected_file": "jesc105.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH06",
+      "chapter_number": 6,
+      "expected_file": "jesc106.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH07",
+      "chapter_number": 7,
+      "expected_file": "jesc107.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH08",
+      "chapter_number": 8,
+      "expected_file": "jesc108.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH09",
+      "chapter_number": 9,
+      "expected_file": "jesc109.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH10",
+      "chapter_number": 10,
+      "expected_file": "jesc110.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH11",
+      "chapter_number": 11,
+      "expected_file": "jesc111.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH12",
+      "chapter_number": 12,
+      "expected_file": "jesc112.pdf"
+    },
+    {
+      "document_id": "NCERT_SCI_10_CH13",
+      "chapter_number": 13,
+      "expected_file": "jesc113.pdf"
+    }
+  ],
+  "status": "PARTIAL_SOURCE_BASE",
+  "primary_syllabus_verified": true,
+  "ncert_complete": false,
+  "ncert_available_count": 1,
+  "ncert_required_count": 13,
+  "notes": "CBSE 2026-27 Syllabus is 100% verified and primary. NCERT Chapter 1 is verified. Chapters 2-13 textbooks are absent and are marked as pending textbook extraction without fabricating page references."
+}

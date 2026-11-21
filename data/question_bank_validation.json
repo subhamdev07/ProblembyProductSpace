@@ -1,0 +1,99 @@
+{
+  "total_evaluated": 15,
+  "valid_count": 15,
+  "invalid_count": 0,
+  "all_valid": true,
+  "errors_by_rule": {},
+  "detailed_results": {
+    "Q-CH01-EAS-001": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-EAS-002": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-EAS-003": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-EAS-004": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-EAS-005": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-HAR-001": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-HAR-002": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-HAR-003": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-HAR-004": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-HAR-005": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-MED-001": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-MED-002": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-MED-003": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-MED-004": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    },
+    "Q-CH01-MED-005": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": [],
+      "rules_evaluated": 12
+    }
+  }
+}

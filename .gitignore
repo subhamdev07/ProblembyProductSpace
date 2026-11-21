@@ -1,0 +1,20 @@
+# Environment secrets & credentials
+.env
+.env.local
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Pytest & test cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases & scratch files
+*.db-journal
+scratch/
