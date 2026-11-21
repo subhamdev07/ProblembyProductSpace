@@ -5,7 +5,7 @@ Question-Concept junction mappings, and Question-Learning Outcome mappings.
 """
 
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from src.storage.database import Database
 from src.models.question import (
     Question,
